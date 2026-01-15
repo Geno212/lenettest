@@ -1,0 +1,1183 @@
+but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-12-18 18:51:02.436538: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-12-18 18:51:02.438140: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:901] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-12-18 18:51:02.439703: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1929] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 13646 MB memory:  -> device: 0, name: Tesla T4, pci bus id: 0000:00:1e.0, compute capability: 7.5
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Relu
+DEBUG:onnx2keras:node_name: _relu_1_Relu_output_0
+DEBUG:onnx2keras:node_params: {'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _conv2d_1_Conv_output_0).
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: AveragePool
+DEBUG:onnx2keras:node_name: _avgpool2d_1_AveragePool_output_0
+DEBUG:onnx2keras:node_params: {'ceil_mode': 0, 'count_include_pad': 1, 'kernel_shape': [2, 2], 'pads': [0, 0, 0, 0], 'strides': [2, 2], 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _relu_1_Relu_output_0).
+DEBUG:onnx2keras:... found all, continue
+WARNING:onnx2keras:avgpool:Unable to use `same` padding. Add ZeroPadding2D layer to fix shapes.
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Conv
+DEBUG:onnx2keras:node_name: _conv2d_2_Conv_output_0
+DEBUG:onnx2keras:node_params: {'dilations': [1, 1], 'group': 1, 'kernel_shape': [5, 5], 'pads': [0, 0, 0, 0], 'strides': [1, 1], 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _avgpool2d_1_AveragePool_output_0).
+DEBUG:onnx2keras:Check input 1 (name conv2d_2.weight).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:Check input 2 (name conv2d_2.bias).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:conv:Conv with bias
+DEBUG:onnx2keras:conv:2D convolution
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Relu
+DEBUG:onnx2keras:node_name: _relu_2_Relu_output_0
+DEBUG:onnx2keras:node_params: {'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _conv2d_2_Conv_output_0).
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: AveragePool
+DEBUG:onnx2keras:node_name: _avgpool2d_2_AveragePool_output_0
+DEBUG:onnx2keras:node_params: {'ceil_mode': 0, 'count_include_pad': 1, 'kernel_shape': [2, 2], 'pads': [0, 0, 0, 0], 'strides': [2, 2], 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _relu_2_Relu_output_0).
+DEBUG:onnx2keras:... found all, continue
+WARNING:onnx2keras:avgpool:Unable to use `same` padding. Add ZeroPadding2D layer to fix shapes.
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Flatten
+DEBUG:onnx2keras:node_name: _flatten_1_Flatten_output_0
+DEBUG:onnx2keras:node_params: {'axis': 1, 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _avgpool2d_2_AveragePool_output_0).
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:flatten:Convert inputs to Keras/TF layers if needed.
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Gemm
+DEBUG:onnx2keras:node_name: _linear_1_Gemm_output_0
+DEBUG:onnx2keras:node_params: {'alpha': 1.0, 'beta': 1.0, 'transB': 1, 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _flatten_1_Flatten_output_0).
+DEBUG:onnx2keras:Check input 1 (name linear_1.weight).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:Check input 2 (name linear_1.bias).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:gemm:Convert GEMM with bias.
+DEBUG:onnx2keras:gemm:Transposing W matrix.
+DEBUG:onnx2keras:gemm:Input units 400, output units 120.
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Relu
+DEBUG:onnx2keras:node_name: _relu_3_Relu_output_0
+DEBUG:onnx2keras:node_params: {'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _linear_1_Gemm_output_0).
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Gemm
+DEBUG:onnx2keras:node_name: _linear_2_Gemm_output_0
+DEBUG:onnx2keras:node_params: {'alpha': 1.0, 'beta': 1.0, 'transB': 1, 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _relu_3_Relu_output_0).
+DEBUG:onnx2keras:Check input 1 (name linear_2.weight).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:Check input 2 (name linear_2.bias).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:gemm:Convert GEMM with bias.
+DEBUG:onnx2keras:gemm:Transposing W matrix.
+DEBUG:onnx2keras:gemm:Input units 120, output units 84.
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Relu
+DEBUG:onnx2keras:node_name: _relu_4_Relu_output_0
+DEBUG:onnx2keras:node_params: {'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _linear_2_Gemm_output_0).
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:######
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Converting ONNX operation
+DEBUG:onnx2keras:type: Gemm
+DEBUG:onnx2keras:node_name: model_output
+DEBUG:onnx2keras:node_params: {'alpha': 1.0, 'beta': 1.0, 'transB': 1, 'change_ordering': False, 'name_policy': 'renumerate'}
+DEBUG:onnx2keras:...
+DEBUG:onnx2keras:Check if all inputs are available:
+DEBUG:onnx2keras:Check input 0 (name _relu_4_Relu_output_0).
+DEBUG:onnx2keras:Check input 1 (name linear_3.weight).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:Check input 2 (name linear_3.bias).
+DEBUG:onnx2keras:The input not found in layers / model inputs.
+DEBUG:onnx2keras:Found in weights, add as a numpy constant.
+DEBUG:onnx2keras:... found all, continue
+DEBUG:onnx2keras:gemm:Convert GEMM with bias.
+DEBUG:onnx2keras:gemm:Transposing W matrix.
+DEBUG:onnx2keras:gemm:Input units 84, output units 10.
+  Converted to Keras (NCHW format)
+  Rebuilding model in channels-last (NHWC) format for Catapult...
+    Input NCHW: (1, 1, 32, 32) -> NHWC: (batch, 32, 32, 1)
+    Total layers to convert: 15
+      Conv2D layer 0: Already HWIO (5, 5, 1, 6)
+      Skipping redundant ZeroPadding2D layer 2 (padding is zero)
+      Conv2D layer 4: Already HWIO (5, 5, 6, 16)
+      Skipping redundant ZeroPadding2D layer 6 (padding is zero)
+
+    Conversion Summary:
+      Converted: 12 layers
+      Skipped:   2 layers
+      Warnings:  0 layers
+  Model rebuilt in NHWC format!
+/home/ubuntu/.local/lib/python3.10/site-packages/keras/src/engine/training.py:3103: UserWarning: You are saving your model as an HDF5 file via `model.save()`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')`.
+  saving_api.save_model(
+WARNING:tensorflow:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+WARNING:tensorflow:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+DEBUG:h5py._conv:Creating converter from 5 to 3
+  Saved Keras: outputs/lenet5_fixed/model.h5
+Model: "model_nhwc"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input1 (InputLayer)         [(None, 32, 32, 1)]       0         
+                                                                 
+ conv0 (Conv2D)              (None, 28, 28, 6)         156       
+                                                                 
+ act1 (Activation)           (None, 28, 28, 6)         0         
+                                                                 
+ avgpool3 (AveragePooling2D  (None, 14, 14, 6)         0         
+ )                                                               
+                                                                 
+ conv4 (Conv2D)              (None, 10, 10, 16)        2416      
+                                                                 
+ act5 (Activation)           (None, 10, 10, 16)        0         
+                                                                 
+ avgpool7 (AveragePooling2D  (None, 5, 5, 16)          0         
+ )                                                               
+                                                                 
+ flatten8 (Flatten)          (None, 400)               0         
+                                                                 
+ dense9 (Dense)              (None, 120)               48120     
+                                                                 
+ act10 (Activation)          (None, 120)               0         
+                                                                 
+ dense11 (Dense)             (None, 84)                10164     
+                                                                 
+ act12 (Activation)          (None, 84)                0         
+                                                                 
+ dense13 (Dense)             (None, 10)                850       
+                                                                 
+=================================================================
+Total params: 61706 (241.04 KB)
+Trainable params: 61706 (241.04 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+
+============================================================
+Step 4: Configuring Catapult AI NN (hls4ml)
+============================================================
+  hls4ml loaded from: /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/__init__.py
+  hls4ml pkg path: /usr/cad/mentor/catapult/2024.1/Mgc_home/shared/pkgs/ccs_hls4ml
+  hls4ml path: /usr/cad/mentor/catapult/2024.1/Mgc_home/shared/pkgs/ccs_hls4ml/hls4ml
+  hls4ml directory contents: []...
+  hls4ml attributes: ['backends', 'converters', 'model', 'report', 'reseed', 'utils', 'version_tuple', 'writer']
+  Test input transposed: (1, 1, 32, 32) (NCHW) -> (1, 32, 32, 1) (NHWC)
+2025-12-18 18:51:03.286087: I external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:454] Loaded cuDNN version 8902
+2025-12-18 18:51:03.400101: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.400916: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.400953: W external/local_xla/xla/stream_executor/gpu/asm_compiler.cc:110] Couldn't get ptxas version : FAILED_PRECONDITION: Couldn't get ptxas/nvlink version string: INTERNAL: Couldn't invoke ptxas --version
+2025-12-18 18:51:03.401394: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.401468: W external/local_xla/xla/stream_executor/gpu/redzone_allocator.cc:322] INTERNAL: Failed to launch ptxas
+Relying on driver to perform ptx compilation. 
+Modify $PATH to customize ptxas location.
+This message will be only logged once.
+2025-12-18 18:51:03.604645: W external/local_xla/xla/service/gpu/llvm_gpu_backend/gpu_backend_lib.cc:504] Can't find libdevice directory ${CUDA_DIR}/nvvm/libdevice. This may result in compilation or runtime failures, if the program we try to run uses routines from libdevice.
+Searched for CUDA in the following directories:
+  ./cuda_sdk_lib
+  /usr/local/cuda-12.2
+  /usr/local/cuda
+  /home/ubuntu/.local/lib/python3.10/site-packages/tensorflow/python/platform/../../../nvidia/cuda_nvcc
+  /home/ubuntu/.local/lib/python3.10/site-packages/tensorflow/python/platform/../../../../nvidia/cuda_nvcc
+  .
+You can choose the search directory by setting xla_gpu_cuda_data_dir in HloModule's DebugOptions.  For most apps, setting the environment variable XLA_FLAGS=--xla_gpu_cuda_data_dir=/path/to/cuda will work.
+2025-12-18 18:51:03.613002: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.613695: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.613726: W external/local_xla/xla/stream_executor/gpu/asm_compiler.cc:110] Couldn't get ptxas version : FAILED_PRECONDITION: Couldn't get ptxas/nvlink version string: INTERNAL: Couldn't invoke ptxas --version
+2025-12-18 18:51:03.614128: I external/local_tsl/tsl/platform/default/subprocess.cc:304] Start cannot spawn child process: No such file or directory
+2025-12-18 18:51:03.614197: W tensorflow/compiler/mlir/tools/kernel_gen/transforms/gpu_kernel_to_blob_pass.cc:191] Failed to compile generated PTX with ptxas. Falling back to compilation by driver.
+1/1 [==============================] - 1s 509ms/step
+  Saved testbench: outputs/lenet5_fixed/tb_input_features.dat
+  Applying HIER-11 fix: Hybrid Strategy & Disabling Optimizations...
+    Forcing Strategy='Latency' for layer input1 ()
+    Forcing Strategy='Latency' for layer conv0 ()
+    Forcing Strategy='Latency' for layer conv0_linear ()
+    Forcing Strategy='Latency' for layer act1 ()
+    Forcing Strategy='Latency' for layer avgpool3 ()
+    Forcing Strategy='Latency' for layer conv4 ()
+    Forcing Strategy='Latency' for layer conv4_linear ()
+    Forcing Strategy='Latency' for layer act5 ()
+    Forcing Strategy='Latency' for layer avgpool7 ()
+    Forcing Strategy='Latency' for layer flatten8 ()
+    Forcing Strategy='Latency' for layer dense9 ()
+    Forcing Strategy='Latency' for layer dense9_linear ()
+    Forcing Strategy='Latency' for layer act10 ()
+    Forcing Strategy='Latency' for layer dense11 ()
+    Forcing Strategy='Latency' for layer dense11_linear ()
+    Forcing Strategy='Latency' for layer act12 ()
+    Forcing Strategy='Latency' for layer dense13 ()
+    Forcing Strategy='Latency' for layer dense13_linear ()
+
+  Configuration:
+    Backend: Catapult
+    IOType: io_stream
+    Precision: ac_fixed<16,6>
+    ReuseFactor: 32 (higher=less memory, more latency)
+    Strategy: Latency
+    OutputDir: outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test
+
+============================================================
+Step 5: Converting to HLS C++
+============================================================
+  hls4ml attributes: ['backends', 'converters', 'model', 'report', 'reseed', 'utils', 'version_tuple', 'writer']
+WARNING: Layer conv0 requires "dataflow" pipeline style. Switching to "dataflow" pipeline style.
+  HLS model created!
+
+============================================================
+Step 6: Writing HLS Project
+============================================================
+Copying NNET files to local firmware directory
+... copying AC ac_types headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_types/
+... copying AC ac_math headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_math/
+... copying AC ac_simutils headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_simutils/
+  HLS C++ code generated!
+
+============================================================
+Step 7: Compiling C++ Model
+============================================================
+Copying NNET files to local firmware directory
+... copying AC ac_types headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_types/
+... copying AC ac_math headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_math/
+... copying AC ac_simutils headers from /home/ubuntu/.local/lib/python3.10/site-packages/hls4ml/writer/../templates/catapult/ac_simutils/
+Project .tar.gz archive already exists
+  Compile warning: outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/firmware/LeNet5_Fixed-7fca4fec.so: cannot open shared object file: No such file or directory
+
+============================================================
+Step 8: Running Catapult Synthesis
+============================================================
+  This may take several minutes...
+  Patching build_prj.tcl for timing constraints...
+    Clock period set to 10ns (100 MHz)
+    Added CLOCK_OVERHEAD 0 directive
+catapult -product ultra -shell -f build_prj.tcl -eval 'set ::argv "reset=False csim=False synth=True cosim=False validation=False export=False vsynth=False fifo_opt=False bitfile=False ran_frame=5 sw_opt=False power=False da=False vhdl=True verilog=True bup=False"'
+//  Catapult Ultra Synthesis 2025.3/1218503 (Production Release) Mon Aug 18 11:22:04 PDT 2025
+//  
+//          Copyright (c) Siemens EDA, 1996-2025, All Rights Reserved.
+//                        UNPUBLISHED, LICENSED SOFTWARE.
+//             CONFIDENTIAL AND PROPRIETARY INFORMATION WHICH IS THE
+//                   PROPERTY OF SIEMENS EDA OR ITS LICENSORS.
+//  
+//  Running on Linux ubuntu@ip-10-10-8-216:5538 6.8.0-1044-aws x86_64 aol
+//  
+//  Package information: SIFLIBS v28.3_0.0, HLS_PKGS v28.3_0.0, 
+//                       SIF_TOOLKITS v28.3_0.0, SIF_XILINX v28.3_0.0, 
+//                       SIF_ALTERA v28.3_0.0, CCS_LIBS v28.3_0.0, 
+//                       CDS_PPRO v2025.2_1, CDS_DesignChecker v2025.2, 
+//                       CDS_OASYS v21.1_3.1, CDS_PSR v25.2_0.6, 
+//                       DesignPad v2.78_1.0, DesignAnalyzer 2025.3/1217829
+//  
+# Connected to license server 29000@10.9.8.8 (LIC-13)
+# Catapult product license successfully checked out, elapsed time 00:01 (LIC-14)
+dofile ./build_prj.tcl
+# > array set opt {
+# >   reset      0
+# >   csim       0
+# >   synth      1
+# >   cosim      0
+# >   validation 0
+# >   vhdl       1
+# >   verilog    1
+# >   export     0
+# >   vsynth     0
+# >   bitfile    0
+# >   fifo_opt   0
+# >   ran_frame  2
+# >   sw_opt     0
+# >   power      0
+# >   da         0
+# >   bup        0
+# > }
+# > set sfd [file dirname [info script]]
+# .
+# > if { [info exists ::argv] } {
+# >   foreach arg $::argv {
+# >     foreach {optname optval} [split $arg '='] {}
+# >     if { [info exists opt($optname)] } {
+# >       if {[string is integer -strict $optval]} {
+# >         set opt($optname) $optval
+# >       } else {
+# >         set opt($optname) [string is true -strict $optval]
+# >       }
+# >     }
+# >   }
+# > }
+# > puts "***** INVOKE OPTIONS *****"
+# ***** INVOKE OPTIONS *****
+# > foreach x [lsort [array names opt]] {
+# >   puts "[format {   %-20s %s} $x $opt($x)]"
+# > }
+#    bitfile              0
+#    bup                  0
+#    cosim                0
+#    csim                 0
+#    da                   0
+#    export               0
+#    fifo_opt             0
+#    power                0
+#    ran_frame            5
+#    reset                0
+#    sw_opt               0
+#    synth                1
+#    validation           0
+#    verilog              1
+#    vhdl                 1
+#    vsynth               0
+# > puts ""
+# 
+# > proc report_time { op_name time_start time_end } {
+# >   set time_taken [expr $time_end - $time_start]
+# >   set time_s [expr ($time_taken / 1000) % 60]
+# >   set time_m [expr ($time_taken / (1000*60)) % 60]
+# >   set time_h [expr ($time_taken / (1000*60*60)) % 24]
+# >   puts "***** ${op_name} COMPLETED IN ${time_h}h${time_m}m${time_s}s *****"
+# > }
+# > proc setup_xilinx_part { part } {
+# >   set part_sav $part
+# >   set libname [lindex [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret v] 0]
+# >   puts "Library Name: $libname"
+# >   if { [llength $libname] == 1 } {
+# >     set libpath [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret p]
+# >     puts "Library Path: $libpath"
+# >     if { [regexp {/CONFIG/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/.*} $libpath dummy rtltool vendor family speed part] } {
+# >       solution library add $libname -- -rtlsyntool $rtltool -vendor $vendor -family $family -speed $speed -part $part_sav
+# >     } else {
+# >       solution library add $libname -- -rtlsyntool Vivado
+# >     }
+# >   } else {
+# >     logfile message "Could not find specific Xilinx base library for part '$part'. Using KINTEX-u\n" warning
+# >     solution library add mgc_Xilinx-KINTEX-u-2_beh -- -rtlsyntool Vivado -manufacturer Xilinx -family KINTEX-u -speed -2 -part xcku115-flvb2104-2-i
+# >   }
+# >   solution library add Xilinx_RAMS
+# >   solution library add Xilinx_ROMS
+# >   solution library add Xilinx_FIFO
+# > }
+# > proc setup_asic_libs { args } {
+# >   set do_saed 0
+# >   foreach lib $args {
+# >     solution library add $lib -- -rtlsyntool DesignCompiler
+# >     if { [lsearch -exact {saed32hvt_tt0p78v125c_beh saed32lvt_tt0p78v125c_beh saed32rvt_tt0p78v125c_beh} $lib] != -1 } {
+# >       set do_saed 1
+# >     }
+# >   }
+# >   solution library add ccs_sample_mem
+# >   solution library add ccs_sample_rom
+# >   solution library add hls4ml_lib
+# >   go libraries
+# > 
+# >   if { $do_saed } {
+# >     source [application get /SYSTEM/ENV_MGC_HOME]/pkgs/siflibs/saed/setup_saedlib.tcl
+# >   }
+# > }
+# > options set Input/CppStandard {c++17}
+# c++17
+# > options set Input/CompilerFlags -DRANDOM_FRAMES=$opt(ran_frame)
+# -DRANDOM_FRAMES=5
+# > options set Input/SearchPath {$MGC_HOME/shared/include/nnet_utils} -append
+# {$MGC_HOME/shared/include/nnet_utils}
+# > options set ComponentLibs/SearchPath {$MGC_HOME/shared/pkgs/ccs_hls4ml} -append
+# {$MGC_HOME/pkgs/siflibs} {$MGC_HOME/shared/include/calypto_mem} {$MGC_HOME/pkgs/siflibs/nangate} {$MGC_HOME/pkgs/siflibs/saed} {$MGC_HOME/pkgs/siflibs/dware} {$MGC_HOME/pkgs/ccs_altera} {$MGC_HOME/pkgs/ccs_xilinx} {$MGC_HOME/pkgs/ccs_achronix} {$MGC_HOME/pkgs/siflibs/origami} {$MGC_HOME/pkgs/siflibs/microsemi} {$MGC_HOME/pkgs/ccs_lattice} {$MGC_HOME/pkgs/ccs_nx} {$MGC_HOME/pkgs/ccs_libs/interfaces/amba} {$MGC_HOME/pkgs/siflibs/ccs_fpga} {$MGC_HOME/shared/pkgs/ccs_hls4ml}
+# > if {$opt(reset)} {
+# >   project load LeNet5_Fixed_prj.ccs
+# >   go new
+# > } else {
+# >   project new -name LeNet5_Fixed_prj
+# > }
+# > options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > solution options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > if {$opt(vhdl)}    {
+# >   options set Output/OutputVHDL true
+# > } else {
+# >   options set Output/OutputVHDL false
+# > }
+# true
+# > if {$opt(verilog)} {
+# >   options set Output/OutputVerilog true
+# > } else {
+# >   options set Output/OutputVerilog false
+# > }
+# true
+# > if { [info exists ::env(XILINX_PCL_CACHE)] } {
+# > options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > solution options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > }
+# > catch {flow package require /HLS4ML}
+# 0
+# > flow package require /SCVerify
+# 10.4
+# > flow package option set /SCVerify/INVOKE_ARGS "$sfd/firmware/weights $sfd/tb_data/outputs/lenet5_fixed/tb_input_features.dat $sfd/tb_data/outputs/lenet5_fixed/tb_output_predictions.dat"
+# ./firmware/weights ./tb_data/outputs/lenet5_fixed/tb_input_features.dat ./tb_data/outputs/lenet5_fixed/tb_output_predictions.dat
+# > set design_top LeNet5_Fixed
+# LeNet5_Fixed
+# > solution file add $sfd/firmware/LeNet5_Fixed.cpp
+# /INPUTFILES/1
+# > solution file add $sfd/LeNet5_Fixed_test.cpp -exclude true
+# /INPUTFILES/2
+# > set IOType io_stream
+# io_stream
+# > if { ![file exists $sfd/firmware/parameters.h] } {
+# >   logfile message "Could not locate firmware/parameters.h. Unable to determine network configuration.\n" warning
+# > } else {
+# >   set pf [open "$sfd/firmware/parameters.h" "r"]
+# >   while {![eof $pf]} {
+# >     gets $pf line
+# >     if { [string match {*io_type = nnet::io_stream*} $line] } {
+# >       set IOType io_stream
+# >       break
+# >     }
+# >   }
+# >   close $pf
+# > }
+# > if { $IOType == "io_stream" } {
+# > solution options set Architectural/DefaultRegisterThreshold 2050
+# > }
+# 2050
+# > directive set -RESET_CLEARS_ALL_REGS no
+# /RESET_CLEARS_ALL_REGS no
+# > directive set -MEM_MAP_THRESHOLD [expr 2048 * 16 + 1]
+# /MEM_MAP_THRESHOLD 32769
+# > set hls_clock_period 10
+# 10
+# > go analyze
+# Info: Starting transformation 'analyze' on solution 'solution.v1' (SOL-8)
+# Creating project directory '/home/ubuntu/outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/LeNet5_Fixed_prj/'. (PRJ-1)
+# Moving session transcript to file "/home/ubuntu/outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/catapult.log"
+# Front End called with arguments: -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -- /home/ubuntu/outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/firmware/LeNet5_Fixed.cpp (CIN-69)
+# Edison Design Group C++/C Front End - Version 6.6 (CIN-1)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(8): Pragma 'hls_design<top>' detected on routine 'LeNet5_Fixed' (CIN-6)
+# $MGC_HOME/shared/include/ac_std_float.h(192): Pragma 'hls_design<>' detected on routine 'ac::fx_div<8>' (CIN-6)
+# Source file analysis completed (CIN-68)
+# Info: Completed transformation 'analyze' on solution 'solution.v1': elapsed time 10.49 seconds, memory usage 1763476kB, peak memory usage 1763476kB (SOL-9)
+# > if { ! $opt(bup) } {
+# > 
+# > go compile
+# > 
+# > if {$opt(csim)} {
+# >   puts "***** C SIMULATION *****"
+# >   set time_start [clock clicks -milliseconds]
+# >   flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osci sim
+# >   set time_end [clock clicks -milliseconds]
+# >   report_time "C SIMULATION" $time_start $time_end
+# > }
+# > 
+# > puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# > 
+# > directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDGE rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NAME rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABLE_NAME {} -ENABLE_ACTIVE high]]
+# > directive set -CLOCK_OVERHEAD 0
+# > 
+# > if {$opt(synth)} {
+# >   puts "***** C/RTL SYNTHESIS *****"
+# >   set time_start [clock clicks -milliseconds]
+# > 
+# >   go assembly
+# > 
+# >   go architect
+# > 
+# >   go allocate
+# > 
+# >   go schedule
+# > 
+# >   go extract
+# >   set time_end [clock clicks -milliseconds]
+# >   report_time "C/RTL SYNTHESIS" $time_start $time_end
+# > }
+# > 
+# > } else {
+# >   go analyze
+# > 
+# >   directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDGE rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NAME rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABLE_NAME {} -ENABLE_ACTIVE high]]
+# > directive set -CLOCK_OVERHEAD 0
+# > 
+# >   set blocks [solution get /HIERCONFIG/USER_HBS/*/RESOLVED_NAME -match glob -rec 1 -ret v -state analyze]
+# >   set bu_mappings {}
+# >   set top [lindex $blocks 0]
+# >   foreach block [lreverse [lrange $blocks 1 end]] {
+# >     if { [string match {nnet::*} $block] == 0 } { continue }
+# >     go analyze
+# >     solution design set $block -top
+# >     go compile
+# >     solution library remove *
+# >     puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# >     go extract
+# >     set block_soln "[solution get /TOP/name -checkpath 0].[solution get /VERSION -checkpath 0]"
+# >     lappend bu_mappings [solution get /CAT_DIR] /$top/$block "\[Block\] $block_soln"
+# >   }
+# > 
+# >   go analyze
+# >   solution design set $top -top
+# >   go compile
+# > 
+# >   if {$opt(csim)} {
+# >     puts "***** C SIMULATION *****"
+# >     set time_start [clock clicks -milliseconds]
+# >     flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osci sim
+# >     set time_end [clock clicks -milliseconds]
+# >     report_time "C SIMULATION" $time_start $time_end
+# >   }
+# >   foreach {d i l} $bu_mappings {
+# >     logfile message "solution options set ComponentLibs/SearchPath $d -append\n" info
+# >     solution options set ComponentLibs/SearchPath $d -append
+# >   }
+# > 
+# >   puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# >   solution library remove *
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# >   go compile
+# >   foreach {d i l} $bu_mappings {
+# >     logfile message "solution library add [list $l]\n" info
+# >     eval solution library add [list $l]
+# >   }
+# >   go libraries
+# > 
+# >   foreach {d i l} $bu_mappings {
+# >     set cnt [directive get $i/* -match glob -checkpath 0 -ret p]
+# >     if { $cnt != {} } {
+# >       logfile message "directive set $i -MAP_TO_MODULE [list $l]\n" info
+# >       eval directive set $i -MAP_TO_MODULE [list $l]
+# >     }
+# >   }
+# >   go assembly
+# >   set design [solution get -name]
+# >   logfile message "Adjusting FIFO_DEPTH for top-level interconnect channels\n" warning
+# >   foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_out:cns/MAP_TO_MODULE] {
+# >     set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# >     logfile message "directive set -match glob $ch_fifo 1\n" info
+# >     directive set -match glob "$ch_fifo" 1
+# >   }
+# >   foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_cpy*:cns/MAP_TO_MODULE] {
+# >     set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# >     logfile message "Bypass FIFO '$ch_fifo' depth set to 1 - larger value may be required to prevent deadlock\n" warning
+# >     logfile message "directive set -match glob $ch_fifo 1\n" info
+# >     directive set -match glob "$ch_fifo" 1
+# >   }
+# >   go architect
+# >   go allocate
+# >   go schedule
+# >   go dpfsm
+# >   go extract
+# > }
+# Info: Starting transformation 'compile' on solution 'LeNet5_Fixed.v1' (SOL-8)
+# Generating synthesis internal form... (CIN-3)
+# $MGC_HOME/shared/include/ac_std_float.h(196): Found design routine 'ac::fx_div<8>' specified by directive (CIN-52)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(12): Found top design routine 'LeNet5_Fixed' specified by directive (CIN-52)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(12): Synthesizing routine 'LeNet5_Fixed' (CIN-13)
+# Warning: $PROJECT_HOME/firmware/weights/w2.h(13): Instantiating global variable 'w2' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/b2.h(13): Instantiating global variable 'b2' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/w6.h(13): Instantiating global variable 'w6' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/b6.h(13): Instantiating global variable 'b6' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/w11.h(13): Instantiating global variable 'w11' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/b11.h(13): Instantiating global variable 'b11' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/w14.h(13): Instantiating global variable 'w14' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/b14.h(13): Instantiating global variable 'b14' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/w17.h(13): Instantiating global variable 'w17' which may be accessed outside this scope (CIN-18)
+# Warning: $PROJECT_HOME/firmware/weights/b17.h(13): Instantiating global variable 'b17' which may be accessed outside this scope (CIN-18)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(12): Inlining routine 'LeNet5_Fixed' (CIN-14)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(11): Pragma 'hls_resource<layer17_out:rsc>' detected, variable = 'layer17_out', module = 'ccs_ioport.ccs_out_wait' (CIN-341)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(11): Pragma 'hls_resource<layer17_out:rsc>' detected, variables = 'layer17_out', module = 'ccs_ioport.ccs_out_wait' (CIN-9)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(10): Pragma 'hls_resource<input1:rsc>' detected, variable = 'input1', module = 'ccs_ioport.ccs_in_wait' (CIN-341)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(10): Pragma 'hls_resource<input1:rsc>' detected, variables = 'input1', module = 'ccs_ioport.ccs_in_wait' (CIN-9)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(101): Inlining routine 'nnet::conv_2d_cl<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(71): Inlining routine 'nnet::conv_2d_buffer_cl<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, 32U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(258): Inlining routine 'nnet::compute_output_buffer_2d<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(222): Inlining routine 'nnet::shift_line_buffer<input_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'input1' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(109): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, 32U>::shift' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(189): Inlining routine 'nnet::kernel_shift_2d<input_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::value_type, config2::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::value_type, config2::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(29): Inlining routine 'nnet::conv_2d_encoded_cl<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(12): Inlining routine 'nnet::compute_scaled_indices_2d<input_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::scale_index_regular<5U, 1U, 32U>::scale_index' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::scale_index_K_gte_S<5U, 1U, 32U>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::scale_index_regular<5U, 1U, 32U>::scale_index' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::scale_index_K_gte_S<5U, 1U, 32U>' (CIN-14)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(24): Instantiating global variable 'pixels' which may be accessed outside this scope (CIN-18)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(129): Inlining routine 'nnet::compute_output_encoded<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'input1' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(80): Inlining routine 'nnet::mult_buffer<input_t, conv0_result_t, config2>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::value_type, config2::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::value_type, config2::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<conv0_result_t, layer4_t, relu_config4>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<38, 18, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'in_data' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<38, 18, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><38, 18, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(252): Inlining routine 'nnet::pooling2d_cl<layer4_t, layer5_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(232): Inlining routine 'nnet::pooling2d_buffer_cl<layer4_t, layer5_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 28U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(165): Inlining routine 'nnet::compute_pool_buffer_2d<layer4_t, layer5_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(222): Inlining routine 'nnet::shift_line_buffer<layer4_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'layer4_out' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(109): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 28U>::shift' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(189): Inlining routine 'nnet::kernel_shift_2d<layer4_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(17): Inlining routine 'nnet::reduce_pool<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 4, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 4, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 2, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 2, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator/<16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(130): Inlining routine 'nnet::pooling2d_encoded_cl<layer4_t, layer5_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(36): Inlining routine 'nnet::compute_pool_encoded_2d<layer4_t, layer5_t, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(29): Inlining routine 'nnet::init_pool_table<28U, 2U>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(29): Inlining routine 'nnet::init_pool_table<28U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/ac_int.h(3485): Inlining routine 'operator><4, false>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'layer4_out' (CIN-64)
+# $MGC_HOME/shared/include/ac_int.h(3486): Inlining routine 'operator==<4, false>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(17): Inlining routine 'nnet::reduce_pool<config5::accum_t, 4, config5>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 4, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 2, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 2, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator/<24, 10, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(101): Inlining routine 'nnet::conv_2d_cl<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(71): Inlining routine 'nnet::conv_2d_buffer_cl<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 14U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(258): Inlining routine 'nnet::compute_output_buffer_2d<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(222): Inlining routine 'nnet::shift_line_buffer<layer5_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'layer5_out' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(109): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 14U>::shift' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(189): Inlining routine 'nnet::kernel_shift_2d<layer5_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::value_type, config6::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::value_type, config6::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(29): Inlining routine 'nnet::conv_2d_encoded_cl<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(12): Inlining routine 'nnet::compute_scaled_indices_2d<layer5_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::scale_index_regular<5U, 1U, 14U>::scale_index' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::scale_index_K_gte_S<5U, 1U, 14U>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::scale_index_regular<5U, 1U, 14U>::scale_index' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::scale_index_K_gte_S<5U, 1U, 14U>' (CIN-14)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(24): Instantiating global variable 'pixels' which may be accessed outside this scope (CIN-18)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(129): Inlining routine 'nnet::compute_output_encoded<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::operator[]' on object 'layer5_out' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(80): Inlining routine 'nnet::mult_buffer<layer5_t, conv4_result_t, config6>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::value_type, config6::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::value_type, config6::mult_config>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<conv4_result_t, layer8_t, relu_config8>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<41, 21, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'in_data' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<41, 21, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><41, 21, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(252): Inlining routine 'nnet::pooling2d_cl<layer8_t, layer9_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(232): Inlining routine 'nnet::pooling2d_buffer_cl<layer8_t, layer9_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, 10U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(165): Inlining routine 'nnet::compute_pool_buffer_2d<layer8_t, layer9_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(222): Inlining routine 'nnet::shift_line_buffer<layer8_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'layer8_out' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(109): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, 10U>::shift' on object 'line_buffer' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(189): Inlining routine 'nnet::kernel_shift_2d<layer8_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(17): Inlining routine 'nnet::reduce_pool<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, 4, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 4, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 2, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type, 2, nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 6U>::value_type>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator/<16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(130): Inlining routine 'nnet::pooling2d_encoded_cl<layer8_t, layer9_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(36): Inlining routine 'nnet::compute_pool_encoded_2d<layer8_t, layer9_t, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(29): Inlining routine 'nnet::init_pool_table<10U, 2U>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(29): Inlining routine 'nnet::init_pool_table<10U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/ac_int.h(3485): Inlining routine 'operator><4, false>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'layer8_out' (CIN-64)
+# $MGC_HOME/shared/include/ac_int.h(3486): Inlining routine 'operator==<4, false>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(17): Inlining routine 'nnet::reduce_pool<config9::accum_t, 4, config9>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 4, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 2, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(26): Inlining routine 'nnet::reduce<config5::accum_t, 2, nnet::Op_add<config5::accum_t>>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_common.h(41): Inlining member function 'nnet::Op_add<config5::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator/<24, 10, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(26): Inlining routine 'nnet::dense<layer9_t, dense9_result_t, config11>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'data_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(13): Inlining routine 'nnet::dense_wrapper<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<42, 22, true, AC_TRN, AC_WRAP>, 120U>::value_type, config11>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<42, 22, true, AC_TRN, AC_WRAP>, 120U>::value_type, config11>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<42, 22, true, AC_TRN, AC_WRAP>, 120U>::value_type, config11>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<42, 22, true, AC_TRN, AC_WRAP>, 120U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<dense9_result_t, layer13_t, relu_config13>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<42, 22, true, AC_TRN, AC_WRAP>, 120U>::operator[]' on object 'in_data' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 120U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<42, 22, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><42, 22, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(26): Inlining routine 'nnet::dense<layer13_t, dense11_result_t, config14>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 120U>::operator[]' on object 'data_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(13): Inlining routine 'nnet::dense_wrapper<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 120U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 84U>::value_type, config14>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 120U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 84U>::value_type, config14>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 120U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 84U>::value_type, config14>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 84U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<dense11_result_t, layer16_t, relu_config16>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 84U>::operator[]' on object 'in_data' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 84U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<40, 20, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><40, 20, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(26): Inlining routine 'nnet::dense<layer16_t, result_t, config17>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 84U>::operator[]' on object 'data_pack' (CIN-64)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(13): Inlining routine 'nnet::dense_wrapper<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 84U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 10U>::value_type, config17>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 84U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 10U>::value_type, config17>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(78): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::limit' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(73): Inlining method 'nnet::product::mult<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, config2_mult::weight_t>::product' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 84U>::value_type, nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 10U>::value_type, config17>' (CIN-14)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_types.h(17): Inlining member function 'nnet::array<ac_fixed<40, 20, true, AC_TRN, AC_WRAP>, 10U>::operator[]' on object 'res_pack' (CIN-64)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(12): Optimizing block '/LeNet5_Fixed' ... (CIN-4)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(13): INOUT port 'input1' is only used as an input. (OPT-10)
+# $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(14): INOUT port 'layer17_out' is only used as an output. (OPT-11)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(0)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(1)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(2)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(3)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(4)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(5)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(6)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(7)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(8)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(9)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(10)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(11)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(12)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(13)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(14)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(15)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(16)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(17)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(18)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(19)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(20)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(21)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(22)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(23)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<input_t,conv0_result_t,config2>:data_window(24)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(0)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(1)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(2)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(3)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(4)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(5)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(6)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(7)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(8)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(9)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(10)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(11)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(12)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(13)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(14)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(15)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(16)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(17)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(18)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(19)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(20)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(21)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(22)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(23)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(24)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(25)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(26)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(27)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(28)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(29)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(30)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(31)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(32)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(33)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(34)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(35)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(36)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(37)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(38)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(39)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(40)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(41)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(42)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(43)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(44)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(45)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(46)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(47)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(48)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(49)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(50)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(51)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(52)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(53)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(54)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(55)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(56)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(57)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(58)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(59)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(60)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(61)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(62)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(63)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(64)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(65)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(66)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(67)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(68)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(69)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(70)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(71)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(72)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(73)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(74)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(75)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(76)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(77)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(78)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(79)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(80)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(81)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(82)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(83)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(84)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(85)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(86)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(87)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(88)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(89)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(90)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(91)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(92)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(93)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(94)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(95)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(96)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(97)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(98)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(99)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(100)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(101)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(102)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(103)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(104)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(105)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(106)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(107)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(108)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(109)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(110)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(111)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(112)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(113)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(114)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(115)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(116)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(117)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(118)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(119)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(120)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(121)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(122)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(123)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(124)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(125)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(126)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(127)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(128)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(129)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(130)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(131)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(132)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(133)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(134)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(135)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(136)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(137)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(138)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(139)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(140)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(141)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(142)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(143)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(144)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(145)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(146)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(147)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(148)' is never driven. (OPT-3)
+# Warning: $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(36): Channel 'nnet::conv_2d_encoded_cl<layer5_t,conv4_result_t,config6>:data_window(149)' is never driven. (OPT-3)
+# Info: Running transformation 'compile' on solution 'LeNet5_Fixed.v1': elapsed time 30.02 seconds, memory usage 2025620kB, peak memory usage 2033792kB (SOL-15)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(235): Loop '/LeNet5_Fixed/core/UpdateBuffer' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(115): Loop '/LeNet5_Fixed/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,1U>::value_type,32U>::shift:if:for' iterated at most 31 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(246): Loop '/LeNet5_Fixed/core/LineBufferShift' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(243): Loop '/LeNet5_Fixed/core/LineBufferDataIn' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(202): Loop '/LeNet5_Fixed/core/KernelShiftChannel' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(200): Loop '/LeNet5_Fixed/core/KernelShiftHeight' iterated at most 5 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(197): Loop '/LeNet5_Fixed/core/KernelShiftWidth' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(215): Loop '/LeNet5_Fixed/core/KernelPushChannel' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(213): Loop '/LeNet5_Fixed/core/KernelPushHeight' iterated at most 5 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(58): Loop '/LeNet5_Fixed/core/Product2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(55): Loop '/LeNet5_Fixed/core/Product1' iterated at most 25 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(67): Loop '/LeNet5_Fixed/core/ResetAccum' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(75): Loop '/LeNet5_Fixed/core/Accum2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(73): Loop '/LeNet5_Fixed/core/Accum1' iterated at most 25 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(83): Loop '/LeNet5_Fixed/core/Result' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(305): Loop '/LeNet5_Fixed/core/CastLoop' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(86): Loop '/LeNet5_Fixed/core/ReadInputWidth' iterated at most 32 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(84): Loop '/LeNet5_Fixed/core/ReadInputHeight' iterated at most 32 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(66): Loop '/LeNet5_Fixed/core/ReLUPackLoop' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(58): Loop '/LeNet5_Fixed/core/ReLUActLoop' iterated at most 784 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(235): Loop '/LeNet5_Fixed/core/UpdateBuffer#1' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(115): Loop '/LeNet5_Fixed/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,6U>::value_type,28U>::shift:if:for' iterated at most 27 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(246): Loop '/LeNet5_Fixed/core/LineBufferShift#1' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(243): Loop '/LeNet5_Fixed/core/LineBufferDataIn#1' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(202): Loop '/LeNet5_Fixed/core/KernelShiftChannel#1' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(200): Loop '/LeNet5_Fixed/core/KernelShiftHeight#1' iterated at most 2 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(197): Loop '/LeNet5_Fixed/core/KernelShiftWidth#1' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(215): Loop '/LeNet5_Fixed/core/KernelPushChannel#1' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(213): Loop '/LeNet5_Fixed/core/KernelPushHeight#1' iterated at most 2 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(197): Loop '/LeNet5_Fixed/core/PoolLoop' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(192): Loop '/LeNet5_Fixed/core/FiltLoop' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(243): Loop '/LeNet5_Fixed/core/ReadInputWidth#2' iterated at most 28 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(241): Loop '/LeNet5_Fixed/core/ReadInputHeight#2' iterated at most 28 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(235): Loop '/LeNet5_Fixed/core/UpdateBuffer#2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(115): Loop '/LeNet5_Fixed/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,6U>::value_type,14U>::shift:if:for' iterated at most 13 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(246): Loop '/LeNet5_Fixed/core/LineBufferShift#2' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(243): Loop '/LeNet5_Fixed/core/LineBufferDataIn#2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(202): Loop '/LeNet5_Fixed/core/KernelShiftChannel#2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(200): Loop '/LeNet5_Fixed/core/KernelShiftHeight#2' iterated at most 5 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(197): Loop '/LeNet5_Fixed/core/KernelShiftWidth#2' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(215): Loop '/LeNet5_Fixed/core/KernelPushChannel#2' iterated at most 6 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(213): Loop '/LeNet5_Fixed/core/KernelPushHeight#2' iterated at most 5 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(58): Loop '/LeNet5_Fixed/core/Product2#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(55): Loop '/LeNet5_Fixed/core/Product1#2' iterated at most 150 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(67): Loop '/LeNet5_Fixed/core/ResetAccum#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(75): Loop '/LeNet5_Fixed/core/Accum2#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(73): Loop '/LeNet5_Fixed/core/Accum1#2' iterated at most 150 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(83): Loop '/LeNet5_Fixed/core/Result#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(305): Loop '/LeNet5_Fixed/core/CastLoop#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(86): Loop '/LeNet5_Fixed/core/ReadInputWidth#4' iterated at most 14 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv2d_stream.h(84): Loop '/LeNet5_Fixed/core/ReadInputHeight#4' iterated at most 14 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(66): Loop '/LeNet5_Fixed/core/ReLUPackLoop#1' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(58): Loop '/LeNet5_Fixed/core/ReLUActLoop#1' iterated at most 100 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(235): Loop '/LeNet5_Fixed/core/UpdateBuffer#3' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/ap_shift_reg.h(115): Loop '/LeNet5_Fixed/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,16U>::value_type,10U>::shift:if:for' iterated at most 9 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(246): Loop '/LeNet5_Fixed/core/LineBufferShift#3' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(243): Loop '/LeNet5_Fixed/core/LineBufferDataIn#3' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(202): Loop '/LeNet5_Fixed/core/KernelShiftChannel#3' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(200): Loop '/LeNet5_Fixed/core/KernelShiftHeight#3' iterated at most 2 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(197): Loop '/LeNet5_Fixed/core/KernelShiftWidth#3' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(215): Loop '/LeNet5_Fixed/core/KernelPushChannel#3' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_conv_stream.h(213): Loop '/LeNet5_Fixed/core/KernelPushHeight#3' iterated at most 2 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(197): Loop '/LeNet5_Fixed/core/PoolLoop#2' iterated at most 4 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(192): Loop '/LeNet5_Fixed/core/FiltLoop#2' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(243): Loop '/LeNet5_Fixed/core/ReadInputWidth#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_pooling_stream.h(241): Loop '/LeNet5_Fixed/core/ReadInputHeight#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(44): Loop '/LeNet5_Fixed/core/DataPack' iterated at most 16 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(38): Loop '/LeNet5_Fixed/core/DataPrepare' iterated at most 25 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(58): Loop '/LeNet5_Fixed/core/Product2#4' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(55): Loop '/LeNet5_Fixed/core/Product1#4' iterated at most 400 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(67): Loop '/LeNet5_Fixed/core/ResetAccum#4' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(75): Loop '/LeNet5_Fixed/core/Accum2#4' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(73): Loop '/LeNet5_Fixed/core/Accum1#4' iterated at most 400 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(83): Loop '/LeNet5_Fixed/core/Result#4' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(62): Loop '/LeNet5_Fixed/core/ResPack' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(55): Loop '/LeNet5_Fixed/core/ResWrite' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(66): Loop '/LeNet5_Fixed/core/ReLUPackLoop#2' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(58): Loop '/LeNet5_Fixed/core/ReLUActLoop#2' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(44): Loop '/LeNet5_Fixed/core/DataPack#1' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(38): Loop '/LeNet5_Fixed/core/DataPrepare#1' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(58): Loop '/LeNet5_Fixed/core/Product2#5' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(55): Loop '/LeNet5_Fixed/core/Product1#5' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(67): Loop '/LeNet5_Fixed/core/ResetAccum#5' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(75): Loop '/LeNet5_Fixed/core/Accum2#5' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(73): Loop '/LeNet5_Fixed/core/Accum1#5' iterated at most 120 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(83): Loop '/LeNet5_Fixed/core/Result#5' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(62): Loop '/LeNet5_Fixed/core/ResPack#1' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(55): Loop '/LeNet5_Fixed/core/ResWrite#1' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(66): Loop '/LeNet5_Fixed/core/ReLUPackLoop#3' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_activation_stream.h(58): Loop '/LeNet5_Fixed/core/ReLUActLoop#3' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(44): Loop '/LeNet5_Fixed/core/DataPack#2' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(38): Loop '/LeNet5_Fixed/core/DataPrepare#2' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(58): Loop '/LeNet5_Fixed/core/Product2#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(55): Loop '/LeNet5_Fixed/core/Product1#6' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(67): Loop '/LeNet5_Fixed/core/ResetAccum#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(75): Loop '/LeNet5_Fixed/core/Accum2#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(73): Loop '/LeNet5_Fixed/core/Accum1#6' iterated at most 84 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(83): Loop '/LeNet5_Fixed/core/Result#6' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(62): Loop '/LeNet5_Fixed/core/ResPack#2' iterated at most 10 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_stream.h(55): Loop '/LeNet5_Fixed/core/ResWrite#2' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(68): Detected constant initialization of array 'nnet::dense_latency<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,1U>::value_type,nnet::array<ac_fixed<38,18,true,AC_TRN,AC_WRAP>,6U>::value_type,config2::mult_config>:do:acc', optimizing loop 'ResetAccum' (LOOP-12)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(68): Detected constant initialization of array 'nnet::dense_latency<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,6U>::value_type,nnet::array<ac_fixed<41,21,true,AC_TRN,AC_WRAP>,16U>::value_type,config6::mult_config>:do:acc', optimizing loop 'ResetAccum#2' (LOOP-12)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(68): Detected constant initialization of array 'nnet::dense_latency<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,16U>::value_type,nnet::array<ac_fixed<42,22,true,AC_TRN,AC_WRAP>,120U>::value_type,config11>:do:acc', optimizing loop 'ResetAccum#4' (LOOP-12)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(68): Detected constant initialization of array 'nnet::dense_latency<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,120U>::value_type,nnet::array<ac_fixed<40,20,true,AC_TRN,AC_WRAP>,84U>::value_type,config14>:do:acc', optimizing loop 'ResetAccum#5' (LOOP-12)
+# $PROJECT_HOME/firmware/nnet_utils/nnet_dense_latency.h(68): Detected constant initialization of array 'nnet::dense_latency<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,84U>::value_type,nnet::array<ac_fixed<40,20,true,AC_TRN,AC_WRAP>,10U>::value_type,config17>:do:acc', optimizing loop 'ResetAccum#6' (LOOP-12)
+# Warning: $PROJECT_HOME/firmware/weights/w2.h(13): Reducing the number of bits used to represent array elements of 'w2.rom', from '16' bits to '11' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DISABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, INTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if used) may be incompatible. Please review the applicable constraint settings to get the desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/weights/w6.h(13): Reducing the number of bits used to represent array elements of 'w6.rom', from '16' bits to '11' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DISABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, INTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if used) may be incompatible. Please review the applicable constraint settings to get the desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/weights/w11.h(13): Reducing the number of bits used to represent array elements of 'w11.rom', from '16' bits to '10' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DISABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, INTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if used) may be incompatible. Please review the applicable constraint settings to get the desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/weights/w14.h(13): Reducing the number of bits used to represent array elements of 'w14.rom', from '16' bits to '10' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DISABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, INTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if used) may be incompatible. Please review the applicable constraint settings to get the desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/weights/w17.h(13): Reducing the number of bits used to represent array elements of 'w17.rom', from '16' bits to '10' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DISABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, INTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if used) may be incompatible. Please review the applicable constraint settings to get the desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(46): Channel '/LeNet5_Fixed/layer2_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(51): Channel '/LeNet5_Fixed/layer4_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(56): Channel '/LeNet5_Fixed/layer5_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(61): Channel '/LeNet5_Fixed/layer6_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(66): Channel '/LeNet5_Fixed/layer8_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(71): Channel '/LeNet5_Fixed/layer9_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(77): Channel '/LeNet5_Fixed/layer11_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(82): Channel '/LeNet5_Fixed/layer13_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(87): Channel '/LeNet5_Fixed/layer14_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Warning: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(92): Channel '/LeNet5_Fixed/layer16_out' (in '/LeNet5_Fixed/core') does not cross a hierarchical boundary and can create deadlocks. Downgrade message to warning if desired (HIER-10)
+# Design 'LeNet5_Fixed' was read (SOL-1)
+# Makefile for Original Design + Testbench written to file './scverify/Verify_orig_cxx_osci.mk'
+# Info: CDesignChecker Shell script written to '/home/ubuntu/outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/LeNet5_Fixed_prj/LeNet5_Fixed.v1/CDesignChecker/design_checker.sh'
+# Info: Completed transformation 'compile' on solution 'LeNet5_Fixed.v1': elapsed time 51.01 seconds, memory usage 2025620kB, peak memory usage 2033792kB (SOL-9)
+# Info: Design complexity at end of 'compile': Total ops = 1264, Real ops = 322, Vars = 221 (SOL-21)
+# ***** SETTING TECHNOLOGY LIBRARIES *****
+# Library Name: mgc_Xilinx-KINTEX-u-2_beh
+# Library Path: /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/KINTEX-u/PARAMETERS/-2/PARAMETERS/xcku115-flvb2104-2-i/LIBRARIES/123/NAME
+# ***** C/RTL SYNTHESIS *****
+# Info: Starting transformation 'libraries' on solution 'LeNet5_Fixed.v1' (SOL-8)
+# Info: Please set ComponentLibs/TechLibSearchPath to enable flows that use downstream synthesis tools (LIB-220)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_busdefs.lib' [mgc_busdefs]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/stdops.lib' [STDOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/fpops.lib' [FPOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_dw_ops.lib' [CCS_DW_OPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_ioport.lib' [ccs_ioport]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_ioport.lib' [mgc_ioport]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_ops.lib' [ASSERT_OPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_mods.lib' [assert_mods]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_connections.lib' [ccs_connections]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/mgc_Xilinx-KINTEX-u-2_beh.lib' [mgc_Xilinx-KINTEX-u-2_beh]... (LIB-49)
+# Warning: Detected an old component library 'mgc_Xilinx-KINTEX-u-2_beh' - it is recommended that the user update this component library to the latest version. It can be done by reading this old component library in Catapult Library Builder (2025.3/1218503 or later) and saving the library into the target file. (LIB-82)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_RAMS.lib' [Xilinx_RAMS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_ROMS.lib' [Xilinx_ROMS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_FIFO.lib' [Xilinx_FIFO]... (LIB-49)
+# Info: Completed transformation 'libraries' on solution 'LeNet5_Fixed.v1': elapsed time 1.45 seconds, memory usage 2025620kB, peak memory usage 2033792kB (SOL-9)
+# Info: Design complexity at end of 'libraries': Total ops = 1264, Real ops = 322, Vars = 221 (SOL-21)
+# Info: Starting transformation 'assembly' on solution 'LeNet5_Fixed.v1' (SOL-8)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(46): Using Channel 'layer2_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(51): Using Channel 'layer4_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(56): Using Channel 'layer5_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(61): Using Channel 'layer6_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(66): Using Channel 'layer8_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(71): Using Channel 'layer9_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(77): Using Channel 'layer11_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(82): Using Channel 'layer13_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(87): Using Channel 'layer14_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(92): Using Channel 'layer16_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(46): Using Channel 'layer2_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(51): Using Channel 'layer4_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(56): Using Channel 'layer5_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(61): Using Channel 'layer6_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(66): Using Channel 'layer8_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(71): Using Channel 'layer9_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(77): Using Channel 'layer11_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(82): Using Channel 'layer13_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(87): Using Channel 'layer14_out' as both input and output is unsupported. (HIER-11)
+# Error: $PROJECT_HOME/firmware/LeNet5_Fixed.cpp(92): Using Channel 'layer16_out' as both input and output is unsupported. (HIER-11)
+# Info: Completed transformation 'libraries' on solution 'LeNet5_Fixed.v1': elapsed time 7.41 seconds, memory usage 2025620kB, peak memory usage 2033792kB (SOL-9)
+# Info: Design complexity at end of 'libraries': Total ops = 1279, Real ops = 323, Vars = 237 (SOL-21)
+# > end dofile ./build_prj.tcl
+# Error: go: Transformation 'assembly' failed
+
+  Synthesis error: could not determine a constructor for the tag '!keras_model'
+  in "outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test/hls4ml_config.yml", line 188, column 13
+
+  Run manually:
+    cd outputs/lenet5_fixed/LeNet5_Fixed-Catapult-test
+    catapult -shell -f build_prj.tcl
+
+============================================================
+Summary
+============================================================
+Output directory: outputs/lenet5_fixed
+Synthesis: COMPLETED
+
+============================================================
+Done!
+============================================================
+ubuntu@ip-10-10-8-216:~$ 
+

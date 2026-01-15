@@ -1,0 +1,724 @@
+ubuntu@ip-10-10-8-216:~/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_5/SimpleCNN.v1$ cd ~/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_5/SimpleCNN.v1
+
+# Set the MODEL_TECH variable that the Makefile uses
+export MODEL_TECH=$MTI_HOME/linux_x86_64
+
+# Run the RTL vs C++ verification
+make -f ./scverify/Verify_rtl_v_msim.mk SIMTOOL=msim sim
+/data/tools/catapult/Mgc_home/shared/include/mkfiles/ccs_questasim.mk:65: Using VOPT_ARGS_LEGACY flow option setting to override VOPT_ARGS
+QuestaSIM legacy VOPT options set to: +acc=anpr
+/data/tools/catapult/Mgc_home/shared/include/mkfiles/ccs_questasim.mk:238: Warning: Using QuestaSim on Ubuntu requires -B/usr/bin link argument
+============================================
+Creating simulation directory 'scverify/rtl_v_msim'
+mkdir -p scverify/rtl_v_msim
+============================================
+Setting up default modelsim.ini file from '/data/tools/questa/questasim/linux_x86_64/../modelsim.ini'
+cat "/data/tools/questa/questasim/linux_x86_64/../modelsim.ini" >scverify/rtl_v_msim/modelsim.ini
+============================================
+Creating physical library 'scverify/rtl_v_msim/mgc_hls'
+/data/tools/questa/questasim/linux_x86_64/vlib scverify/rtl_v_msim/mgc_hls
+============================================
+Mapping logical library 'mgc_hls' to physical path '$SCVLIBS/scverify/rtl_v_msim/mgc_hls'
+/data/tools/questa/questasim/linux_x86_64/vmap mgc_hls \$SCVLIBS/scverify/rtl_v_msim/mgc_hls
+QuestaSim-64 vmap 2025.1_2 Lib Mapping Utility 2025.04 Apr  7 2025
+vmap mgc_hls $SCVLIBS/scverify/rtl_v_msim/mgc_hls 
+Modifying scverify/rtl_v_msim/modelsim.ini
+============================================
+Creating physical library 'scverify/rtl_v_msim/work'
+/data/tools/questa/questasim/linux_x86_64/vlib scverify/rtl_v_msim/work
+============================================
+Mapping logical library 'work' to physical path '$SCVLIBS/scverify/rtl_v_msim/work'
+/data/tools/questa/questasim/linux_x86_64/vmap work \$SCVLIBS/scverify/rtl_v_msim/work
+QuestaSim-64 vmap 2025.1_2 Lib Mapping Utility 2025.04 Apr  7 2025
+vmap work $SCVLIBS/scverify/rtl_v_msim/work 
+Modifying scverify/rtl_v_msim/modelsim.ini
+============================================
+Creating Questa SIM wave TCL file 'scverify/rtl_v_msim/scverify_msim_wave.tcl' from 'scverify/ccs_wave_signals.dat'
+/data/tools/catapult/Mgc_home/bin/tclsh8.5 /data/tools/catapult/Mgc_home/pkgs/sif/userware/En_na/flows/app_questasim.flo create_wave_script ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/ccs_wave_signals.dat scverify/rtl_v_msim/scverify_msim_wave.tcl ./SimpleCNN_prj_5/SimpleCNN.v1/.dut_inst_info.tcl ./SimpleCNN_prj_5/SimpleCNN.v1/.qwave_signal 
+app_questasim.flo - Executing command 'create_wave_script ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/ccs_wave_signals.dat scverify/rtl_v_msim/scverify_msim_wave.tcl ./SimpleCNN_prj_5/SimpleCNN.v1/.dut_inst_info.tcl ./SimpleCNN_prj_5/SimpleCNN.v1/.qwave_signal'...
+Wrote Questa SIM waveform creation script to 'scverify/rtl_v_msim/scverify_msim_wave.tcl'
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_wait_v1.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_wait_v1.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_wait_v1.v 
+-- Compiling module ccs_in_wait_v1
+
+Top level modules:
+	ccs_in_wait_v1
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_out_wait_v1.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_out_wait_v1.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_out_wait_v1.v 
+-- Compiling module ccs_out_wait_v1
+
+Top level modules:
+	ccs_out_wait_v1
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/mgc_io_sync_v2.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/mgc_io_sync_v2.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/mgc_io_sync_v2.v 
+-- Compiling module mgc_io_sync_v2
+
+Top level modules:
+	mgc_io_sync_v2
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_v1.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_v1.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_in_v1.v 
+-- Compiling module ccs_in_v1
+
+Top level modules:
+	ccs_in_v1
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_genreg_v1.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_genreg_v1.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_genreg_v1.v 
+-- Compiling module ccs_genreg_v1
+
+Top level modules:
+	ccs_genreg_v1
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_fifo_wait_core_v5.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_fifo_wait_core_v5.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_fifo_wait_core_v5.v 
+-- Compiling module ccs_fifo_wait_core_v5
+
+Top level modules:
+	ccs_fifo_wait_core_v5
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_pipe_v6.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work mgc_hls     /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_pipe_v6.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work mgc_hls /data/tools/catapult/Mgc_home/pkgs/siflibs/ccs_pipe_v6.v 
+-- Compiling module ccs_pipe_v6
+
+Top level modules:
+	ccs_pipe_v6
+End time: 02:11:46 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: rtl_SimpleCNNmgc_rom_sync_59_50176_16_1_896.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work work     rtl_SimpleCNNmgc_rom_sync_59_50176_16_1_896.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:46 on Dec 05,2025
+vlog -work work rtl_SimpleCNNmgc_rom_sync_59_50176_16_1_896.v 
+-- Compiling module SimpleCNNmgc_rom_sync_59_50176_16_1_896
+
+Top level modules:
+	SimpleCNNmgc_rom_sync_59_50176_16_1_896
+End time: 02:11:47 on Dec 05,2025, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: rtl.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work work     rtl.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:47 on Dec 05,2025
+vlog -work work rtl.v 
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_core_fsm
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_staller
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_dp
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_dp
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_core_fsm
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_staller
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_dp
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_dp
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_core_fsm
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_staller
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_dp
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_dp
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_core_fsm
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_staller
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_dp
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_dp
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_core_fsm
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_staller
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_dp
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_dp
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_core_fsm
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_staller
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_dp
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_dp
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_core_fsm
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_staller
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_dp
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_dp
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_core_fsm
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_staller
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_dp
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_dp
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_Xilinx_ROMS_mgc_rom_sync_roport_59_50176_16_1_896_gen
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_staller
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_dp
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_ctrl
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_dp
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_ctrl
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_dp
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_ctrl
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_core_fsm
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_staller
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_dp
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_ctrl
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_dp
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_ctrl
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_core_fsm
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_staller
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_dp
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_ctrl
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_dp
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_ctrl
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2_core
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5_core
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10_core
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13_core
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15_core
+-- Compiling module nnet_dense_layer15_t_result_t_config16_core
+-- Compiling module nnet_zeropad2d_cl_input_t_layer2_t_config2
+-- Compiling module nnet_conv_2d_cl_layer2_t_layer3_t_config3
+-- Compiling module nnet_relu_layer3_t_layer5_t_relu_config5
+-- Compiling module nnet_pooling2d_cl_layer5_t_layer6_t_config6
+-- Compiling module nnet_zeropad2d_cl_layer6_t_layer7_t_config7
+-- Compiling module nnet_conv_2d_cl_layer7_t_layer8_t_config8
+-- Compiling module nnet_relu_layer8_t_layer10_t_relu_config10
+-- Compiling module nnet_pooling2d_cl_layer10_t_layer11_t_config11
+-- Compiling module nnet_dense_layer11_t_layer13_t_config13
+-- Compiling module nnet_relu_layer13_t_layer15_t_relu_config15
+-- Compiling module nnet_dense_layer15_t_result_t_config16
+-- Compiling module SimpleCNN_struct
+-- Compiling module SimpleCNN
+
+Top level modules:
+	SimpleCNN
+End time: 02:11:48 on Dec 05,2025, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0
+============================================
+Compiling Verilog file: scverify/ccs_wrapper_SimpleCNN.v
+/data/tools/questa/questasim/linux_x86_64/vlog -work work     scverify/ccs_wrapper_SimpleCNN.v
+QuestaSim-64 vlog 2025.1_2 Compiler 2025.04 Apr  7 2025
+Start time: 02:11:48 on Dec 05,2025
+vlog -work work scverify/ccs_wrapper_SimpleCNN.v 
+-- Compiling module ccs_wrapper
+
+Top level modules:
+	ccs_wrapper
+End time: 02:11:48 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Compiling C++ file: ../../firmware/SimpleCNN.cpp
+/data/tools/questa/questasim/linux_x86_64/sccom -g -x c++ -Wall -Wno-unused-label -Wno-unknown-pragmas -scpoptions "--c++17" -DCCS_SCVERIFY_USE_CCS_BLOCK -DCCS_DUT_RTL -DCCS_DUT_VERILOG -DRANDOM_FRAMES=2 -DCCS_SCVERIFY -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -DTOP_HDL_ENTITY=SimpleCNN -DCCS_DESIGN_FUNC_SimpleCNN -DCCS_DESIGN_TOP_SimpleCNN -DCCS_MISMATCHED_OUTPUTS_ONLY  -DDEADLOCK_DETECTION -std=gnu++17 -Wno-register -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I/data/tools/catapult/Mgc_home/shared/include -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/src -I/data/tools/catapult/Mgc_home/pkgs/siflibs -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DUSE_STD_STRING -DSC_INCLUDE_MTI_AC  -c ../../firmware/SimpleCNN.cpp
+Start time: 02:11:48 on Dec 05,2025
+
+QuestaSim-64 sccom 2025.1_2 compiler 2025.04 Apr  7 2025
+
+In file included from ../../firmware/parameters.h:11,
+                 from ../../firmware/SimpleCNN.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h: In function 'void nnet::leaky_relu_packed(ac_channel<T>&, param_T, ac_channel<res_T>&)':
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h:263:46: warning: typedef 'out_base_t' locally defined but not used [-Wunused-local-typedefs]
+  263 |     typedef typename out_vector_t::base_type out_base_t;
+      |                                              ^~~~~~~~~~
+In file included from ../../firmware/parameters.h:20,
+                 from ../../firmware/SimpleCNN.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling_stream.h: In instantiation of 'void nnet::pooling2d_cl(ac_channel<T>&, ac_channel<dstType>&) [with data_T = nnet::array<mti_ac::ac_fixed<16, 6, true>, 8>; res_T = nnet::array<mti_ac::ac_fixed<16, 6, true>, 8>; CONFIG_T = config6]':
+../../firmware/SimpleCNN.cpp:77:75:   required from here
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling_stream.h:238:5: warning: enumeration value 'ac_window' not handled in switch [-Wswitch]
+  238 |     switch (CONFIG_T::implementation) {
+      |     ^~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling_stream.h: In instantiation of 'void nnet::pooling2d_cl(ac_channel<T>&, ac_channel<dstType>&) [with data_T = nnet::array<mti_ac::ac_fixed<16, 6, true>, 16>; res_T = nnet::array<mti_ac::ac_fixed<16, 6, true>, 16>; CONFIG_T = config11]':
+../../firmware/SimpleCNN.cpp:97:80:   required from here
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling_stream.h:238:5: warning: enumeration value 'ac_window' not handled in switch [-Wswitch]
+End time: 02:11:53 on Dec 05,2025, Elapsed time: 0:00:05
+Errors: 0, Warnings: 3
+============================================
+Compiling C++ file: ../../SimpleCNN_test.cpp
+/data/tools/questa/questasim/linux_x86_64/sccom -g -x c++ -Wall -Wno-unused-label -Wno-unknown-pragmas -scpoptions "--c++17" -DCCS_SCVERIFY_USE_CCS_BLOCK -DCCS_DUT_RTL -DCCS_DUT_VERILOG -DRANDOM_FRAMES=2 -DCCS_SCVERIFY -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -DTOP_HDL_ENTITY=SimpleCNN -DCCS_DESIGN_FUNC_SimpleCNN -DCCS_DESIGN_TOP_SimpleCNN -DCCS_MISMATCHED_OUTPUTS_ONLY  -DDEADLOCK_DETECTION -std=gnu++17 -Wno-register -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I/data/tools/catapult/Mgc_home/shared/include -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/src -I/data/tools/catapult/Mgc_home/pkgs/siflibs -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DUSE_STD_STRING -DSC_INCLUDE_MTI_AC  -c ../../SimpleCNN_test.cpp
+Start time: 02:11:53 on Dec 05,2025
+
+QuestaSim-64 sccom 2025.1_2 compiler 2025.04 Apr  7 2025
+End time: 02:11:56 on Dec 05,2025, Elapsed time: 0:00:03
+Errors: 0, Warnings: 0
+============================================
+Compiling C++ file: scverify/mc_testbench.cpp
+/data/tools/questa/questasim/linux_x86_64/sccom -g -x c++ -Wall -Wno-unused-label -Wno-unknown-pragmas -scpoptions "--c++17" -DCCS_SCVERIFY_USE_CCS_BLOCK -DCCS_DUT_RTL -DCCS_DUT_VERILOG -DRANDOM_FRAMES=2 -DCCS_SCVERIFY -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -DTOP_HDL_ENTITY=SimpleCNN -DCCS_DESIGN_FUNC_SimpleCNN -DCCS_DESIGN_TOP_SimpleCNN -DCCS_MISMATCHED_OUTPUTS_ONLY  -DDEADLOCK_DETECTION -std=gnu++17 -Wno-register -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I/data/tools/catapult/Mgc_home/shared/include -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/src -I/data/tools/catapult/Mgc_home/pkgs/siflibs -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DUSE_STD_STRING -DSC_INCLUDE_MTI_AC  -c scverify/mc_testbench.cpp
+Start time: 02:11:56 on Dec 05,2025
+
+QuestaSim-64 sccom 2025.1_2 compiler 2025.04 Apr  7 2025
+
+In file included from ./../../firmware/parameters.h:11,
+                 from scverify/mc_testbench.h:33,
+                 from scverify/mc_testbench.cpp:18:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h: In function 'void nnet::leaky_relu_packed(ac_channel<T>&, param_T, ac_channel<res_T>&)':
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h:263:46: warning: typedef 'out_base_t' locally defined but not used [-Wunused-local-typedefs]
+  263 |     typedef typename out_vector_t::base_type out_base_t;
+      |                                              ^~~~~~~~~~
+End time: 02:12:00 on Dec 05,2025, Elapsed time: 0:00:04
+Errors: 0, Warnings: 1
+============================================
+Compiling C++ file: scverify/scverify_top.cpp
+/data/tools/questa/questasim/linux_x86_64/sccom -g -x c++ -Wall -Wno-unused-label -Wno-unknown-pragmas -scpoptions "--c++17" -DCCS_SCVERIFY_USE_CCS_BLOCK -DCCS_DUT_RTL -DCCS_DUT_VERILOG -DRANDOM_FRAMES=2 -DCCS_SCVERIFY -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -DTOP_HDL_ENTITY=SimpleCNN -DCCS_DESIGN_FUNC_SimpleCNN -DCCS_DESIGN_TOP_SimpleCNN -DCCS_MISMATCHED_OUTPUTS_ONLY  -DDEADLOCK_DETECTION -std=gnu++17 -Wno-register -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I./scverify -I. -I../.. -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -I/data/tools/catapult/Mgc_home/shared/include -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/src -I/data/tools/catapult/Mgc_home/pkgs/siflibs -I/data/tools/catapult/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DUSE_STD_STRING -DSC_INCLUDE_MTI_AC  -c scverify/scverify_top.cpp
+Start time: 02:12:00 on Dec 05,2025
+
+QuestaSim-64 sccom 2025.1_2 compiler 2025.04 Apr  7 2025
+
+In file included from ./../../firmware/parameters.h:11,
+                 from scverify/mc_testbench.h:33,
+                 from scverify/scverify_top.cpp:4:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h: In function 'void nnet::leaky_relu_packed(ac_channel<T>&, param_T, ac_channel<res_T>&)':
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_activation_stream.h:263:46: warning: typedef 'out_base_t' locally defined but not used [-Wunused-local-typedefs]
+  263 |     typedef typename out_vector_t::base_type out_base_t;
+      |                                              ^~~~~~~~~~
+
+Exported modules:
+	scverify_top
+** Warning: (sccom-6102) The object "_data" is not debuggable. (/data/tools/catapult/Mgc_home/shared/include/mc_monitor.h, 144)
+End time: 02:12:08 on Dec 05,2025, Elapsed time: 0:00:08
+Errors: 0, Warnings: 2
+============================================
+Linking executable
+/data/tools/questa/questasim/linux_x86_64/sccom -link   
+sccom -link 
+Start time: 02:12:08 on Dec 05,2025
+
+QuestaSim-64 sccom 2025.1_2 compiler 2025.04 Apr  7 2025
+End time: 02:12:08 on Dec 05,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+============================================
+Optimizing design: scverify_top
+cd ../..; /data/tools/questa/questasim/linux_x86_64/vopt +acc=anpr -sc_arg ./firmware/weights -sc_arg ./tb_data/tb_input_features.dat -sc_arg ./tb_data/tb_output_predictions.dat -sc_arg 0.0   -L "./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls" -L "./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/work"  scverify_top  -o scverify_top_opt
+QuestaSim-64 vopt 2025.1_2 Compiler 2025.04 Apr  7 2025
+** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility. The +acc switch would be deprecated in a future release.
+Start time: 02:12:08 on Dec 05,2025
+vopt "+acc=anpr" -sc_arg "./firmware/weights" -sc_arg "./tb_data/tb_input_features.dat" -sc_arg "./tb_data/tb_output_predictions.dat" -sc_arg "0.0" -L ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls -L ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/work scverify_top -o scverify_top_opt 
+
+Top level modules:
+	scverify_top
+
+Analyzing design...
+-- Loading shared library /home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/work/_sc/linux_x86_64_gcc-10.3.0/systemc.so
+-- Loading systemc module /home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/work.scverify_top
+Info: CCS_CLK_CTOR: Clock 'clk' - Using default clock period '10 ns'
+-- Loading module ccs_wrapper
+-- Loading module SimpleCNN
+-- Loading module SimpleCNN_struct
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5
+-- Loading module SimpleCNNmgc_rom_sync_59_50176_16_1_896
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_dp
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_dp
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_staller
+-- Loading module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_core_fsm
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_dp
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_dp
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.mgc_io_sync_v2
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_staller
+-- Loading module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_core_fsm
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_dp
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_dp
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_staller
+-- Loading module nnet_relu_layer3_t_layer5_t_relu_config5_core_core_fsm
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_dp
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_dp
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_staller
+-- Loading module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_core_fsm
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_dp
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_dp
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_staller
+-- Loading module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_core_fsm
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_dp
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_dp
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_staller
+-- Loading module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_core_fsm
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_dp
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_dp
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_staller
+-- Loading module nnet_relu_layer8_t_layer10_t_relu_config10_core_core_fsm
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_dp
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_dp
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_staller
+-- Loading module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_core_fsm
+-- Loading module nnet_dense_layer11_t_layer13_t_config13
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_Xilinx_ROMS_mgc_rom_sync_roport_59_50176_16_1_896_gen
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_ctrl
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_dp
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_ctrl
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_dp
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_ctrl
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_dp
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Loading module nnet_dense_layer11_t_layer13_t_config13_core_staller
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_ctrl
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_dp
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_ctrl
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_dp
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_staller
+-- Loading module nnet_relu_layer13_t_layer15_t_relu_config15_core_core_fsm
+-- Loading module nnet_dense_layer15_t_result_t_config16
+-- Loading module nnet_dense_layer15_t_result_t_config16_core
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_ctrl
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_dp
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_ctrl
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_dp
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj_weights_triosy_wait_ctrl
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj_biases_triosy_wait_ctrl
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_staller
+-- Loading module nnet_dense_layer15_t_result_t_config16_core_core_fsm
+-- Loading module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1
+Optimizing 189 design-units (inlining 0/1152 module instances, 0/11 systemc instances):
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_staller(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_staller(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_staller(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.mgc_io_sync_v2(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_staller(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_staller(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_staller(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_staller(fast)
+-- Optimizing module SimpleCNN(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15(fast)
+-- Optimizing module ccs_wrapper(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_Xilinx_ROMS_mgc_rom_sync_roport_59_50176_16_1_896_gen(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__1)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__4)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__5)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_v1(fast__6)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_weights_triosy_obj_weights_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_biases_triosy_obj_biases_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_weights_triosy_obj_weights_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_biases_triosy_obj_biases_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_weights_triosy_obj_weights_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_biases_triosy_obj_biases_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_weights_triosy_obj_weights_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_biases_triosy_obj_biases_triosy_wait_ctrl(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_staller(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_staller(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_staller(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_staller(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_core_fsm(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_res_stream_rsci_res_stream_wait_dp(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci_res_wait_dp(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_res_stream_rsci_res_stream_wait_dp(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__1)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__1)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__4)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__4)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__5)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__5)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__6)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__6)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__7)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__7)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__8)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__8)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__9)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__9)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_in_wait_v1(fast__10)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_out_wait_v1(fast__10)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_ctrl(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci_res_wait_ctrl(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1_weights_rsc_wait_dp(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__5)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__7)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__1)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__4)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_weights_rsci_1(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__6)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__8)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_fifo_wait_core_v5(fast__9)
+-- Optimizing module SimpleCNN_struct(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast__1)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast__4)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast__5)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_genreg_v1(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_res_rsci(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_core_fsm(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_core_fsm(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__1)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__2)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__3)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__4)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__5)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__6)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__7)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__8)
+-- Optimizing module ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls.ccs_pipe_v6(fast__9)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_zeropad2d_cl_layer6_t_layer7_t_config7_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core_data_stream_rsci_data_stream_wait_dp(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_data_rsci_data_wait_dp(fast)
+-- Optimizing module nnet_dense_layer15_t_result_t_config16_core_data_stream_rsci_data_stream_wait_dp(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_res_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_core_fsm(fast)
+-- Optimizing module nnet_conv_2d_cl_layer7_t_layer8_t_config8_core_core_fsm(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_res_rsci(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_core_fsm(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_core_fsm(fast)
+-- Optimizing module nnet_relu_layer8_t_layer10_t_relu_config10_core_core_fsm(fast)
+-- Optimizing module nnet_pooling2d_cl_layer10_t_layer11_t_config11_core_core_fsm(fast)
+-- Optimizing module nnet_relu_layer13_t_layer15_t_relu_config15_core_core_fsm(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13(fast)
+-- Optimizing module nnet_zeropad2d_cl_input_t_layer2_t_config2_core_data_rsci(fast)
+-- Optimizing module nnet_conv_2d_cl_layer2_t_layer3_t_config3_core_data_rsci(fast)
+-- Optimizing module nnet_relu_layer3_t_layer5_t_relu_config5_core_data_rsci(fast)
+-- Optimizing module nnet_pooling2d_cl_layer5_t_layer6_t_config6_core_data_rsci(fast)
+-- Optimizing module SimpleCNNmgc_rom_sync_59_50176_16_1_896(fast)
+-- Optimizing module nnet_dense_layer11_t_layer13_t_config13_core(fast)
+Optimized design name is scverify_top_opt
+End time: 02:13:12 on Dec 05,2025, Elapsed time: 0:01:04
+Errors: 0, Warnings: 1, Suppressed Warnings: 1
+============================================
+Simulating design entity: scverify_top
+cd ../..; /data/tools/questa/questasim/linux_x86_64/vsim -t ps -wlf ./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/vsim.wlf -l "./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/sim.log"   -L "./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/mgc_hls" -L "./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/work"  scverify_top_opt   -sc_arg ./firmware/weights -sc_arg ./tb_data/tb_input_features.dat -sc_arg ./tb_data/tb_output_predictions.dat -sc_arg 0.0 -c -do "do {./SimpleCNN_prj_5/SimpleCNN.v1/scverify/rtl_v_msim/scverify_msim_wave.tcl}"
+Unable to find the license file.  It appears that your license file environment variable (SALT_LICENSE_SERVER) is not set correctly.
+Unable to checkout a license.  Vsim is closing.
+** Error: Invalid license environment. Application closing.
+make: *** [/data/tools/catapult/Mgc_home/shared/include/mkfiles/ccs_questasim.mk:638: sim] Error 4
+ubuntu@ip-10-10-8-216:~/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_5/SimpleCNN.v1$ 
+

@@ -1,0 +1,7 @@
+{
+    "project_name": "GeneratedTestModel",
+    "image_path": "C:/Users/Ahmed hosam/Desktop/grad/Application-Specific-Deep-Learning-Accelerator-Designer/src/Test_Images/7144_4.jpg",
+    "weights_path": "C:/Users/Ahmed hosam/Desktop/grad/Application-Specific-Deep-Learning-Accelerator-Designer/src/Test_Images/best_ckpt.pth",
+    "hgd_ckpt_path": "C:/Users/Ahmed hosam/Desktop/grad/Application-Specific-Deep-Learning-Accelerator-Designer/weights/Defense.pt",
+    "class_names_path": "C:/Users/Ahmed hosam/Desktop/grad/Application-Specific-Deep-Learning-Accelerator-Designer/src/Test_Images/config.txt"
+}

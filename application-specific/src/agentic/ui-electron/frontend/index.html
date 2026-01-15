@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:5000 ws://localhost:5000">
+    <title>Siemens Neural Network Generator</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <img src="assets/siemens-logo.png" alt="Siemens" class="siemens-logo">
+                <div class="header-divider"></div>
+                <h1>Neural Network Generator</h1>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
+                </button>
+                <span class="status-badge" id="connection-status">Connecting...</span>
+                <span class="session-id" id="session-id"></span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Chat -->
+            <div class="left-panel">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Welcome message -->
+                        <div class="message-wrapper assistant-message">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="assistant-label">Neural Network Generator</span>
+                                </div>
+                                <div class="message-text">
+                                    <p>Hello! I'm your Neural Network Generator assistant, powered by Siemens technology.</p>
+                                    <p>I can help you with:</p>
+                                    <ul>
+                                        <li>Creating and managing projects</li>
+                                        <li>Designing neural network architectures</li>
+                                        <li>Configuring training parameters</li>
+                                        <li>Generating PyTorch code</li>
+                                        <li>Training and evaluating models</li>
+                                    </ul>
+                                    <p>What would you like to build today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input 
+                            type="file" 
+                            id="image-upload" 
+                            accept="image/*" 
+                            style="display: none;"
+                        />
+                        <button class="btn-upload" id="btn-upload" title="Upload is enabled when testing a trained model" disabled>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                            </svg>
+                        </button>
+                        <textarea 
+                            id="message-input" 
+                            placeholder="Message Neural Network Generator..." 
+                            rows="1"
+                            autocomplete="off"
+                        ></textarea>
+                        <button class="btn-send" id="btn-send">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Tabs -->
+            <div class="right-panel">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="graph">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M1.5 1.5A.5.5 0 012 1h12a.5.5 0 01.5.5v2a.5.5 0 01-.128.334L10 8.692V13.5a.5.5 0 01-.342.474l-3 1A.5.5 0 016 14.5V8.692L1.628 3.834A.5.5 0 011.5 3.5v-2z"/>
+                        </svg>
+                        Graph
+                    </button>
+                    <button class="tab-button" data-tab="state">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zM2.5 2a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zm6.5.5A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zM1 10.5A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3zm6.5.5A1.5 1.5 0 0110.5 9h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 019 13.5v-3zm1.5-.5a.5.5 0 00-.5.5v3a.5.5 0 00.5.5h3a.5.5 0 00.5-.5v-3a.5.5 0 00-.5-.5h-3z"/>
+                        </svg>
+                        State
+                    </button>
+                </div>
+
+                <!-- Graph Tab -->
+                <div class="tab-content active" id="tab-graph">
+                    <div class="graph-controls">
+                        <button class="btn-icon" id="btn-zoom-in" title="Zoom In">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M8 4a.5.5 0 01.5.5v3h3a.5.5 0 010 1h-3v3a.5.5 0 01-1 0v-3h-3a.5.5 0 010-1h3v-3A.5.5 0 018 4z"/>
+                            </svg>
+                        </button>
+                        <button class="btn-icon" id="btn-zoom-out" title="Zoom Out">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M4 8a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7A.5.5 0 014 8z"/>
+                            </svg>
+                        </button>
+                        <button class="btn-icon" id="btn-reset-graph" title="Reset View">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 01.908-.417A6 6 0 118 2v1z"/>
+                                <path d="M8 4.466V.534a.25.25 0 01.41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 018 4.466z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="graph-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- State Tab -->
+                <div class="tab-content" id="tab-state">
+                    <div class="state-header">
+                        <h3>System State</h3>
+                        <button class="btn-refresh" id="btn-refresh-state">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 01.908-.417A6 6 0 118 2v1z"/>
+                                <path d="M8 4.466V.534a.25.25 0 01.41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 018 4.466z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="state-container" id="state-container">
+                        <div class="state-section">
+                            <h4>Current Assistant</h4>
+                            <p class="state-value" id="current-assistant">None</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Dialog Stack</h4>
+                            <p class="state-value" id="dialog-stack">Empty</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Project</h4>
+                            <p class="state-value" id="project-info">No project loaded</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Architecture</h4>
+                            <p class="state-value" id="architecture-info">No architecture defined</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Configuration</h4>
+                            <p class="state-value" id="config-info">No configuration set</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Generated Code</h4>
+                            <p class="state-value" id="code-info">No code generated</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>Training</h4>
+                            <p class="state-value" id="training-info">Not started</p>
+                        </div>
+                        <div class="state-section">
+                            <h4>RTL Synthesis</h4>
+                            <p class="state-value" id="rtl-info">Not started</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <!-- No external dependencies needed - direct IPC communication -->
+    <script src="js/api.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

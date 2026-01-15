@@ -1,0 +1,49 @@
+{
+    "layers": [],
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 32,
+        "height": 32,
+        "channels": 3,
+        "num_epochs": 1,
+        "batch_size": 2,
+        "dataset": {
+            "value": "MNIST",
+            "index": 46
+        },
+        "dataset_path": "D:/Graduation Project/Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project/src/pretrainedout"
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "ignore_index": 1,
+            "reduction": "'mean'",
+            "label_smoothing": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "pretrained": {
+        "value": "resnet18",
+        "index": 80
+    },
+    "log_dir": "D:\\Graduation Project\\Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project\\data\\tensorboardlogs"
+}

@@ -1,0 +1,59 @@
+{
+    "layers": [],
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 640,
+        "height": 640,
+        "channels": 3,
+        "num_epochs": 1,
+        "batch_size": 1,
+        "dataset": {
+            "value": "CustomDataset",
+            "index": 0
+        },
+        "dataset_path": "D:/Merged Datasets"
+    },
+    "complex_misc_params": {
+        "data_num_workers": 1,
+        "eval_interval": 1,
+        "warmup_epochs": 0,
+        "scheduler": "yoloxwarmcos",
+        "num_classes": 10
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "ignore_index": 1,
+            "reduction": "'mean'",
+            "label_smoothing": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "pretrained": {
+        "value": "YOLOX-Small",
+        "index": 1,
+        "depth": 0.33,
+        "width": 0.5
+    },
+    "pretrained_weights": "D:/Graduation Project/Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project/weights/yolox-small.pth",
+    "log_dir": "D:\\Graduation Project\\Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project\\data\\tensorboardlogs"
+}

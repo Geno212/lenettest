@@ -1,0 +1,29 @@
+Catapult AI NN 
+
+The following list contains the examples in this category:
+
+    Tutorial:
+
+    Exploring Precision:
+
+    This Catapult Toolkit example walks through an analysis of the accuracy of a Neural Network model (MNIST) in a TensorFlow Python environment and an equivalent fixed-point HLS-ready C++ environment using Catapult AI NN and Catapult Value-Range Analysis. Two strategies are showcased - a brute-force manual precision setting using a model with Post-Training Quantization (PTQ) and a second strategy using Quantization-Aware Training (QAT). This example has Catapult TCL scripts to demonstrate the highlights of each experiment, as well as an executable Jupyter Notebook to allow interactive exploration of the two strategies.
+    Exploring Parallelism:
+
+    This Catapult Toolkit example walks through an analysis of the use of the 'reuse_factor' configuration option in Catapult AI NN on the parallelism of the resulting hardware for the Neural Network model (MNIST). The example is best explored using the Jupyter Notebook provided. There are also two Catapult TCL scripts that can demonstrate two of the permutations that are presented in the Notebook.
+    Enhanced Deep residual network for Super-Resolution Example:
+
+    This example demonstrates the EDSR model for the super resolution application implemented using Conv2D, Clone, Concatenate, and Lambda layersnThis flow requires a Catapult.ai NN license in addition to a license used to invoke Catapult. As this is a new feature in Catapult, please check that you have a license before proceeding.
+    SeparableConv2D Example:
+
+    This example demonstrates using seperable convolution layers: SeparableConv2DnThis flow requires a Catapult AI NN license in addition to a license used to invoke Catapult. As this is a new feature in Catapult, please check that you have a license before proceeding.
+    Using SkipConnections:
+
+    This example showcases a network with Skip connections implemented using Conv2D, Max Pooling, Clone, Concatenate, and Dense layers. This flow requires a Catapult AI NN license in addition to a license used to invoke Catapult. As this is a new feature in Catapult, please check that you have a license before proceeding
+    Pytorch:
+
+    Pytorch MNIST Example
+    ProgrammableWeights:
+
+    Examples demonstrating how the locationn and access of the network layer weight/bias values can be configured in Catapult AI NN such that the values are either internal constants (non-programmable), on the design interface as discrete arrays (programmable) and as a combined 'system memory' array (also programmable)
+
+    

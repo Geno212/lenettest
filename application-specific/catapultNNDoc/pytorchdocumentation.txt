@@ -1,0 +1,2603 @@
+Implementing a CNN in Pytorch for HLS
+This notebook will walk you through the process of creating a Convolutional Neural Network
+that performs object classification using Pytorch and the HLS4ML flow in Catapult AI NN.
+There are three phases to this process
+Defining the network model in Pytorch
+Configuring Catapult AI NN and generating the C++ model
+Synthesizing the C++ into hardware with Catapult AI NN
+Note: To load and execute this Jupyter Notebook from a shell,
+do the following:
+sh $MGC_HOME/shared/pkgs/ccs_hls4ml/create_env.sh
+$MGC_HOME/bin/python3 $HOME/ccs_venv
+(The previous step need only be executed once)
+bash
+source $HOME/ccs_venv/bin/activate
+jupyter notebook --ip="127.0.0.1" --browser=firefox
+$MGC_HOME/shared/examples/cat_ai_nn/pytorch/notebook.ipynb
+Defining the network model in Pytorch
+First we need to configure the Python environment
+Import the Catapult AI NN Python module
+import catapult_ai_nn
+import os
+import ssl
+ssl._create_default_https_context = ssl._create_stdlib_context
+### Note: Targeting ASIC using the SAED32 library and power estimation/optimization r
+try:
+pdk_var = os.environ['SAED32_EDK']
+except KeyError:
+print('WARNING: Environment variable SAED32_EDK was not found. You will not be ab
+script_file = os.path.basename(__session__)
+script_name = os.path.splitext(script_file)
+step = script_name[0]In [1]:
+2025-01-20 14:21:10.222683: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:
+9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDN
+N when one has already been registered
+2025-01-20 14:21:10.222725: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:
+607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT
+when one has already been registered
+2025-01-20 14:21:10.224041: E external/local_xla/xla/stream_executor/cuda/cuda_blas.c
+c:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin c
+uBLAS when one has already been registered
+2025-01-20 14:21:10.231054: I tensorflow/core/platform/cpu_feature_guard.cc:182] This
+TensorFlow binary is optimized to use available CPU instructions in performance-critic
+al operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild T
+ensorFlow with the appropriate compiler flags.
+2025-01-20 14:21:12.582569: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF
+-TRT Warning: Could not find TensorRT
+Load Pytorch modules
+import numpy as np
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from sklearn.metrics import accuracy_score
+Download the MNIST dataset
+Download the MNIST dataset (contains 28x28 pixel images), reshape (potentially) to a
+smaller resolution, and normalize the pixel values to values between 0 and 1 (8bit
+resolution). Note that this example will cache the dataset at a location defined by the
+environment variable PYTORCH_MNIST.
+# Load MNIST dataset
+if "PYTORCH_MNIST" in os.environ:
+ds_path = os.environ["PYTORCH_MNIST"]
+print(f'Using dataset cached at "{ds_path}"')
+else:
+print('OS environment variable PYTORCH_MNIST not found. Downloaded dataset to ./p
+ds_path = "./pytorch_mnist"
+batch_size = 64
+num_samples = 100
+Fw = 14
+# Reshape images from 28x28 down to Fw x Fw
+transform = transforms.Compose([
+transforms.Resize((Fw, Fw)),
+transforms.ToTensor(),
+transforms.Normalize((0.5,), (0.5,))
+])
+train_dataset = datasets.MNIST(root=ds_path, train=True, download=True, transform=tra
+test_dataset = datasets.MNIST(root=ds_path, train=False, download=True, transform=tra
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuf
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=num_samples, shuff
+Using dataset cached at "/wv/hlstools/AI_DATA/pytorch_mnist"
+Define the CNN model in PytorchIn [2]:In [3]:
+This model uses Conv2d, Linear (aka Tensorflow Batchnorm), ReLu and softmax.
+Model 3
+# Set parameters for training and testing
+n_in = 1
+padds = 1
+kernel_size = 5
+epochs = 10
+default_precision = 'ac_fixed<16,8>'
+n_out = 5
+stride = 3
+io_type = 'io_stream'
+# Define the PyTorch model
+class MNISTModel(nn.Module):
+def __init__(self):
+super(MNISTModel, self).__init__()
+# First convolutional layer
+self.conv2d1 = nn.Conv2d(in_channels=n_in, out_channels=n_out, kernel_size=ke
+self.relu1 = nn.ReLU()
+# Calculate flatten size dynamically
+example_input = torch.zeros(1, 1, Fw, Fw)
+conv_output = self.conv2d1(example_input)
+self.flatten_size = torch.prod(torch.tensor(conv_output.shape[1:])).item()
+self.flatten1 = nn.Flatten()
+self.dense1 = nn.Linear(self.flatten_size, 10)
+self.softmax1 = nn.Softmax(dim=-1)
+def forward(self, x):
+x = self.conv2d1(x)
+x = self.relu1(x)
+x = self.flatten1(x)
+x = self.dense1(x)
+x = self.softmax1(x)
+return x
+model = MNISTModel()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+Compile and train the model with the MNIST dataset
+This script will load the previous training results if they were found in the current directory
+# Training the PyTorch model
+if not os.path.exists('mnist_model_state.pth'):
+print("Training the PyTorch Model...")
+# Set model to training mode
+model.train()
+for epoch in range(epochs):
+running_loss = 0.0
+for images, labels in train_loader:
+optimizer.zero_grad()
+outputs = model(images)
+loss = criterion(outputs, labels)
+loss.backward()
+optimizer.step()
+running_loss += loss.item()
+print(f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(train_loader):.4fIn [4]:In [5]:
+# Save the model to disk
+torch.save(model.state_dict(), 'mnist_model_state.pth')
+print("Model saved to 'mnist_model_state.pth'.")
+else:
+model.load_state_dict(torch.load('mnist_model_state.pth', weights_only=True))
+print("Model weights loaded from 'mnist_model_state.pth'.")
+Model weights loaded from 'mnist_model_state.pth'.
+Print the overall accuracy of the trained model
+# Set to evaluation mode
+model.eval()
+# Initialize lists for predictions and true labels
+all_outputs = []
+all_preds = []
+all_labels = []
+# Disable gradient calculations for inference
+with torch.no_grad():
+for images, labels in test_loader:
+outputs = model(images)
+all_outputs.extend(outputs.numpy())
+preds = torch.argmax(outputs, dim=1)
+all_preds.extend(preds.numpy())
+all_labels.extend(labels.numpy())
+# Calculate accuracy
+accuracy = accuracy_score(all_labels, all_preds)
+print(f"Python Model Test Accuracy: {accuracy * 100:.2f}%")
+X_input, y_true = next(iter(test_loader))
+with torch.no_grad():
+pytorch_output = model(X_input)
+print(f'{pytorch_output.shape=}')
+pytorch_labels = np.argmax(pytorch_output, axis=-1)
+Python Model Test Accuracy: 93.13%
+pytorch_output.shape=torch.Size([100, 10])
+Configuring Catapult AI NN and generating
+the C++ model
+Configure Catapult AI NN
+Create the configuration object that controls the Python to C++ translation. This step will
+save the model as a .json file, the weights and biases as an .h5 file, and the input feature
+data and output predictions as text files for use by the C++ testbench.
+# General project settings
+config_ccs = catapult_ai_nn.config_for_dataflow(model=model, x_test=X_input.numpy(),
+granularity='name',
+default_precision=default_prec
+max_precision=default_precisio
+default_reuse_factor=500,
+output_dir=f'my-{model.__class
+tech='asic', io_type=io_type,
+csim=1, SCVerify=0, Synth=1, v
+Saving C++ testbench data files as "my-MNISTModel-Catapult-test/tb_input_features.dat"
+and "my-MNISTModel-Catapult-test/tb_output_predictions.dat"In [6]:In [7]:
+Generate the Catapult AI NN model view
+Use the Catapult AI NN configuration object to construct an HLS4ML representation of the
+model
+# Finally, generate the C++ model and HLS script
+hls_model_ccs = catapult_ai_nn.generate_dataflow(model=model,config_ccs=config_ccs)
+Interpreting Model ...
+Topology:
+Layer name: conv2d1, layer type: Conv2D, input shape: [[None, 1, 14, 14]]
+Layer name: relu1, layer type: Activation, input shape: [[None, 5, 4, 4]]
+Layer name: flatten1, layer type: Reshape, input shape: [[None, 5, 4, 4]]
+Layer name: dense1, layer type: Dense, input shape: [[None, 80]]
+Layer name: softmax1, layer type: Softmax, input shape: [[None, 10]]
+Creating HLS model
+WARNING: Layer conv2d1 requires "dataflow" pipeline style. Switching to "dataflow" pip
+eline style.
+Write and Compile the C++
+Compile the C++ model into a shared object that can be called from Python. Note that the
+compile() method forces HLS4ML to write the C++ design and script to disk
+# Compile the C++ model
+hls_model_ccs.compile()
+Writing HLS project
+... skipping copy of NNET headers from /user/dgb/sb/sif/aol/Mgc_home/shared/include/nn
+et_utils/
+... skipping copy of ac_types headers - assumed to located in Catapult install tree
+... skipping copy of ac_math headers - assumed to located in Catapult install tree
+... skipping copy of ac_simutils headers - assumed to located in Catapult install tree
+Done
+Measure the accuracy of the C++ model
+Run the test images through the C++ model and measure the accuracy
+# Get predictions from HLS model
+hls_output = hls_model_ccs.predict(X_input.numpy())
+print(f'hls_output.shape = {hls_output.shape=}')
+hls_labels = np.argmax(hls_output, axis=-1)
+# Accuracy and MSE
+accuracy = accuracy_score(y_true.numpy(), hls_labels)
+print(f"Expected output : {all_labels[:20]}")
+print(f"Actual output (PyTorch): {pytorch_labels[:20].numpy()}")
+print(f"Actual output (HLS C++): {hls_labels[:20]}")
+print(f"Accuracy between PyTorch and HLS C++ model: {accuracy * 100:.2f}%")
+hls_output.shape = hls_output.shape=(100, 10)
+Expected output : [7, 2, 1, 0, 4, 1, 4, 9, 5, 9, 0, 6, 9, 0, 1, 5, 9, 7, 3, 4]
+Actual output (PyTorch): [7 2 1 0 4 1 4 9 4 9 0 6 9 0 1 5 9 7 8 4]
+Actual output (HLS C++): [7 2 1 0 4 1 4 9 4 9 0 6 9 0 1 5 9 7 8 4]
+Accuracy between PyTorch and HLS C++ model: 95.00%
+Synthesizing the C++ into hardware with
+CatapultIn [8]:In [9]:In [10]:
+Now synthesize the C++ model into hardware with Catapult
+# Run HLS to generate the RTL
+hls_model_ccs.build()In [11]:
+Catapult backend build() option overrides: "reset=False"
+/user/dgb/sb/sif/aol/Mgc_home/bin/catapult -product ultra -shell -f build_prj.tcl -eva
+l 'set ::argv "reset=False"'
+// Catapult Ultra Synthesis 2025.1/1157987 (Beta Release) Mon Jan 20 14:05:04 PST 202
+5
+//
+// Copyright (c) Siemens EDA, 1996-2025, All Rights Reserved.
+// UNPUBLISHED, LICENSED SOFTWARE.
+// CONFIDENTIAL AND PROPRIETARY INFORMATION WHICH IS THE
+// PROPERTY OF SIEMENS EDA OR ITS LICENSORS.
+//
+// Running on Linux dgb@orw-dgb-rk8:3975248 4.18.0-553.32.1.el8_10.x86_64 x86_64 aol
+//
+// Package information: SIFLIBS v28.1_0.0, HLS_PKGS v28.1_0.0,
+// SIF_TOOLKITS v28.1_0.0, SIF_XILINX v28.1_0.0,
+// SIF_ALTERA v28.1_0.0, CCS_LIBS v28.1_0.0,
+// CDS_PPRO v2024.2_1, CDS_DesignChecker v2024.2_1,
+// CDS_OASYS v21.1_3.1, CDS_PSR v24.2_0.4,
+// DesignPad v2.78_1.0, DesignAnalyzer 2025.1/1157701
+//
+# Connected to license server 1700@orw-csd-lic-00 (LIC-13)
+# Catapult product license successfully checked out, elapsed time 00:02 (LIC-14)
+# Custom Startup HOME/catapult.tcl
+# Working Directory: '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-MNISTMo
+del-Catapult-test'
+dofile ./build_prj.tcl
+# > array set BuildOptions {
+# > reset 0
+# > csim 1
+# > SCVerify 0
+# > Synth 1
+# > vhdl 0
+# > verilog 1
+# > RTLSynth 0
+# > RandomTBFrames 2
+# > PowerEst 0
+# > PowerOpt 0
+# > BuildBUP 0
+# > BUPWorkers 0
+# > LaunchDA 0
+# > startup {}
+# > }
+# > set sfd [file dirname [info script]]
+# .
+# > if { [info exists ::argv] } {
+# > foreach arg $::argv {
+# > foreach {optname optval} [split $arg '='] {}
+# > set mapping {"cosim" "SCVerify" "validation" "SCVerify" "synth" "Synth" "vsynt
+h" "RTLSynth" "ran_frame" "RandomTBFrames" "sw_opt" "PowerEst" "power" "PowerOpt" "da"
+"LaunchDA" "bup" "BuildBUP"}
+# > set pos [lsearch -exact $mapping $optname]
+# > if { ($pos != -1) && ([expr $pos % 2] == 0) } {
+# > set oldoptname $optname
+# > set optname [lindex $mapping [expr $pos + 1]]
+# > logfile message "HLS4ML build() option '$oldoptname' is being depricated. Us
+e '$optname'\n" warning
+# > }
+# > if { [info exists BuildOptions($optname)] } {
+# > if {[string is integer -strict $optval]} {
+# > set BuildOptions($optname) $optval
+# > } else {
+# > set BuildOptions($optname) [string is true -strict $optval]
+# > }
+# > } else {
+# > logfile message "Unknown argv switch '$optname'\n" error
+# > }
+# > }
+# > }
+# > puts "***** INVOKE OPTIONS *****"
+# ***** INVOKE OPTIONS *****
+# > foreach x [lsort [array names BuildOptions]] {
+# > puts "[format { %-20s %s} $x $BuildOptions($x)]"
+# > }
+# BUPWorkers 0
+# BuildBUP 0
+# LaunchDA 0
+# PowerEst 0
+# PowerOpt 0
+# RTLSynth 0
+# RandomTBFrames 2
+# SCVerify 0
+# Synth 1
+# csim 1
+# reset 0
+# startup
+# verilog 1
+# vhdl 0
+# > puts ""
+#
+# > proc report_time { op_name time_start time_end } {
+# > set time_taken [expr $time_end - $time_start]
+# > set time_s [expr ($time_taken / 1000) % 60]
+# > set time_m [expr ($time_taken / (1000*60)) % 60]
+# > set time_h [expr ($time_taken / (1000*60*60)) % 24]
+# > puts "***** ${op_name} COMPLETED IN ${time_h}h${time_m}m${time_s}s *****"
+# > }
+# > proc setup_xilinx_part { part } {
+# > global env
+# >
+# > set part_sav $part
+# > set libname [lindex [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PAR
+AMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret v] 0]
+# > puts "Library Name: $libname"
+# > if { [llength $libname] == 1 } {
+# > set libpath [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETER
+S/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret p]
+# > puts "Library Path: $libpath"
+# > if { [regexp {/CONFIG/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAM
+ETERS/(\S+)/PARAMETERS/(\S+)/.*} $libpath dummy rtltool vendor family speed part] } {
+# > solution library add $libname -- -rtlsyntool $rtltool -vendor $vendor -famil
+y $family -speed $speed -part $part_sav
+# > } else {
+# > solution library add $libname -- -rtlsyntool Vivado
+# > }
+# > } else {
+# > logfile message "Could not find specific Xilinx base library for part '$part'.
+Using KINTEX-u\n" warning
+# > solution library add mgc_Xilinx-KINTEX-u-2_beh -- -rtlsyntool Vivado -manufact
+urer Xilinx -family KINTEX-u -speed -2 -part xcku115-flvb2104-2-i
+# > }
+# > solution library add Xilinx_RAMS
+# > solution library add Xilinx_ROMS
+# > solution library add Xilinx_FIFO
+# > if { [info exists env(XILINX_PCL_CACHE)] } {
+# > options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# > solution options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# > }
+# > }
+# > proc setup_asic_libs { args } {
+# > set do_saed 0
+# > foreach lib $args {
+# > solution library add $lib -- -rtlsyntool DesignCompiler
+# > if { [lsearch -exact {saed32hvt_tt0p78v125c_beh saed32lvt_tt0p78v125c_beh saed
+32rvt_tt0p78v125c_beh} $lib] != -1 } {
+# > set do_saed 1
+# > }
+# > }
+# > solution library add ccs_sample_mem
+# > solution library add ccs_sample_rom
+# > solution library add hls4ml_lib
+# > go libraries
+# >
+# > if { $do_saed } {
+# > source [application get /SYSTEM/ENV_MGC_HOME]/pkgs/siflibs/saed/setup_saedlib.
+tcl
+# > }
+# > }
+# > options set Input/CppStandard {c++17}
+# c++17
+# > options set Input/CompilerFlags -DRANDOM_FRAMES=$BuildOptions(RandomTBFrames)
+# -DRANDOM_FRAMES=2
+# > options set Input/SearchPath {$MGC_HOME/shared/include/nnet_utils} -append
+# {$MGC_HOME/shared/include/nnet_utils}
+# > options set ComponentLibs/SearchPath {$MGC_HOME/shared/pkgs/ccs_hls4ml} -append
+# {$MGC_HOME/pkgs/siflibs} {$MGC_HOME/shared/include/calypto_mem} {$MGC_HOME/pkgs/sifl
+ibs/nangate} {$MGC_HOME/pkgs/siflibs/saed} {$MGC_HOME/pkgs/siflibs/dware} {$MGC_HOME/p
+kgs/ccs_altera} {$MGC_HOME/pkgs/ccs_xilinx} {$MGC_HOME/pkgs/ccs_achronix} {$MGC_HOME/p
+kgs/siflibs/origami} {$MGC_HOME/pkgs/siflibs/microsemi} {$MGC_HOME/pkgs/ccs_lattice}
+{$MGC_HOME/pkgs/ccs_nx} {$MGC_HOME/pkgs/ccs_libs/interfaces/amba} {$MGC_HOME/pkgs/sifl
+ibs/ccs_fpga} {$MGC_HOME/pkgs/siflibs_inhouse} {$MGC_HOME/shared/pkgs/ccs_hls4ml}
+# > if {$BuildOptions(reset)} {
+# > project load Catapult.ccs
+# > go new
+# > } else {
+# > project new -name Catapult
+# > }
+# > options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54
+CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-
+3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15
+LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-
+21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > solution options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54
+CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-
+3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15
+LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL
+-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > options set Message/Hide HIER-10 -append
+# LIB-207 LIB-217 CRD-177 HIER-10
+# > if {$BuildOptions(vhdl)} {
+# > options set Output/OutputVHDL true
+# > } else {
+# > options set Output/OutputVHDL false
+# > }
+# false
+# > if {$BuildOptions(verilog)} {
+# > options set Output/OutputVerilog true
+# > } else {
+# > options set Output/OutputVerilog false
+# > }
+# true
+# > if { [info exists ::env(XILINX_PCL_CACHE)] } {
+# > options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > solution options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > }
+# /wv/hlstools/lib/2023.2/vivado_2023.2/xilinx_cache
+# > if { [info exists BuildOptions(startup)] && ($BuildOptions(startup) != "") && [fil
+e exists $BuildOptions(startup)] } {
+# > logfile message "Sourcing Catapult AI NN startup script '$BuildOptions(startu
+p)'\n" info
+# > catch {dofile $BuildOptions(startup)}
+# > }
+# > catch {flow package require /HLS4ML}
+# 0
+# > flow package require /SCVerify
+# 10.4
+# > flow package option set /SCVerify/INVOKE_ARGS "$sfd/firmware/weights $sfd/tb_data/
+tb_input_features.dat $sfd/tb_data/tb_output_predictions.dat 0.0"
+# ./firmware/weights ./tb_data/tb_input_features.dat ./tb_data/tb_output_predictions.d
+at 0.0
+# > set design_top myproject
+# myproject
+# > solution file add $sfd/firmware/myproject.cpp
+# /INPUTFILES/1
+# > solution file add $sfd/myproject_test.cpp -exclude true
+# /INPUTFILES/2
+# > set Strategy latency
+# latency
+# > set IOType io_stream
+# io_stream
+# > if { ![file exists $sfd/hls4ml_config.yml] } {
+# > logfile message "Could not locate HLS4ML configuration file '$sfd/hls4ml_config.
+yml'. Unable to determine network configuration.\n" warning
+# > } else {
+# > set pf [open "$sfd/hls4ml_config.yml" "r"]
+# > while {![eof $pf]} {
+# > gets $pf line
+# > if { [regexp {\s+Strategy: (\w+)} $line all value] } { set Strategy [strin
+g tolower $value] }
+# > if { [regexp {IOType: (\w+)} $line all value] } { set IOType [string
+tolower $value] }
+# > }
+# > close $pf
+# > }
+# > if { $IOType == "io_stream" } {
+# > solution options set Architectural/DefaultRegisterThreshold 2050
+# > }
+# 2050
+# > directive set -RESET_CLEARS_ALL_REGS no
+# /RESET_CLEARS_ALL_REGS no
+# > directive set -MEM_MAP_THRESHOLD [expr 2048 * 16 + 1]
+# /MEM_MAP_THRESHOLD 32769
+# > set hls_clock_period 5
+# 5
+# > go analyze
+# Info: Starting transformation 'analyze' on solution 'solution.v1' (SOL-8)
+# Creating project directory '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my
+-MNISTModel-Catapult-test/Catapult/'. (PRJ-1)
+# Moving session transcript to file "/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pyt
+orch/my-MNISTModel-Catapult-test/catapult.log"
+# Front End called with arguments: -I/user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet
+_utils -- /home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-MNISTModel-Catapult
+-test/firmware/myproject.cpp (CIN-69)
+# Edison Design Group C++/C Front End - Version 6.6 (CIN-1)
+# Warning: $PROJECT_HOME/firmware/parameters.h(172): integer conversion resulted in a
+change of sign (CRD-68)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(60): Pragma 'hls_design<>'
+detected on routine 'nnet::zeropad2d_cl<input_t, layer8_t, config8>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(120): Pragma 'hls_design<>'
+detected on routine 'nnet::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(59): Pragma 'hls_design
+<>' detected on routine 'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(82): Pragma 'hls_design<>' d
+etected on routine 'nnet::dense<layer7_t, dense1_result_t, config5>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(416): Pragma 'hls_desig
+n<>' detected on routine 'nnet::softmax<dense1_result_t, result_t, softmax_config6>'
+(CIN-6)
+# $PROJECT_HOME/firmware/myproject.cpp(14): Pragma 'hls_design<top>' detected on routi
+ne 'myproject' (CIN-6)
+# $MGC_HOME/shared/include/ac_std_float.h(192): Pragma 'hls_design<>' detected on rout
+ine 'ac::fx_div<8>' (CIN-6)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_shift.h(345): Cannot bind pragma 'hls_w
+aive ISE' to any valid construct. Please check if a valid construct follows the pragm
+a. (CIN-319)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_shift.h(184): Cannot bind pragma 'hls_w
+aive ISE' to any valid construct. Please check if a valid construct follows the pragm
+a. (CIN-319)
+# Source file analysis completed (CIN-68)
+# Info: Completed transformation 'analyze' on solution 'solution.v1': elapsed time 6.6
+7 seconds, memory usage 1665248kB, peak memory usage 1665248kB (SOL-9)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# > if { $IOType == "io_parallel" } {
+# > set inlines {}
+# > set pooling2d_used 0
+# > foreach fn [solution get /SOURCEHIER/FUNC_HBS/* -match glob -ret l -checkpath 0]
+{
+# > if { [string match {nnet::*} $fn] } { lappend inlines $fn }
+# > if { [string match {nnet::pooling2d_cl*} $fn] } { set pooling2d_used 1 }
+# > if { [string match {ac::fx_div*} $fn] } { lappend inlines $fn }
+# > }
+# > foreach fn $inlines {
+# > set old [solution design get $fn]
+# > logfile message "solution design set $fn -inline\n" warning
+# > solution design set $fn -inline
+# > }
+# > if { $pooling2d_used } {
+# > directive set -SCHED_USE_MULTICYCLE true
+# > }
+# > }
+# > if { ! $BuildOptions(BuildBUP) } {
+# >
+# > go compile
+# >
+# > if {$BuildOptions(csim)} {
+# > puts "***** C SIMULATION *****"
+# > set time_start [clock clicks -milliseconds]
+# > flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osc
+i sim
+# > set time_end [clock clicks -milliseconds]
+# > report_time "C SIMULATION" $time_start $time_end
+# > }
+# >
+# > puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_asic_libs {nangate-45nm_beh}
+# >
+# > directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDGE
+rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NAM
+E rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABLE
+_NAME {} -ENABLE_ACTIVE high]]
+# >
+# > if {$BuildOptions(Synth)} {
+# > puts "***** C/RTL SYNTHESIS *****"
+# > set time_start [clock clicks -milliseconds]
+# >
+# > go assembly
+# >
+# > go architect
+# >
+# > go allocate
+# >
+# > go schedule
+# >
+# > go extract
+# > set time_end [clock clicks -milliseconds]
+# > report_time "C/RTL SYNTHESIS" $time_start $time_end
+# > }
+# >
+# > } else {
+# > go analyze
+# >
+# > directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDG
+E rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NA
+ME rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABL
+E_NAME {} -ENABLE_ACTIVE high]]
+# >
+# > set blocks [solution get /HIERCONFIG/USER_HBS/*/RESOLVED_NAME -match glob -rec 1
+-ret v -state analyze]
+# > set bu_mappings {}
+# > set top [lindex $blocks 0]
+# > foreach block [lreverse [lrange $blocks 1 end]] {
+# > if { [string match {nnet::*} $block] == 0 } { continue }
+# > go analyze
+# > solution design set $block -top
+# > go compile
+# > solution library remove *
+# > puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_asic_libs {nangate-45nm_beh}
+# > go extract
+# > set block_soln "[solution get /TOP/name -checkpath 0].[solution get /VERSION -
+checkpath 0]"
+# > lappend bu_mappings [solution get /CAT_DIR] /$top/$block "\[Block\] $block_sol
+n"
+# > }
+# >
+# > go analyze
+# > solution design set $top -top
+# > go compile
+# >
+# > if {$BuildOptions(csim)} {
+# > puts "***** C SIMULATION *****"
+# > set time_start [clock clicks -milliseconds]
+# > flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=o
+sci sim
+# > set time_end [clock clicks -milliseconds]
+# > report_time "C SIMULATION" $time_start $time_end
+# > }
+# > foreach {d i l} $bu_mappings {
+# > logfile message "solution options set ComponentLibs/SearchPath $d -append\n" i
+nfo
+# > solution options set ComponentLibs/SearchPath $d -append
+# > }
+# >
+# > puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > solution library remove *
+# > setup_asic_libs {nangate-45nm_beh}
+# > go compile
+# > foreach {d i l} $bu_mappings {
+# > logfile message "solution library add [list $l]\n" info
+# > eval solution library add [list $l]
+# > }
+# > go libraries
+# >
+# > foreach {d i l} $bu_mappings {
+# > set cnt [directive get $i/* -match glob -checkpath 0 -ret p]
+# > if { $cnt != {} } {
+# > logfile message "directive set $i -MAP_TO_MODULE [list $l]\n" info
+# > eval directive set $i -MAP_TO_MODULE [list $l]
+# > }
+# > }
+# > go assembly
+# > set design [solution get -name]
+# > logfile message "Adjusting FIFO_DEPTH for top-level interconnect channels\n" war
+ning
+# > foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_ou
+t:cns/MAP_TO_MODULE] {
+# > set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# > logfile message "directive set -match glob $ch_fifo 1\n" info
+# > directive set -match glob "$ch_fifo" 1
+# > }
+# > foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_cpy
+*:cns/MAP_TO_MODULE] {
+# > set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# > logfile message "Bypass FIFO '$ch_fifo' depth set to 1 - larger value may be r
+equired to prevent deadlock\n" warning
+# > logfile message "directive set -match glob $ch_fifo 1\n" info
+# > directive set -match glob "$ch_fifo" 1
+# > }
+# > go architect
+# > go allocate
+# > go schedule
+# > go dpfsm
+# > go extract
+# > }
+# Info: Starting transformation 'compile' on solution 'myproject.v1' (SOL-8)
+# Generating synthesis internal form... (CIN-3)
+# $MGC_HOME/shared/include/ac_std_float.h(196): Found design routine 'ac::fx_div<8>' s
+pecified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Found design routine
+'nnet::zeropad2d_cl<input_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Found design routine
+'nnet::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' specified by directive (CIN-5
+2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Found design routi
+ne 'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' specified by directive (CIN-
+52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Found design routine 'n
+net::dense<layer7_t, dense1_result_t, config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Found design rout
+ine 'nnet::softmax<dense1_result_t, result_t, softmax_config6>' specified by directive
+(CIN-52)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Found top design routine 'myproject' speci
+fied by directive (CIN-52)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Synthesizing routine 'myproject' (CIN-13)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Inlining routine 'myproject' (CIN-14)
+# $PROJECT_HOME/firmware/myproject.cpp(76): Pragma 'hls_resource<layer5_out:cns>' dete
+cted, variable = 'layer5_out', module = 'hls4ml_lib.mgc_pipe_mem FIFO_DEPTH = 1' (CIN-
+341)
+# $PROJECT_HOME/firmware/myproject.cpp(76): Pragma 'hls_resource<layer5_out:cns>' dete
+cted, variables = 'layer5_out', module = 'hls4ml_lib.mgc_pipe_mem' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(70): Pragma 'hls_resource<layer7_out:cns>' dete
+cted, variable = 'layer7_out', module = 'hls4ml_lib.mgc_pipe_mem FIFO_DEPTH = 1' (CIN-
+341)
+# $PROJECT_HOME/firmware/myproject.cpp(70): Pragma 'hls_resource<layer7_out:cns>' dete
+cted, variables = 'layer7_out', module = 'hls4ml_lib.mgc_pipe_mem' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(65): Pragma 'hls_resource<layer3_out:cns>' dete
+cted, variable = 'layer3_out', module = 'hls4ml_lib.mgc_pipe_mem FIFO_DEPTH = 1' (CIN-
+341)
+# $PROJECT_HOME/firmware/myproject.cpp(65): Pragma 'hls_resource<layer3_out:cns>' dete
+cted, variables = 'layer3_out', module = 'hls4ml_lib.mgc_pipe_mem' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(60): Pragma 'hls_resource<layer2_out:cns>' dete
+cted, variable = 'layer2_out', module = 'hls4ml_lib.mgc_pipe_mem FIFO_DEPTH = 1' (CIN-
+341)
+# $PROJECT_HOME/firmware/myproject.cpp(60): Pragma 'hls_resource<layer2_out:cns>' dete
+cted, variables = 'layer2_out', module = 'hls4ml_lib.mgc_pipe_mem' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(55): Pragma 'hls_resource<layer8_out:cns>' dete
+cted, variable = 'layer8_out', module = 'hls4ml_lib.mgc_pipe_mem FIFO_DEPTH = 1' (CIN-
+341)
+# $PROJECT_HOME/firmware/myproject.cpp(55): Pragma 'hls_resource<layer8_out:cns>' dete
+cted, variables = 'layer8_out', module = 'hls4ml_lib.mgc_pipe_mem' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(17): Pragma 'hls_resource<layer6_out:rsc>' dete
+cted, variable = 'layer6_out', module = 'ccs_ioport.ccs_out_wait' (CIN-341)
+# $PROJECT_HOME/firmware/myproject.cpp(17): Pragma 'hls_resource<layer6_out:rsc>' dete
+cted, variables = 'layer6_out', module = 'ccs_ioport.ccs_out_wait' (CIN-9)
+# $PROJECT_HOME/firmware/myproject.cpp(16): Pragma 'hls_resource<x:rsc>' detected, var
+iable = 'x', module = 'ccs_ioport.ccs_in_wait' (CIN-341)
+# $PROJECT_HOME/firmware/myproject.cpp(16): Pragma 'hls_resource<x:rsc>' detected, var
+iables = 'x', module = 'ccs_ioport.ccs_in_wait' (CIN-9)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Found design routine
+'nnet::zeropad2d_cl<input_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Found design routine
+'nnet::zeropad2d_cl<input_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Synthesizing routine
+'nnet::zeropad2d_cl<input_t, layer8_t, config8>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Inlining routine 'nne
+t::zeropad2d_cl<input_t, layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(8): Inlining routine 'nne
+t::fill_zero<layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(11): Pragma 'hls_unroll<ye
+s>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<la
+yer8_t,config8>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(8): Inlining routine 'nne
+t::fill_zero<layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(11): Pragma 'hls_unroll<ye
+s>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<la
+yer8_t,config8>#1:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(78): Pragma 'hls_pipeline_
+init_interval<1>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/Copy
+Main' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(19): Inlining routine 'nne
+t::fill_data<input_t, layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(23): Pragma 'hls_unroll<ye
+s>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/nnet::fill_data<in
+put_t,layer8_t,config8>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'data_par
+t' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(8): Inlining routine 'nne
+t::fill_zero<layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(11): Pragma 'hls_unroll<ye
+s>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<la
+yer8_t,config8>#2:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(8): Inlining routine 'nne
+t::fill_zero<layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(11): Pragma 'hls_unroll<ye
+s>' detected on '/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<la
+yer8_t,config8>#3:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Optimizing block '/nn
+et::zeropad2d_cl<input_t,layer8_t,config8>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): INOUT port 'data' is
+only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): INOUT port 'res' is o
+nly used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<layer8_t,config8>:for' iterated at
+most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(67): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadTopWidth' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(65): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadTop' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<layer8_t,config8>#1:for' iterated
+at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(75): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadLeft' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(24): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/nnet::fill_data<input_t,layer8_t,config8>:for' ite
+rated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(80): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/CopyMain' iterated at most 14 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<layer8_t,config8>#2:for' iterated
+at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(84): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadRight' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(73): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadMain' iterated at most 14 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/nnet::fill_zero<layer8_t,config8>#3:for' iterated
+at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(92): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadBottomWidth' iterated at most 16 times. (LOOP-
+2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(90): Loop '/nnet::zeropad2
+d_cl<input_t,layer8_t,config8>/core/PadBottom' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Found design routine
+'nnet::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' specified by directive (CIN-5
+2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Found design routine
+'nnet::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' specified by directive (CIN-5
+2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Synthesizing routine
+'nnet::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Inlining routine 'nne
+t::conv_2d_cl<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(68): Inlining routine 'nne
+t::conv_2d_buffer_cl<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap
+_shift_reg<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type, 16U>::
+ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(85): Pragma 'hls_unroll<yes>' det
+ected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ap_shift_reg<nne
+t::array<ac_fixed<16,8,true,AC_TRN,AC_WRAP>,1U>::value_type,16U>::ap_shift_reg:for' (C
+IN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(80): Pragma 'hls_pipeline_i
+nit_interval<1>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/cor
+e/ReadInputHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(273): Inlining routine 'nne
+t::compute_output_buffer_2d<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(234): Inlining routine 'nne
+t::shift_line_buffer<layer8_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(246): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/UpdateBuffe
+r' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'data' (CI
+N-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(255): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/LineBufferDa
+taIn' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(259): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/LineBufferSh
+ift' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(110): Inlining member function 'a
+p_shift_reg<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type, 16U
+>::shift' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(116): Pragma 'hls_unroll<yes>' de
+tected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ap_shift_reg<nne
+t::array<ac_fixed<16,8,true,AC_TRN,AC_WRAP>,1U>::value_type,16U>::shift:if:for' (CIN-2
+03)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(196): Inlining routine 'nne
+t::kernel_shift_2d<layer8_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(203): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelShiftW
+idth' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(207): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelShiftH
+eight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(210): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelShiftC
+hannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(222): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelPushHe
+ight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(225): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelPushCh
+annel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nne
+t::dense_latency<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type,
+nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::value_type, config2::mult_co
+nfig>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(57): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ResetAccum'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(64): Pragma 'hls_unroll<1>'
+detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Compute' (CIN-2
+03)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(69): Pragma 'hls_unroll<1>'
+detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/MultAndAccum'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(79): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Result' (CIN
+-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<n
+net::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fix
+ed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::value_type, config2::mult_config>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(319): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/CastLoop' (C
+IN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::operator[]' on object 'res_pack'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(31): Inlining routine 'nne
+t::conv_2d_encoded_cl<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(50): Pragma 'hls_pipeline_i
+nit_interval<1>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/cor
+e/ReadInputHeight#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(13): Inlining routine 'nne
+t::compute_scaled_indices_2d<layer8_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::s
+cale_index_regular<5U, 3U, 16U>::scale_index' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::
+scale_index_K_gte_S<5U, 3U, 16U>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(19): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ComputeInde
+x' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(60): Inlining method 'nnet::s
+cale_index_regular<5U, 3U, 16U>::scale_index' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(16): Inlining routine 'nnet::
+scale_index_K_gte_S<5U, 3U, 16U>' (CIN-14)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(26): Instantiating
+global variable 'pixels' which may be accessed outside this scope (CIN-18)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(131): Inlining routine 'nne
+t::compute_output_encoded<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(141): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/MultLoop' (C
+IN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(140): Pragma 'hls_pipeline_in
+it_interval<500>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/co
+re/MultLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'data' (CI
+N-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(80): Inlining routine 'nnet::
+mult_buffer<layer8_t, conv2d1_result_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(91): Pragma 'hls_unroll<yes>'
+detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/InitData' (CIN-
+203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nne
+t::dense_latency<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type,
+nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::value_type, config2::mult_co
+nfig>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(57): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ResetAccum#
+1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(64): Pragma 'hls_unroll<1>'
+detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Compute#1' (CIN
+-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(69): Pragma 'hls_unroll<1>'
+detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/MultAndAccum#1'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(79): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Result#1' (C
+IN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<n
+net::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fix
+ed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::value_type, config2::mult_config>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(107): Pragma 'hls_unroll<yes
+>' detected on '/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/CastLoop#1'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::operator[]' on object 'res_pack'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Optimizing block '/nn
+et::conv_2d_cl<layer8_t,conv2d1_result_t,config2>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(123): INOUT port 'data' is
+only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(123): INOUT port 'res' is o
+nly used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(124): INOUT port 'weights'
+is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(125): INOUT port 'biases' i
+s only used as an input. (OPT-10)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window' is never driven.
+(OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(0)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(1)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(2)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(3)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(4)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(5)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(6)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(7)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(8)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(9)' is never driv
+en. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(10)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(11)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(12)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(13)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(14)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(15)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(16)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(17)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(18)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(19)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(20)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(21)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(22)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(23)' is never dri
+ven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(38): Channel 'nne
+t::conv_2d_encoded_cl<layer8_t,conv2d1_result_t,config2>:data_window(24)' is never dri
+ven. (OPT-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(248): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/UpdateBuffer' iterated at most 1 times. (LOOP
+-2)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/nnet::conv_2d_cl<lay
+er8_t,conv2d1_result_t,config2>/core/ap_shift_reg<nnet::array<ac_fixed<16,8,true,AC_TR
+N,AC_WRAP>,1U>::value_type,16U>::shift:if:for' iterated at most 15 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(261): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/LineBufferShift' iterated at most 4 times. (L
+OOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(257): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/LineBufferDataIn' iterated at most 1 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(212): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/KernelShiftChannel' iterated at most 1 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(209): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/KernelShiftHeight' iterated at most 5 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(205): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/KernelShiftWidth' iterated at most 4 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(227): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/KernelPushChannel' iterated at most 1 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(224): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/KernelPushHeight' iterated at most 5 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(59): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/ResetAccum' iterated at most 5 times. (LOOP-
+2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(71): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/MultAndAccum' iterated at most 5 times. (LOO
+P-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(66): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/Compute' iterated at most 25 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(81): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/Result' iterated at most 5 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(321): Loop '/nnet::conv_2d_cl
+<layer8_t,conv2d1_result_t,config2>/core/CastLoop' iterated at most 5 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(84): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/ReadInputWidth' iterated at most 16 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(82): Loop '/nnet::conv_2d_c
+l<layer8_t,conv2d1_result_t,config2>/core/ReadInputHeight' iterated at most 16 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Found design routi
+ne 'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' specified by directive (CIN-
+52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Found design routi
+ne 'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' specified by directive (CIN-
+52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Synthesizing routi
+ne 'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Inlining routine
+'nnet::relu<conv2d1_result_t, layer3_t, relu_config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(61): Pragma 'hls_pipeli
+ne_init_interval<1>' detected on '/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/
+core/ReLUActLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(70): Pragma 'hls_unroll
+<yes>' detected on '/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core/ReLUPackL
+oop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::operator[]' on object 'in_data'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::operator[]' on object 'out_data'
+(CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<
+16, 8, true, AC_TRN, AC_WRAP, 16, 8, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1383): Inlining routine 'operator><16, 8, true,
+AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Optimizing block
+'/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): INOUT port 'data'
+is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): INOUT port 'res' i
+s only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(72): Loop '/nnet::relu<
+conv2d1_result_t,layer3_t,relu_config3>/core/ReLUPackLoop' iterated at most 5 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Loop '/nnet::relu<
+conv2d1_result_t,layer3_t,relu_config3>/core/ReLUActLoop' iterated at most 16 times.
+(LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(40): Inlining routine 'n
+net::transpose<layer3_t, layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(45): Pragma 'hls_pipelin
+e_init_interval<1>' detected on '/myproject/core/nnet::transpose<layer3_t,layer7_t,con
+fig7>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(48): Pragma 'hls_unroll<
+yes>' detected on '/myproject/core/nnet::transpose<layer3_t,layer7_t,config7>:for:for'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 5U>::operator[]' on object 'in_data'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(54): Pragma 'hls_pipelin
+e_init_interval<1>' detected on '/myproject/core/nnet::transpose<layer3_t,layer7_t,con
+fig7>:for#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(58): Pragma 'hls_unroll<
+yes>' detected on '/myproject/core/nnet::transpose<layer3_t,layer7_t,config7>:for#1:fo
+r' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 4U>::operator[]' on object 'out_data'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose.h(18): Inlining routine 'nnet::tr
+ansfer_idx<config7>' (CIN-14)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_transpose.h(22): Instantiating glo
+bal variable 'to_shape' which may be accessed outside this scope (CIN-18)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_transpose.h(22): Instantiating glo
+bal variable 'perm_strides' which may be accessed outside this scope (CIN-18)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Found design routine 'n
+net::dense<layer7_t, dense1_result_t, config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Found design routine 'n
+net::dense<layer7_t, dense1_result_t, config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Synthesizing routine 'n
+net::dense<layer7_t, dense1_result_t, config5>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(83): Pragma 'hls_pipeline_in
+it_interval<1>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/main'
+(CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Inlining routine 'nne
+t::dense<layer7_t, dense1_result_t, config5>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(83): Pragma 'hls_pipeline_in
+it_interval<1>' detected on '/nnet::dense<layer7_t, dense1_result_t, config5>' (CIN-20
+3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Pragma 'hls_pipeline_in
+it_interval<1>' detected on routine 'nnet::dense<layer7_t, dense1_result_t, config5>'
+(CIN-329)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(58): Pragma 'hls_pipelin
+e_init_interval<1>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/D
+ataPrepare' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(103): Pragma 'hls_unroll<yes
+>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/DataPack' (CIN-20
+3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 4U>::operator[]' on object 'data_pac
+k' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(14): Inlining routine 'nne
+t::dense_wrapper<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 4U>::value_type,
+nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::value_type, config5>' (CIN-
+14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(14): Inlining routine 'nne
+t::dense_latency<nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 4U>::value_type,
+nnet::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::value_type, config5>' (CIN-
+14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(57): Pragma 'hls_unroll<yes
+>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/ResetAccum' (CIN-2
+03)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(64): Pragma 'hls_unroll<1>'
+detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/Compute' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(69): Pragma 'hls_unroll<2>'
+detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/MultAndAccum' (CIN-20
+3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(79): Pragma 'hls_unroll<yes
+>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/Result' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(121): Inlining routine 'nnet::cast<n
+net::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 4U>::value_type, nnet::array<ac_fix
+ed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::value_type, config5>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(123): Pragma 'hls_unroll<yes
+>' detected on '/nnet::dense<layer7_t,dense1_result_t,config5>/core/ResPack' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::operator[]' on object 'res_pac
+k' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Optimizing block '/nne
+t::dense<layer7_t,dense1_result_t,config5>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): INOUT port 'data_strea
+m' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): INOUT port 'res_stream'
+is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(86): INOUT port 'weights' is
+only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(87): INOUT port 'biases' is
+only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(105): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/DataPack' iterated at most 4 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(98): Loop '/nnet::dense<laye
+r7_t,dense1_result_t,config5>/core/DataPrepare' iterated at most 20 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(59): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/ResetAccum' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(71): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/MultAndAccum' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(66): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/Compute' iterated at most 80 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(81): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/Result' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(125): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/ResPack' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(117): Loop '/nnet::dense<lay
+er7_t,dense1_result_t,config5>/core/ResWrite' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Found design rout
+ine 'nnet::softmax<dense1_result_t, result_t, softmax_config6>' specified by directive
+(CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Found design rout
+ine 'nnet::softmax<dense1_result_t, result_t, softmax_config6>' specified by directive
+(CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Synthesizing rout
+ine 'nnet::softmax<dense1_result_t, result_t, softmax_config6>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Inlining routine
+'nnet::softmax<dense1_result_t, result_t, softmax_config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(420): Pragma 'hls_pipel
+ine_init_interval<1>' detected on '/nnet::softmax<dense1_result_t,result_t,softmax_con
+fig6>/core/SoftmaxInitLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(425): Pragma 'hls_unrol
+l<yes>' detected on '/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/Sof
+tmaxInitPackLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::operator[]' on object 'in_pack'
+(CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation.h(560): Inlining routine 'nnet::
+ac_softmax_pwl_wrapper<10U, 16, 8, true, AC_TRN, AC_WRAP, 16, 8, true, AC_TRN, AC_WRAP
+>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(179): Inlining routine 'ac_mat
+h::ac_softmax_pwl_new<0, 0, AC_TRN, 10U, 16, 8, true, AC_TRN, AC_WRAP, 16, 8, AC_TRN,
+AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(116): Inlining routine 'ac_mat
+h::ac_softmax_pwl_new_ptr<10U, 0, 0, AC_TRN, 16, 8, true, AC_TRN, AC_WRAP, 16, 8, AC_T
+RN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_pow_pwl.h(144): Inlining routine 'ac_math::ac_po
+w2_pwl<AC_TRN, 24, 0, false, AC_TRN, AC_WRAP, 17, 1, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_reciprocal_pwl.h(155): Inlining routine 'ac_mat
+h::ac_reciprocal_pwl<AC_TRN, 21, 5, false, AC_TRN, AC_WRAP, 41, 17, false, AC_TRN, AC_
+WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_normalize.h(123): Inlining routine 'ac_math::ac_
+normalize<21, 5, false, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1383): Inlining routine 'operator<<=<21, 0, fals
+e, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1383): Inlining routine 'operator!=<21, 5, fals
+e, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1383): Inlining routine 'operator!=<21, 5, fals
+e, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_math/ac_shift.h(176): Inlining routine 'ac_math::ac_shif
+t_right<21, 1, AC_TRN, AC_WRAP, 41, 17, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1383): Inlining routine 'operator>><41, 17, fals
+e, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(434): Pragma 'hls_unrol
+l<yes>' detected on '/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/Sof
+tmaxResPackLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(17): Inlining member function 'nne
+t::array<ac_fixed<16, 8, true, AC_TRN, AC_WRAP>, 10U>::operator[]' on object 'out_pac
+k' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Optimizing block
+'/nnet::softmax<dense1_result_t,result_t,softmax_config6>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): INOUT port 'data'
+is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): INOUT port 'res'
+is only used as an output. (OPT-11)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_pow_pwl.h(174): Reducing the number of
+bits used to represent array elements of 'ac_math::ac_pow2_pwl<AC_TRN,24,0,false,AC_T
+RN,AC_WRAP,17,1,AC_TRN,AC_WRAP>:c_lut.rom', from '12' bits to '11' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_reciprocal_pwl.h(181): Reducing the num
+ber of bits used to represent array elements of 'ac_math::ac_reciprocal_pwl<AC_TRN,21,
+5,false,AC_TRN,AC_WRAP,41,17,false,AC_TRN,AC_WRAP>:c_lut.rom', from '12' bits to '11'
+bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_pow_pwl.h(173): Reducing the number of
+bits used to represent array elements of 'ac_math::ac_pow2_pwl<AC_TRN,24,0,false,AC_T
+RN,AC_WRAP,17,1,AC_TRN,AC_WRAP>:m_lut.rom', from '10' bits to '8' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_reciprocal_pwl.h(180): Reducing the num
+ber of bits used to represent array elements of 'ac_math::ac_reciprocal_pwl<AC_TRN,21,
+5,false,AC_TRN,AC_WRAP,41,17,false,AC_TRN,AC_WRAP>:m_lut.rom', from '10' bits to '8' b
+its. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Warning: $MGC_HOME/shared/include/ac_math/ac_reciprocal_pwl.h(181): Reducing the num
+ber of bits used to represent array elements of 'ac_math::ac_reciprocal_pwl<AC_TRN,21,
+5,false,AC_TRN,AC_WRAP,41,17,false,AC_TRN,AC_WRAP>:c_lut.rom#1', from '11' bits to '1
+0' bits. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Info: $MGC_HOME/shared/include/ac_math/ac_reciprocal_pwl.h(189): Splitting object 'a
+c_math::ac_reciprocal_pwl<AC_TRN,21,5,false,AC_TRN,AC_WRAP,41,17,false,AC_TRN,AC_WRAP
+>:normalized_fixed' into 3 segments (OPT-19)
+# Info: $MGC_HOME/shared/include/ac_math/ac_normalize.h(143): Splitting object 'ac_mat
+h::ac_normalize<21,5,false,AC_TRN,AC_WRAP>:expret:_qr' into 3 segments (OPT-19)
+# Info: $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(137): Splitting object
+'SEPARATE_INTO_INT_AND_FRAC:b2_pow:mul.psp' into 2 segments (OPT-19)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(427): Loop '/nnet::soft
+max<dense1_result_t,result_t,softmax_config6>/core/SoftmaxInitPackLoop' iterated at mo
+st 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(136): Loop '/nnet::softmax<den
+se1_result_t,result_t,softmax_config6>/core/SEPARATE_INTO_INT_AND_FRAC' iterated at mo
+st 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(156): Loop '/nnet::softmax<den
+se1_result_t,result_t,softmax_config6>/core/CALCULATE_NORM_NUM_AND_DEN' iterated at mo
+st 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(168): Loop '/nnet::softmax<den
+se1_result_t,result_t,softmax_config6>/core/CALCULATE_SOFTMAX_OUT' iterated at most 10
+times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation.h(563): Loop '/nnet::softmax<den
+se1_result_t,result_t,softmax_config6>/core/nnet::ac_softmax_pwl_wrapper<10U,16,8,tru
+e,AC_TRN,AC_WRAP,16,8,true,AC_TRN,AC_WRAP>:for' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(436): Loop '/nnet::soft
+max<dense1_result_t,result_t,softmax_config6>/core/SoftmaxResPackLoop' iterated at mos
+t 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(422): Loop '/nnet::soft
+max<dense1_result_t,result_t,softmax_config6>/core/SoftmaxInitLoop' iterated at most 1
+times. (LOOP-2)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Optimizing block '/myproject' ... (CIN-4)
+# $PROJECT_HOME/firmware/myproject.cpp(19): INOUT port 'x' is only used as an input.
+(OPT-10)
+# $PROJECT_HOME/firmware/myproject.cpp(20): INOUT port 'layer6_out' is only used as an
+output. (OPT-11)
+# Warning: $PROJECT_HOME/firmware/parameters.h(140): Reducing the number of bits used
+to represent array elements of 'config7::to_shape.rom', from '32' bits to '1' bits.
+(MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# Warning: $PROJECT_HOME/firmware/parameters.h(142): Reducing the number of bits used
+to represent array elements of 'config7::perm_strides.rom', from '32' bits to '3' bit
+s. (MEM-87)
+# Warning: To disable array compaction optimization, please use 'directive set -DA_DIS
+ABLE_RESIZE_MEM true'. Disabling the optimization can have QofR implications. (MEM-99)
+# Warning: If the array is transformed at later stages using WORD_WIDTH, BLOCK_SIZE, I
+NTERLEAVE directive, the new array dimensions will be used. The num_byte_enables (if u
+sed) may be incompatible. Please review the applicable constraint settings to get the
+desired RAM/ROM layout. (MEM-100)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(49): Loop '/myproject/co
+re/nnet::transpose<layer3_t,layer7_t,config7>:for:for' iterated at most 5 times. (LOOP
+-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(46): Loop '/myproject/co
+re/nnet::transpose<layer3_t,layer7_t,config7>:for' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose.h(21): Loop '/myproject/core/nne
+t::transfer_idx<config7>:for' iterated at most 3 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(59): Loop '/myproject/co
+re/nnet::transpose<layer3_t,layer7_t,config7>:for#1:for' iterated at most 4 times. (LO
+OP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(55): Loop '/myproject/co
+re/nnet::transpose<layer3_t,layer7_t,config7>:for#1' iterated at most 20 times. (LOOP-
+2)
+# Design 'myproject' was read (SOL-1)
+# Makefile for Original Design + Testbench written to file './scverify/Verify_orig_cxx
+_osci.mk'
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/dgb/sb/sif/subprojs/hls4ml/src/t
+oolkits/Pytorch/my-MNISTModel-Catapult-test/Catapult/myproject.v1/CDesignChecker/desig
+n_checker.sh'
+# Info: Completed transformation 'compile' on solution 'myproject.v1': elapsed time 1
+0.29 seconds, memory usage 1730784kB, peak memory usage 1730784kB (SOL-9)
+# Info: Design complexity at end of 'compile': Total ops = 668, Real ops = 203, Vars =
+139 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# ***** C SIMULATION *****
+# Making './scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osci sim'
+# Make utility invoked from '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-
+MNISTModel-Catapult-test/Catapult/myproject.v1'
+# /user/dgb/sb/sif/aol/Mgc_home/bin/make -f ./scverify/Verify_orig_cxx_osci.mk SIM
+TOOL=osci build < "/dev/null" (BASIC-15)
+# ============================================
+# Creating simulation directory 'scverify/orig_cxx_osci'
+# mkdir -p scverify/orig_cxx_osci
+# ============================================
+# Compiling C++ file: ../../firmware/myproject.cpp
+# /user/dgb/sb/sif/aol/Mgc_home/pkgs/dcs_gcc/usr/bin/g++ -DCCS_SCVERIFY_USE_CCS_BLOCK
+-DCCS_DUT_SYSC -DRANDOM_FRAMES=2 -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -
+DCCS_MISMATCHED_OUTPUTS_ONLY -DDEADLOCK_DETECTION -std=gnu++17 -Wall -Wno-unknown-prag
+mas -Wno-unused-label -g -I. -I/user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils
+-I../.. -I. -I/user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils -I/user/dgb/sb/s
+if/aol/Mgc_home/shared/include -I/user/dgb/sb/sif/aol/Mgc_home/shared/include -I/user/
+dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/src -I/user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs
+-I/user/dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DSC_USE_STD_STRING -c
+../../firmware/myproject.cpp -o scverify/orig_cxx_osci/myproject.cpp.cxxts.o
+# In file included from /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_a
+ctivation.h:34,
+# from ../../firmware/parameters.h:10,
+# from ../../firmware/myproject.cpp:9:
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/ac_math/ac_softmax_pwl_new.h: In functi
+on ‘void ac_math::ac_softmax_pwl_new_ptr(const ac_fixed<WF, IF, SF, QF, OF>*, ac_fixed
+<outW, outI, false, outQ, outO>*)’:
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/ac_math/ac_softmax_pwl_new.h:122:53: wa
+rning: typedef ‘out_type’ locally defined but not used [-Wunused-local-typedefs]
+# 122 | typedef ac_fixed<outW, outI, false, outQ, outO> out_type;
+# | ^~~~~~~~
+# In file included from ../../firmware/parameters.h:20,
+# from ../../firmware/myproject.cpp:9:
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_transpose_stream.h: In
+instantiation of ‘typename std::enable_if<(CONFIG_T::dims != 2), void>::type nnet::tr
+anspose(ac_channel<T>&, ac_channel<dstType>&) [with data_T = nnet::array<ac_fixed<16,
+8, true>, 5>; res_T = nnet::array<ac_fixed<16, 8, true>, 4>; CONFIG_T = config7; type
+name std::enable_if<(CONFIG_T::dims != 2), void>::type = void]’:
+# ../../firmware/myproject.cpp:71:72: required from here
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_transpose_stream.h:46:2
+3: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsi
+gned int’ [-Wsign-compare]
+# 46 | for (int i = 0; i < CONFIG_T::N / data_T::size; i++) {
+# | ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_transpose_stream.h:49:2
+7: warning: comparison of integer expressions of different signedness: ‘int’ and ‘cons
+t unsigned int’ [-Wsign-compare]
+# 49 | for (int j = 0; j < data_T::size; j++) {
+# | ~~^~~~~~~~~~~~~~
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_transpose_stream.h:55:2
+3: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsi
+gned int’ [-Wsign-compare]
+# 55 | for (int i = 0; i < CONFIG_T::N / res_T::size; i++) {
+# | ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+# /user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils/nnet_transpose_stream.h:59:2
+7: warning: comparison of integer expressions of different signedness: ‘int’ and ‘cons
+t unsigned int’ [-Wsign-compare]
+# 59 | for (int j = 0; j < res_T::size; j++) {
+# | ~~^~~~~~~~~~~~~
+# ============================================
+# Compiling C++ file: ../../myproject_test.cpp
+# /user/dgb/sb/sif/aol/Mgc_home/pkgs/dcs_gcc/usr/bin/g++ -DCCS_SCVERIFY_USE_CCS_BLOCK
+-DCCS_DUT_SYSC -DRANDOM_FRAMES=2 -DSC_INCLUDE_DYNAMIC_PROCESSES -DSC_USE_STD_STRING -
+DCCS_MISMATCHED_OUTPUTS_ONLY -DDEADLOCK_DETECTION -std=gnu++17 -Wall -Wno-unknown-prag
+mas -Wno-unused-label -g -I. -I/user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils
+-I../.. -I. -I/user/dgb/sb/sif/aol/Mgc_home/shared/include/nnet_utils -I/user/dgb/sb/s
+if/aol/Mgc_home/shared/include -I/user/dgb/sb/sif/aol/Mgc_home/shared/include -I/user/
+dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/src -I/user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs
+-I/user/dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/mgc_comps_src -DSC_USE_STD_STRING -c
+../../myproject_test.cpp -o scverify/orig_cxx_osci/myproject_test.cpp.cxxts.o
+# ============================================
+# Linking executable
+# /user/dgb/sb/sif/aol/Mgc_home/pkgs/dcs_gcc/usr/bin/g++ -static-libstdc++ -L/user/dg
+b/sb/sif/aol/Mgc_home/shared/lib/Linux/gcc-10.3.0-64 -L/user/dgb/sb/sif/aol/Mgc_home/s
+hared/lib -L/user/dgb/sb/sif/aol/Mgc_home/shared/lib/Linux/gcc-10.3.0-64 scverify/orig
+_cxx_osci/myproject.cpp.cxxts.o scverify/orig_cxx_osci/myproject_test.cpp.cxxts.o -Wl,
+-Bstatic -lsystemc -Wl,-Bdynamic -lpthread -o scverify/orig_cxx_osci/scverify_top
+# /user/dgb/sb/sif/aol/Mgc_home/bin/make -f ./scverify/Verify_orig_cxx_osci.mk SIM
+TOOL=osci sim (BASIC-14)
+# ============================================
+# Simulating design
+# cd ../..; ./Catapult/myproject.v1/scverify/orig_cxx_osci/scverify_top ./firmware/wei
+ghts ./tb_data/tb_input_features.dat ./tb_data/tb_output_predictions.dat 0.0
+# Weights directory: ./firmware/weights
+# Test Feature Data: ./tb_data/tb_input_features.dat
+# Test Predictions : ./tb_data/tb_output_predictions.dat
+# Processing input 0
+# Predictions
+# 7 0 0 0 4.14168e-41 0 6.86636e-44 0 1.02687e-41 0
+# Quantized predictions
+# 0 0 0 0 0 0 0 .99609375 0 0
+# Info: Saved inference results to file: tb_data/csim_results.log
+# ***** C SIMULATION COMPLETED IN 0h0m5s *****
+# ***** SETTING TECHNOLOGY LIBRARIES *****
+# Info: Starting transformation 'libraries' on solution 'myproject.v1' (SOL-8)
+# Info: Please set ComponentLibs/TechLibSearchPath to enable flows that use downstream
+synthesis tools (LIB-220)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_busdefs.lib' [mgc_busdefs]...
+(LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/stdops.lib' [STDOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/fpops.lib' [FPOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_dw_ops.lib' [CCS_DW_OPS]... (L
+IB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_ioport.lib' [ccs_ioport]... (L
+IB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_ioport.lib' [mgc_ioport]... (L
+IB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_ops.lib' [ASSERT_OPS]...
+(LIB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_mods.lib' [assert_mod
+s]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_connections.lib' [ccs_connecti
+ons]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/nangate/nangate-45nm_beh.lib' [nan
+gate-45nm_beh]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_sample_mem.lib' [ccs_sample_me
+m]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_sample_rom.lib' [ccs_sample_ro
+m]... (LIB-49)
+# Reading component library '$MGC_HOME/shared/pkgs/ccs_hls4ml/hls4ml.lib' [hls4ml_li
+b]... (LIB-49)
+# Info: Completed transformation 'libraries' on solution 'myproject.v1': elapsed time
+0.44 seconds, memory usage 1730784kB, peak memory usage 1730784kB (SOL-9)
+# Info: Design complexity at end of 'libraries': Total ops = 668, Real ops = 203, Vars
+= 139 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# ***** C/RTL SYNTHESIS *****
+# Info: Starting transformation 'assembly' on solution 'myproject.v1' (SOL-8)
+# Info: Completed transformation 'assembly' on solution 'myproject.v1': elapsed time
+2.20 seconds, memory usage 1730784kB, peak memory usage 1730784kB (SOL-9)
+# Info: Design complexity at end of 'assembly': Total ops = 682, Real ops = 211, Vars
+= 151 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'loops' on solution 'myproject.v1' (SOL-8)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(427): Loop '/myproject/
+nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/SoftmaxInitPackLoop' is b
+eing fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(136): Loop '/myproject/nnet::s
+oftmax<dense1_result_t,result_t,softmax_config6>/core/SEPARATE_INTO_INT_AND_FRAC' is l
+eft rolled. (LOOP-4)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(156): Loop '/myproject/nnet::s
+oftmax<dense1_result_t,result_t,softmax_config6>/core/CALCULATE_NORM_NUM_AND_DEN' is l
+eft rolled. (LOOP-4)
+# $MGC_HOME/shared/include/ac_math/ac_softmax_pwl_new.h(168): Loop '/myproject/nnet::s
+oftmax<dense1_result_t,result_t,softmax_config6>/core/CALCULATE_SOFTMAX_OUT' is left r
+olled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation.h(563): Loop '/myproject/nnet::s
+oftmax<dense1_result_t,result_t,softmax_config6>/core/nnet::ac_softmax_pwl_wrapper<10
+U,16,8,true,AC_TRN,AC_WRAP,16,8,true,AC_TRN,AC_WRAP>:for' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(436): Loop '/myproject/
+nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/SoftmaxResPackLoop' is be
+ing fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Loop '/myproject/
+nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/main' is left rolled. (LO
+OP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(105): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/DataPack' is being fully unrolled (4 t
+imes). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(59): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/ResetAccum' is being fully unrolled (1
+0 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(71): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/MultAndAccum' is being partially unrol
+led 2 times. (LOOP-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(81): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/Result' is being fully unrolled (10 ti
+mes). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(125): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/ResPack' is being fully unrolled (10 t
+imes). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(98): Loop '/myproject/nnet::
+dense<layer7_t,dense1_result_t,config5>/core/DataPrepare' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(66): Loop '/myproject/nne
+t::dense<layer7_t,dense1_result_t,config5>/core/Compute' is being partially unrolled 1
+times. (LOOP-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Loop '/myproject/nnet::
+dense<layer7_t,dense1_result_t,config5>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(72): Loop '/myproject/n
+net::relu<conv2d1_result_t,layer3_t,relu_config3>/core/ReLUPackLoop' is being fully un
+rolled (5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Loop '/myproject/n
+net::relu<conv2d1_result_t,layer3_t,relu_config3>/core/ReLUActLoop' is left rolled. (L
+OOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Loop '/myproject/n
+net::relu<conv2d1_result_t,layer3_t,relu_config3>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/myproject/nnet::conv
+_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ap_shift_reg<nnet::array<ac_fixed<16,8,
+true,AC_TRN,AC_WRAP>,1U>::value_type,16U>::shift:if:for' is being fully unrolled (15 t
+imes). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(209): Loop '/myproject/nnet::
+conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelShiftHeight' is being fully u
+nrolled (5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(224): Loop '/myproject/nnet::
+conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelPushHeight' is being fully un
+rolled (5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(59): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ResetAccum' is being fully unrol
+led (5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(71): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/MultAndAccum' is being partially
+unrolled 1 times. (LOOP-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(81): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Result' is being fully unrolled
+(5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(321): Loop '/myproject/nnet::
+conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/CastLoop' is being fully unrolled
+(5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(261): Loop '/myproject/nnet::
+conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/LineBufferShift' is being fully unr
+olled (4 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(205): Loop '/myproject/nnet::
+conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/KernelShiftWidth' is being fully un
+rolled (4 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(66): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/Compute' is being partially unro
+lled 1 times. (LOOP-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(84): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ReadInputWidth' is left rolled.
+(LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(82): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ReadInputHeight' is left rolled.
+(LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Loop '/myproject/nne
+t::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(67): Loop '/myproject/nne
+t::zeropad2d_cl<input_t,layer8_t,config8>/core/PadTopWidth' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(80): Loop '/myproject/nne
+t::zeropad2d_cl<input_t,layer8_t,config8>/core/CopyMain' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(73): Loop '/myproject/nne
+t::zeropad2d_cl<input_t,layer8_t,config8>/core/PadMain' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(92): Loop '/myproject/nne
+t::zeropad2d_cl<input_t,layer8_t,config8>/core/PadBottomWidth' is left rolled. (LOOP-
+4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Loop '/myproject/nne
+t::zeropad2d_cl<input_t,layer8_t,config8>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(49): Loop '/myproject/my
+project:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for:for' is being fully u
+nrolled (5 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose.h(21): Loop '/myproject/myprojec
+t:core/core/nnet::transfer_idx<config7>:for' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(59): Loop '/myproject/my
+project:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#1:for' is being fully
+unrolled (4 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(46): Loop '/myproject/my
+project:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for' is left rolled. (LOO
+P-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(55): Loop '/myproject/my
+project:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#1' is left rolled. (L
+OOP-4)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Loop '/myproject/myproject:core/core/main'
+is left rolled. (LOOP-4)
+# Loop '/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/nnet::
+ac_softmax_pwl_wrapper<10U,16,8,true,AC_TRN,AC_WRAP,16,8,true,AC_TRN,AC_WRAP>:for' is
+merged and folded into Loop 'CALCULATE_SOFTMAX_OUT' (LOOP-9)
+# Loop '/myproject/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#
+1:for-2:nnet::transfer_idx<config7>:for' is merged and folded into Loop 'nnet::transpo
+se<layer3_t,layer7_t,config7>:for#1:for-1:nnet::transfer_idx<config7>:for' (LOOP-9)
+# Loop '/myproject/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#
+1:for-4:nnet::transfer_idx<config7>:for' is merged and folded into Loop 'nnet::transpo
+se<layer3_t,layer7_t,config7>:for#1:for-3:nnet::transfer_idx<config7>:for' (LOOP-9)
+# Loop '/myproject/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#
+1:for-3:nnet::transfer_idx<config7>:for' is merged and folded into Loop 'nnet::transpo
+se<layer3_t,layer7_t,config7>:for#1:for-1:nnet::transfer_idx<config7>:for' (LOOP-9)
+# Info: Completed transformation 'loops' on solution 'myproject.v1': elapsed time 5.81
+seconds, memory usage 1730784kB, peak memory usage 1730784kB (SOL-9)
+# Info: Design complexity at end of 'loops': Total ops = 907, Real ops = 184, Vars = 1
+55 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'memories' on solution 'myproject.v1' (SOL-8)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(124): I/O-Port Resource '/m
+yproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/weights:rsc' (from var: w
+eights) mapped to 'ccs_ioport.ccs_in' (size: 2000). (MEM-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(125): I/O-Port Resource '/m
+yproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/biases:rsc' (from var: bi
+ases) mapped to 'ccs_ioport.ccs_in' (size: 80). (MEM-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(86): I/O-Port Resource '/myp
+roject/nnet::dense<layer7_t,dense1_result_t,config5>/weights:rsc' (from var: weights)
+mapped to 'ccs_ioport.ccs_in' (size: 12800). (MEM-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(87): I/O-Port Resource '/myp
+roject/nnet::dense<layer7_t,dense1_result_t,config5>/biases:rsc' (from var: biases) ma
+pped to 'ccs_ioport.ccs_in' (size: 160). (MEM-2)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(107): Writing to re
+gister bank 'data' with 20 registers using a dynamic index can cause excessive runtime
+and undesired hardware. Please inspect coding style. (MEM-74)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(107): Writing to re
+gister bank 'data' with 20 registers using a dynamic index can cause excessive runtime
+and undesired hardware. Please inspect coding style. (MEM-74)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(107): Writing to re
+gister bank 'data' with 20 registers using a dynamic index can cause excessive runtime
+and undesired hardware. Please inspect coding style. (MEM-74)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(107): Writing to re
+gister bank 'data' with 20 registers using a dynamic index can cause excessive runtime
+and undesired hardware. Please inspect coding style. (MEM-74)
+# Info: Completed transformation 'memories' on solution 'myproject.v1': elapsed time
+4.27 seconds, memory usage 1730784kB, peak memory usage 1730784kB (SOL-9)
+# Info: Design complexity at end of 'memories': Total ops = 1810, Real ops = 609, Vars
+= 534 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'cluster' on solution 'myproject.v1' (SOL-8)
+# Info: Starting synthesis of module for CLU 'ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3
+f7a2b8'... (CLUSTER-6)
+# >>> Started: synthesis, design='ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7a2b8' >>>
+#
+#
+# # OasysPrototyping write_define_lib stdout WORK work
+#
+# # Define library WORK
+# if { [file isdirectory "work"] } {
+# file delete -force -- "work"
+# }
+# puts "Note: Creating directory work"
+# file mkdir "work"
+# #puts "Note: Mapped design library WORK => work"
+# run_cmd {read_verilog $RTL_TOOL_SCRIPT_DIR/rtl.v} {analyze file 'rtl.v'}
+# <<< Finished: synthesis, design='ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7a2b8' ru
+ntime=2 <<<
+#
+# Downstream synthesis information: design='ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7
+a2b8' TID='Oasys21.1-s001' Area=13.832 Delay=0.3370 Slack=4.6630 LkgPwr=0.333793742582
+20196
+# Module for the CLU 'ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7a2b8' has been success
+fully synthesized (CLUSTER-9)
+# Info: Starting synthesis of module for CLU 'ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012
+d249cb9'... (CLUSTER-6)
+# >>> Started: synthesis, design='ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d249cb9' >>
+>
+#
+#
+# # OasysPrototyping write_define_lib stdout WORK work
+#
+# # Define library WORK
+# if { [file isdirectory "work"] } {
+# file delete -force -- "work"
+# }
+# puts "Note: Creating directory work"
+# file mkdir "work"
+# #puts "Note: Mapped design library WORK => work"
+# run_cmd {read_verilog $RTL_TOOL_SCRIPT_DIR/rtl.v} {analyze file 'rtl.v'}
+# <<< Finished: synthesis, design='ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d249cb9' r
+untime=1 <<<
+#
+# Downstream synthesis information: design='ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d2
+49cb9' TID='Oasys21.1-s001' Area=16.226 Delay=0.2010 Slack=4.7990 LkgPwr=0.38767078518
+86749
+# Module for the CLU 'ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d249cb9' has been succes
+sfully synthesized (CLUSTER-9)
+# CCORE synthesis starting: pending=4 maximum_workers=3 workers=none
+# Info: Starting synthesis of module for CCORE 'leading_sign_21_0'... (TD-2)
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/dgb/.catapult/Cache/2025_1_11579
+87/CCORE/173741175913cbd450.3/CDesignChecker/design_checker.sh'
+# Reading solution library '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-M
+NISTModel-Catapult-test/Catapult/td_ccore_solutions/leading_sign_21_0_a95d56159f648079
+db042e66da3e32627935_0/.sif/solIndex_3_f66f06e0-b7fe-4b8b-a95b-34b9d8ae7521.xml' ...
+(LIB-129)
+# Module for CCORE 'leading_sign_21_0' has been successfully synthesized (TD-4)
+# Info: Starting synthesis of module for CCORE 'leading_sign_21_0'... (TD-2)
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/dgb/.catapult/Cache/2025_1_11579
+87/CCORE/1737411761c1b0810.4/CDesignChecker/design_checker.sh'
+# Reading solution library '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-M
+NISTModel-Catapult-test/Catapult/td_ccore_solutions/leading_sign_21_0_30a54c2b0d278f1c
+1277f4d79baefd2e7935_0/.sif/solIndex_3_cfbf2c4a-9689-4b13-8e5b-eff60f681d3b.xml' ...
+(LIB-129)
+# Module for CCORE 'leading_sign_21_0' has been successfully synthesized (TD-4)
+# Info: Starting synthesis of module for CCORE 'leading_sign_21_0'... (TD-2)
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/dgb/.catapult/Cache/2025_1_11579
+87/CCORE/17374117631dfeb1e0.5/CDesignChecker/design_checker.sh'
+# Reading solution library '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-M
+NISTModel-Catapult-test/Catapult/td_ccore_solutions/leading_sign_21_0_9cbb134341dac125
+20af1e4be7e10e357935_0/.sif/solIndex_3_56494d06-3d43-4e30-b5e5-0fd56513c9a3.xml' ...
+(LIB-129)
+# Module for CCORE 'leading_sign_21_0' has been successfully synthesized (TD-4)
+# Info: Starting synthesis of module for CCORE 'leading_sign_21_0'... (TD-2)
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/dgb/.catapult/Cache/2025_1_11579
+87/CCORE/17374117641c987aa0.6/CDesignChecker/design_checker.sh'
+# Reading solution library '/home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Pytorch/my-M
+NISTModel-Catapult-test/Catapult/td_ccore_solutions/leading_sign_21_0_fe73aa43505a20d7
+e7b572725a5952c17935_0/.sif/solIndex_3_2956aed1-55a1-4c5d-91eb-7c11d613aa78.xml' ...
+(LIB-129)
+# Module for CCORE 'leading_sign_21_0' has been successfully synthesized (TD-4)
+# CCORE Task - Complete - elapsed=00:02 name=leading_sign_21_0_a95d56159f648079db042e6
+6da3e32627935
+# CCORE Task - Complete - elapsed=00:02 name=leading_sign_21_0_30a54c2b0d278f1c1277f4d
+79baefd2e7935
+# CCORE Task - Complete - elapsed=00:01 name=leading_sign_21_0_9cbb134341dac12520af1e4
+be7e10e357935
+# CCORE Task - Complete - elapsed=00:02 name=leading_sign_21_0_fe73aa43505a20d7e7b5727
+25a5952c17935
+# CCORE Task - Summary - elapsed=00:07 complete=4 incomplete=0 peak_running=1 maximum
+_workers=3 characteristics=multiclockpoint
+# Info: Completed transformation 'cluster' on solution 'myproject.v1': elapsed time 7.
+29 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'cluster': Total ops = 1711, Real ops = 547, Vars
+= 517 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'architect' on solution 'myproject.v1' (SOL-8)
+# Design 'myproject' contains '1219' real operations. (SOL-11)
+# Warning: Extrapolation detected. Script '/home/dgb/sb/sif/subprojs/hls4ml/src/toolki
+ts/Pytorch/my-MNISTModel-Catapult-test/Catapult/myproject.v1/adjust_char_library.tcl'
+generated. (LIB-142)
+# Info: Completed transformation 'architect' on solution 'myproject.v1': elapsed time
+5.93 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'architect': Total ops = 4670, Real ops = 1219, Va
+rs = 1140 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'allocate' on solution 'myproject.v1' (SOL-8)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::softma
+x<dense1_result_t,result_t,softmax_config6>/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(422): Prescheduled LOOP
+'/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/SoftmaxInitLo
+op' (2 c-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Prescheduled LOOP
+'/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/main' (1 c-st
+eps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Prescheduled LOOP
+'/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/core:rlp' (0
+c-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Prescheduled SEQU
+ENTIAL '/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core' (tota
+l length 61 c-steps) (SCHD-8)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Initial sch
+edule of SEQUENTIAL '/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6
+>/core': Latency = 30, Area (Datapath, Register, Total) = 18329.56, 3843.70, 22173.26
+(CRAAS-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(417): Final sched
+ule of SEQUENTIAL '/myproject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/
+core': Latency = 30, Area (Datapath, Register, Total) = 9911.51, 4286.86, 14198.37 (CR
+AAS-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::dense<
+layer7_t,dense1_result_t,config5>/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Prescheduled LOOP '/myp
+roject/nnet::dense<layer7_t,dense1_result_t,config5>/core/main' (2 c-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Prescheduled LOOP '/myp
+roject/nnet::dense<layer7_t,dense1_result_t,config5>/core/core:rlp' (0 c-steps) (SCHD-
+7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Prescheduled SEQUENTIAL
+'/myproject/nnet::dense<layer7_t,dense1_result_t,config5>/core' (total length 2 c-step
+s) (SCHD-8)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Initial schedule
+of SEQUENTIAL '/myproject/nnet::dense<layer7_t,dense1_result_t,config5>/core': Latenc
+y = 420, Area (Datapath, Register, Total) = 15789.63, 6941.27, 22730.90 (CRAAS-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Final schedule of
+SEQUENTIAL '/myproject/nnet::dense<layer7_t,dense1_result_t,config5>/core': Latency =
+420, Area (Datapath, Register, Total) = 10092.44, 6941.27, 17033.71 (CRAAS-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::relu<c
+onv2d1_result_t,layer3_t,relu_config3>/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Prescheduled LOOP
+'/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core/ReLUActLoop' (2 c
+-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Prescheduled LOOP
+'/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core/main' (1 c-steps)
+(SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Prescheduled LOOP
+'/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core/core:rlp' (0 c-st
+eps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Prescheduled SEQUE
+NTIAL '/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core' (total leng
+th 33 c-steps) (SCHD-8)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Initial sche
+dule of SEQUENTIAL '/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/cor
+e': Latency = 16, Area (Datapath, Register, Total) = 674.44, 45.22, 719.66 (CRAAS-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(60): Final schedu
+le of SEQUENTIAL '/myproject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core':
+Latency = 16, Area (Datapath, Register, Total) = 225.03, 45.22, 270.25 (CRAAS-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::conv_2
+d_cl<layer8_t,conv2d1_result_t,config2>/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(82): Prescheduled LOOP '/my
+project/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ReadInputHeight' (3 c
+-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Prescheduled LOOP '/m
+yproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/main' (2 c-steps) (S
+CHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Prescheduled LOOP '/m
+yproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/core:rlp' (0 c-step
+s) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Prescheduled SEQUENTI
+AL '/myproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core' (total length
+96002 c-steps) (SCHD-8)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Initial schedul
+e of SEQUENTIAL '/myproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core':
+Latency = 32001, Area (Datapath, Register, Total) = 12272.04, 15370.28, 27642.32 (CRAA
+S-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(122): Final schedule
+of SEQUENTIAL '/myproject/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core':
+Latency = 32001, Area (Datapath, Register, Total) = 7202.08, 14954.25, 22156.33 (CRAA
+S-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::zeropa
+d2d_cl<input_t,layer8_t,config8>/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(80): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/CopyMain' (2 c-steps) (SCHD
+-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(92): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/PadBottomWidth' (1 c-steps)
+(SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(73): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/PadMain' (2 c-steps) (SCHD-
+7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(67): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/PadTopWidth' (1 c-steps) (S
+CHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/main' (1 c-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Prescheduled LOOP '/m
+yproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/core:rlp' (0 c-steps) (SCHD
+-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Prescheduled SEQUENTI
+AL '/myproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core' (total length 453 c-
+steps) (SCHD-8)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Initial schedul
+e of SEQUENTIAL '/myproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core': Latenc
+y = 252, Area (Datapath, Register, Total) = 67.33, 85.92, 153.25 (CRAAS-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(62): Final schedule
+of SEQUENTIAL '/myproject/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core': Latency
+= 252, Area (Datapath, Register, Total) = 28.93, 85.92, 114.85 (CRAAS-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Performing concurrent resource allocation and scheduling on '/myproject/myproject:co
+re/core' (CRAAS-1)
+# Info: Select qualified components for data operations ... (CRAAS-3)
+# Info: Apply resource constraints on data operations ... (CRAAS-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(55): Prescheduled LOOP
+'/myproject/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#1' (2
+c-steps) (SCHD-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(46): Prescheduled LOOP
+'/myproject/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for' (1 c-
+steps) (SCHD-7)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Prescheduled LOOP '/myproject/myproject:co
+re/core/main' (1 c-steps) (SCHD-7)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Prescheduled LOOP '/myproject/myproject:co
+re/core/core:rlp' (0 c-steps) (SCHD-7)
+# $PROJECT_HOME/firmware/myproject.cpp(18): Prescheduled SEQUENTIAL '/myproject/myproj
+ect:core/core' (total length 137 c-steps) (SCHD-8)
+# Info: $PROJECT_HOME/firmware/myproject.cpp(18): Initial schedule of SEQUENTIAL '/myp
+roject/myproject:core/core': Latency = 76, Area (Datapath, Register, Total) = 11710.1
+7, 6014.26, 17724.43 (CRAAS-11)
+# At least one feasible schedule exists. (CRAAS-9)
+# Info: $PROJECT_HOME/firmware/myproject.cpp(18): Final schedule of SEQUENTIAL '/mypro
+ject/myproject:core/core': Latency = 76, Area (Datapath, Register, Total) = 7532.26, 6
+014.26, 13546.52 (CRAAS-12)
+# Resource allocation and scheduling done. (CRAAS-2)
+# Info: Applying user-supplied FIFO_DEPTH constraint of 0 to channel 'layer8_out' over
+riding computed fifo_depth of 2 (HIER-35)
+# Info: Applying user-supplied FIFO_DEPTH constraint of 1 to channel 'layer2_out' (HIE
+R-22)
+# Info: Applying user-supplied FIFO_DEPTH constraint of 1 to channel 'layer3_out' (HIE
+R-22)
+# Info: Applying user-supplied FIFO_DEPTH constraint of 1 to channel 'layer7_out' (HIE
+R-22)
+# Info: Applying user-supplied FIFO_DEPTH constraint of 1 to channel 'layer5_out' (HIE
+R-22)
+# Netlist written to file 'schedule.gnt' (NET-4)
+# Info: Completed transformation 'allocate' on solution 'myproject.v1': elapsed time
+4.21 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'allocate': Total ops = 4670, Real ops = 1219, Var
+s = 1140 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'schedule' on solution 'myproject.v1' (SOL-8)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::softma
+x<dense1_result_t,result_t,softmax_config6>/core' (CRAAS-1)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::dense<
+layer7_t,dense1_result_t,config5>/core' (CRAAS-1)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::relu<c
+onv2d1_result_t,layer3_t,relu_config3>/core' (CRAAS-1)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::conv_2
+d_cl<layer8_t,conv2d1_result_t,config2>/core' (CRAAS-1)
+# Performing concurrent resource allocation and scheduling on '/myproject/nnet::zeropa
+d2d_cl<input_t,layer8_t,config8>/core' (CRAAS-1)
+# Performing concurrent resource allocation and scheduling on '/myproject/myproject:co
+re/core' (CRAAS-1)
+# Global signal 'data:rsc.rdy' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,co
+nfig8>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.vld' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,co
+nfig8>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.dat' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,co
+nfig8>' for component 'data:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(21): Creating buffer
+for wait controller for component 'data:rsc' (SCHD-46)
+# Global signal 'res:rsc.rdy' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,con
+fig8>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.vld' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,con
+fig8>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.dat' added to design 'nnet::zeropad2d_cl<input_t,layer8_t,con
+fig8>' for component 'res:rsci' (LIB-3)
+# Global signal 'data:rsc.rdy' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resu
+lt_t,config2>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.vld' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resu
+lt_t,config2>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.dat' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resu
+lt_t,config2>' for component 'data:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(90): Creating buffer
+for wait controller for component 'data:rsc' (SCHD-46)
+# Global signal 'res:rsc.rdy' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resul
+t_t,config2>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.vld' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resul
+t_t,config2>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.dat' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_resul
+t_t,config2>' for component 'res:rsci' (LIB-3)
+# Global signal 'weights:rsc.dat' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_r
+esult_t,config2>' for component 'weights:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Creating buffer
+for wait controller for component 'weights:rsc' (SCHD-46)
+# Global signal 'biases:rsc.dat' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_re
+sult_t,config2>' for component 'biases:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/ac_fixed.h(339): Creating buffer for wait controller
+for component 'biases:rsc' (SCHD-46)
+# Global signal 'weights.triosy.lz' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1
+_result_t,config2>' for component 'weights.triosy:obj' (LIB-3)
+# Global signal 'biases.triosy.lz' added to design 'nnet::conv_2d_cl<layer8_t,conv2d1_
+result_t,config2>' for component 'biases.triosy:obj' (LIB-3)
+# Global signal 'data:rsc.rdy' added to design 'nnet::relu<conv2d1_result_t,layer3_t,r
+elu_config3>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.vld' added to design 'nnet::relu<conv2d1_result_t,layer3_t,r
+elu_config3>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.dat' added to design 'nnet::relu<conv2d1_result_t,layer3_t,r
+elu_config3>' for component 'data:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(66): Creating buf
+fer for wait controller for component 'data:rsc' (SCHD-46)
+# Global signal 'res:rsc.rdy' added to design 'nnet::relu<conv2d1_result_t,layer3_t,re
+lu_config3>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.vld' added to design 'nnet::relu<conv2d1_result_t,layer3_t,re
+lu_config3>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.dat' added to design 'nnet::relu<conv2d1_result_t,layer3_t,re
+lu_config3>' for component 'res:rsci' (LIB-3)
+# Global signal 'data_stream:rsc.rdy' added to design 'nnet::dense<layer7_t,dense1_res
+ult_t,config5>' for component 'data_stream:rsci' (LIB-3)
+# Global signal 'data_stream:rsc.vld' added to design 'nnet::dense<layer7_t,dense1_res
+ult_t,config5>' for component 'data_stream:rsci' (LIB-3)
+# Global signal 'data_stream:rsc.dat' added to design 'nnet::dense<layer7_t,dense1_res
+ult_t,config5>' for component 'data_stream:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(102): Creating buffer
+for wait controller for component 'data_stream:rsc' (SCHD-46)
+# Global signal 'res_stream:rsc.rdy' added to design 'nnet::dense<layer7_t,dense1_resu
+lt_t,config5>' for component 'res_stream:rsci' (LIB-3)
+# Global signal 'res_stream:rsc.vld' added to design 'nnet::dense<layer7_t,dense1_resu
+lt_t,config5>' for component 'res_stream:rsci' (LIB-3)
+# Global signal 'res_stream:rsc.dat' added to design 'nnet::dense<layer7_t,dense1_resu
+lt_t,config5>' for component 'res_stream:rsci' (LIB-3)
+# Global signal 'weights:rsc.dat' added to design 'nnet::dense<layer7_t,dense1_result_
+t,config5>' for component 'weights:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Creating buffer
+for wait controller for component 'weights:rsc' (SCHD-46)
+# Global signal 'biases:rsc.dat' added to design 'nnet::dense<layer7_t,dense1_result_
+t,config5>' for component 'biases:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/ac_fixed.h(339): Creating buffer for wait controller
+for component 'biases:rsc' (SCHD-46)
+# Global signal 'weights.triosy.lz' added to design 'nnet::dense<layer7_t,dense1_resul
+t_t,config5>' for component 'weights.triosy:obj' (LIB-3)
+# Global signal 'biases.triosy.lz' added to design 'nnet::dense<layer7_t,dense1_result
+_t,config5>' for component 'biases.triosy:obj' (LIB-3)
+# Global signal 'data:rsc.rdy' added to design 'nnet::softmax<dense1_result_t,result_
+t,softmax_config6>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.vld' added to design 'nnet::softmax<dense1_result_t,result_
+t,softmax_config6>' for component 'data:rsci' (LIB-3)
+# Global signal 'data:rsc.dat' added to design 'nnet::softmax<dense1_result_t,result_
+t,softmax_config6>' for component 'data:rsci' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(423): Creating bu
+ffer for wait controller for component 'data:rsc' (SCHD-46)
+# Global signal 'res:rsc.rdy' added to design 'nnet::softmax<dense1_result_t,result_t,
+softmax_config6>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.vld' added to design 'nnet::softmax<dense1_result_t,result_t,
+softmax_config6>' for component 'res:rsci' (LIB-3)
+# Global signal 'res:rsc.dat' added to design 'nnet::softmax<dense1_result_t,result_t,
+softmax_config6>' for component 'res:rsci' (LIB-3)
+# Global signal 'layer3_out:cns.rdy' added to design 'myproject:core' for component 'l
+ayer3_out:cnsi' (LIB-3)
+# Global signal 'layer3_out:cns.vld' added to design 'myproject:core' for component 'l
+ayer3_out:cnsi' (LIB-3)
+# Global signal 'layer3_out:cns.dat' added to design 'myproject:core' for component 'l
+ayer3_out:cnsi' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(47): Creating buff
+er for wait controller for component 'layer3_out:cns' (SCHD-46)
+# Global signal 'layer7_out:cns.rdy' added to design 'myproject:core' for component 'l
+ayer7_out:cnsi' (LIB-3)
+# Global signal 'layer7_out:cns.vld' added to design 'myproject:core' for component 'l
+ayer7_out:cnsi' (LIB-3)
+# Global signal 'layer7_out:cns.dat' added to design 'myproject:core' for component 'l
+ayer7_out:cnsi' (LIB-3)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(422): Loop '/mypr
+oject/nnet::softmax<dense1_result_t,result_t,softmax_config6>/core/SoftmaxInitLoop' is
+pipelined with initiation interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(85): Loop '/myproject/
+nnet::dense<layer7_t,dense1_result_t,config5>/core/main' is pipelined with initiation
+interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Loop '/mypro
+ject/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/core/ReLUActLoop' is pipelined
+with initiation interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(82): Loop '/myprojec
+t/nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2>/core/ReadInputHeight' is pipelin
+ed with initiation interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(80): Loop '/myprojec
+t/nnet::zeropad2d_cl<input_t,layer8_t,config8>/core/CopyMain' is pipelined with initia
+tion interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(46): Loop '/myproj
+ect/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for' is pipelined w
+ith initiation interval 1 and no flushing (SCHD-43)
+# Info: $MGC_HOME/shared/include/nnet_utils/nnet_transpose_stream.h(55): Loop '/myproj
+ect/myproject:core/core/nnet::transpose<layer3_t,layer7_t,config7>:for#1' is pipelined
+with initiation interval 1 and no flushing (SCHD-43)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Loop '/myproject/m
+yproject.struct/nnet::relu<conv2d1_result_t,layer3_t,relu_config3>/nnet::relu<conv2d1_
+result_t,layer3_t,relu_config3>:core/core/ReLUActLoop' iterated at most 17 times. (LOO
+P-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(80): Loop '/myproject/mypr
+oject.struct/nnet::zeropad2d_cl<input_t,layer8_t,config8>/nnet::zeropad2d_cl<input_t,l
+ayer8_t,config8>:core/core/CopyMain' iterated at most 15 times. (LOOP-2)
+# Info: Running transformation 'schedule' on solution 'myproject.v1': elapsed time 29.
+92 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-15)
+# Report written to file 'cycle.rpt'
+# Info: Completed transformation 'schedule' on solution 'myproject.v1': elapsed time 5
+2.45 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'schedule': Total ops = 4450, Real ops = 1000, Var
+s = 1718 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'dpfsm' on solution 'myproject.v1' (SOL-8)
+# Performing FSM extraction... (FSM-1)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:sX(2:0).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_
+result_t,config2>:sX(2:0).lpi#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_resul
+t_t,config2>:sX(2:0).sva, nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,con
+fig2>:sX(2:0).lpi#2.dfm#1' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(1).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,c
+onv2d1_result_t,config2>:kernel_data(1).lpi#2, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(1).sva, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(1).lpi#2.dfm' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(11).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(11).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(11).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(11).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(12).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(12).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(12).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(12).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(16).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(16).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(16).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(16).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(17).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(17).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(17).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(17).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(2).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,c
+onv2d1_result_t,config2>:kernel_data(2).lpi#2, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(2).sva, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(2).lpi#2.dfm' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(21).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(21).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(21).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(21).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(22).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(22).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(22).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(22).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(23).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(23).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(23).sva, nnet::compute_output_buffer_2d<layer
+8_t,conv2d1_result_t,config2>:kernel_data(23).lpi#2.dfm' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(24).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,
+conv2d1_result_t,config2>:kernel_data(24).lpi#2, nnet::compute_output_buffer_2d<layer8
+_t,conv2d1_result_t,config2>:kernel_data(24).lpi#2.dfm, nnet::compute_output_buffer_2d
+<layer8_t,conv2d1_result_t,config2>:kernel_data(24).sva' (2 registers deleted). (FSM-
+3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(6).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,c
+onv2d1_result_t,config2>:kernel_data(6).lpi#2, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(6).sva, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(6).lpi#2.dfm' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:kernel_data(7).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,c
+onv2d1_result_t,config2>:kernel_data(7).lpi#2, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(7).sva, nnet::compute_output_buffer_2d<layer8_
+t,conv2d1_result_t,config2>:kernel_data(7).lpi#2.dfm' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:pX(3:0).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_
+result_t,config2>:pX(3:0).lpi#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_resul
+t_t,config2>:pX(3:0).sva, nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,con
+fig2>:pX(3:0).lpi#2.dfm#1' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:pY(3:0).lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_
+result_t,config2>:pY(3:0).lpi#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_resul
+t_t,config2>:pY(3:0).lpi#2.dfm#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_resu
+lt_t,config2>:pY(3:0).sva' (2 registers deleted). (FSM-3)
+# Creating shared register 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,c
+onfig2>:sY.lpi#2' for variables 'nnet::compute_output_buffer_2d<layer8_t,conv2d1_resul
+t_t,config2>:sY.lpi#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,config
+2>:sY.lpi#2.dfm#2, nnet::compute_output_buffer_2d<layer8_t,conv2d1_result_t,config2>:s
+Y.sva' (2 registers deleted). (FSM-3)
+# Creating shared register 'CopyMain:j(3:0).sva' for variables 'CopyMain:j(3:0).sva, P
+adBottomWidth:j(4:0).sva(3:0), PadTopWidth:j(4:0).sva(3:0)' (2 registers deleted). (FS
+M-3)
+# Info: Completed transformation 'dpfsm' on solution 'myproject.v1': elapsed time 6.73
+seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'dpfsm': Total ops = 5673, Real ops = 2603, Vars =
+1750 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'instance' on solution 'myproject.v1' (SOL-8)
+# Info: $MGC_HOME/shared/include/ac_math/ac_pow_pwl.h(191): REDUNDANT_RTL_ELIMINATION:
+Optimizing (7bit) register 'reg(ac_math::ac_pow2_pwl<AC_TRN,24,0,false,AC_TRN,AC_WRAP,
+17,1,AC_TRN,AC_WRAP>:output_pwl:mux#3.itm.1)' (input is rom) into (2bit) register in m
+odule 'nnet::softmax<dense1_result_t,result_t,softmax_config6>:core' (OPT-29)
+# Netlist written to file 'schematic.nlv' (NET-4)
+# Info: Completed transformation 'instance' on solution 'myproject.v1': elapsed time 1
+2.80 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'instance': Total ops = 5314, Real ops = 2431, Var
+s = 5204 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# Info: Starting transformation 'extract' on solution 'myproject.v1' (SOL-8)
+# Warning: connected DA instance failed to respond (ignoring) (DAPM-16)
+# Warning: connected DA instance failed to respond (ignoring) (DAPM-16)
+# Report written to file 'rtl.rpt'
+# Generating scverify_top.cpp
+# Generating SCVerify ccs_wrapper_myproject.v
+# Netlist written to file 'rtl.v' (NET-4)
+# generate concat
+# order file name is: rtl.v_order.txt
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_in_wait_v1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_out_wait_v1.v
+# Add dependent file: ../td_ccore_solutions/ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d2
+49cb9_0/rtl.v
+# Add dependent file: ../td_ccore_solutions/ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7
+a2b8_0/rtl.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_br_beh_v5.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_r_beh_v5.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_l_beh_v5.v
+# Add dependent file: ../td_ccore_solutions/leading_sign_21_0_a95d56159f648079db042e66
+da3e32627935_0/rtl.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_io_sync_v2.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_in_v1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_register-file_rst
+_v4.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/mgc_comps_src/mgc_ge
+neric_reg_beh.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_sync_separateRW_r
+st_generic_v3.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_sync_separateRW_c
+dc_generic_v2.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_wrapper_
+generic_v3.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_core_v1
+1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_v11.v
+# Add dependent file: ./rtl.v
+# Finished writing concatenated file: /home/dgb/sb/sif/subprojs/hls4ml/src/toolkits/Py
+torch/my-MNISTModel-Catapult-test/Catapult/myproject.v1/concat_rtl.v
+# order file name is: rtl.v_order_sim.txt
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_in_wait_v1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_out_wait_v1.v
+# Add dependent file: ../td_ccore_solutions/ROM_1i3_1o10_18b99453d5f5fc3107d11e5c012d2
+49cb9_0/rtl.v
+# Add dependent file: ../td_ccore_solutions/ROM_1i3_1o8_da9c49a995b372894057bdb3d5c3f7
+a2b8_0/rtl.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_br_beh_v5.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_r_beh_v5.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_shift_l_beh_v5.v
+# Add dependent file: ../td_ccore_solutions/leading_sign_21_0_a95d56159f648079db042e66
+da3e32627935_0/rtl.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_io_sync_v2.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ccs_in_v1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_register-file_rst
+_v4.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/hls_pkgs/mgc_comps_src/mgc_ge
+neric_reg_beh.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_sync_separateRW_r
+st_generic_v3.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/ram_sync_separateRW_c
+dc_generic_v2.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_wrapper_
+generic_v3.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_core_v1
+1.v
+# Add dependent file: /user/dgb/sb/sif/aol/Mgc_home/pkgs/siflibs/mgc_pipe_mem_v11.v
+# Add dependent file: ./rtl.v
+# Finished writing concatenated simulation file: /home/dgb/sb/sif/subprojs/hls4ml/src/
+toolkits/Pytorch/my-MNISTModel-Catapult-test/Catapult/myproject.v1/concat_sim_rtl.v
+# Generating SCVerify testbench files
+# Makefile for RTL Verilog output 'rtl.v' vs Untimed C++ written to file './scverify/V
+erify_rtl_v_msim.mk'
+# Makefile for Concat RTL Verilog output 'concat_sim_rtl.v' vs Untimed C++ written to
+file './scverify/Verify_concat_sim_rtl_v_msim.mk'
+# Info: Completed transformation 'extract' on solution 'myproject.v1': elapsed time 1
+1.36 seconds, memory usage 1730996kB, peak memory usage 1730996kB (SOL-9)
+# Info: Design complexity at end of 'extract': Total ops = 5407, Real ops = 2454, Vars
+= 1723 (SOL-21)
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# ***** C/RTL SYNTHESIS COMPLETED IN 0h2m17s *****
+# > project save
+# Warning: Unable to start connect folder watch - failed to initialize inotify - errno
+=24 (DAPM-15)
+# > if {$BuildOptions(SCVerify) } {
+# > if {$BuildOptions(verilog)} {
+# > flow run /SCVerify/launch_make ./scverify/Verify_rtl_v_msim.mk {} SIMTOOL=msim
+sim
+# > }
+# > if {$BuildOptions(vhdl)} {
+# > flow run /SCVerify/launch_make ./scverify/Verify_rtl_vhdl_msim.mk {} SIMTOOL=m
+sim sim
+# > }
+# > }
+# > if {$BuildOptions(PowerEst)} {
+# > puts "***** Pre Power Optimization *****"
+# > go switching
+# > if {$BuildOptions(verilog)} {
+# > flow run /PowerAnalysis/report_pre_pwropt_Verilog
+# > }
+# > if {$BuildOptions(vhdl)} {
+# > flow run /PowerAnalysis/report_pre_pwropt_VHDL
+# > }
+# > }
+# > if {$BuildOptions(PowerOpt)} {
+# > puts "***** Power Optimization *****"
+# > go power
+# > }
+# > if {$BuildOptions(RTLSynth)} {
+# > set launch {}
+# > foreach {p v} [solution get /OUTPUTFILES/.../FILETYPE -match glob -rec 1 -ret p
+v] {
+# > if { $v == "SYNTHESIS" } {
+# > set p1 [file dirname $p]
+# > set nettype [string tolower [solution get $p1/DEPENDENCIES/1/FILETYPE -check
+path 0]]
+# > if { [info exists BuildOptions($nettype)] && $BuildOptions($nettype) } {
+# > set launch [lindex [lindex [solution get $p1/FLOWS] 0] 1]
+# > }
+# > }
+# > }
+# > if { $launch != {} } {
+# > puts "***** RTL SYNTHESIS *****"
+# > set time_start [clock clicks -milliseconds]
+# > eval flow run $launch
+# > set time_end [clock clicks -milliseconds]
+# > report_time "RTL SYNTHESIS" $time_start $time_end
+# > } else {
+# > logfile message "RTL Synthesis flow lookup failed\n" warning
+# > }
+# > }
+# > if {$BuildOptions(LaunchDA)} {
+# > puts "***** Launching DA *****"
+# > flow run /DesignAnalyzer/launch
+# > }
+# > if { [catch {flow package present /HLS4ML}] == 0 } {
+# > flow run /HLS4ML/collect_reports
+# > }
+# Info: Generated HLS4ML nnet layer post-HLS report '/home/dgb/sb/sif/subprojs/hls4ml/
+src/toolkits/Pytorch/my-MNISTModel-Catapult-test/Catapult/myproject.v1/nnet_layer_resu
+lts.txt'
+# Info: ====================
+# Info: HLS4ML 'nnet' Layer Results
+# Info:
+# Info: Layer Unroll II
+Area Latency Thruput TotalPwr DynPwr LeakPwr
+# Info: ------------------------------------------------------- --------- ---- ----
+------ ------------ ------------ ------------ ------------ ------------
+# Info: nnet::zeropad2d_cl<input_t,layer8_t,config8> 1
+354 252 271 NaN NaN NaN
+# Info: nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2> 1 x 1 1
+15795 32001 32004 NaN NaN NaN
+# Info: nnet::relu<conv2d1_result_t,layer3_t,relu_config3> 1
+1090 16 18 NaN NaN NaN
+# Info: nnet::dense<layer7_t,dense1_result_t,config5> 1 x 2 1
+17743 420 420 NaN NaN NaN
+# Info: nnet::softmax<dense1_result_t,result_t,softmax_config6> 1
+14502 30 32 NaN NaN NaN
+# Info:
+# Info:
+# Info: FIFO Interconnect
+# Info: C++ Variable Instance Component
+Width Depth Area
+# Info: ------------------------- ------------------------- ------------------------
+- -------- -------- --------
+# Info: layer2_out layer2_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804
+# Info: layer3_out layer3_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804
+# Info: layer5_out layer5_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+160 1 1603
+# Info: layer7_out layer7_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+64 1 645
+# Info: layer8_out layer8_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+16 1 166
+# Info:
+# Info:
+# Info: Weight/Bias Value ROM Constants
+# Info: Layer Variable Size (bits)
+# Info: ------ -------------------- --------------------
+# Info: 2 b2 80
+# Info: 2 w2 2000
+# Info: 5 w5 12800
+# Info: 5 b5 160
+# Info:
+# > end dofile ./build_prj.tcl
+Utilization report not found.
+Timing report not found.
+Results in nnet_layer_results.txt from: my-MNISTModel-Catapult-test/Catapult/myprojec
+t.v1/nnet_layer_results.txt
+{'CSimResults': [['0', '0', '0', '0', '0', '0', '0', '.99609375', '0', '0'],
+['0', '0', '.99609375', '0', '0', '0', '0', '0', '0', '0'],
+['0', '1', '0', '0', '0', '0', '0', '0', '0', '0'],
+['.99609375', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+['0', '0', '0', '0', '1', '0', '0', '0', '0', '0'],
+['0', '.99609375', '0', '0', '0', '0', '0', '0', '0', '0'],
+['0', '0', '0', '0', '1', '0', '0', '0', '0', '0'],
+['0', '0', '0', '0', '0', '0', '0', '0', '0', '.99609375'],
+['.00390625',
+'0',
+'.03125',
+'0',
+'.8515625',
+'.015625',
+'.09375',
+'0',
+'0',
+'0'],
+['0', '0', '0', '0', '0', '0', '0', '.00390625', '0', '.9921875'],
+['1', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+['0', '0', '0', '0', '0', '0', '1', '0', '0', '0'],
+['0', '0', '0', '0', '0', '0', '0', '0', '0', '.99609375'],
+['1', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+['0', '1', '0', '0', '0', '0', '0', '0', '0', '0'],
+['0', '0', '0', '0', '0', '.99609375', '0', '0', '0', '0'],
+['0', '0', '0', '0', '0', '0', '0', '0', '0', '1'],
+['0', '0', '0', '0', '0', '0', '0', '1', '0', '0'],
+['0', '0', '0', '.140625', '0', '0', '.0078125', '0', '.83984375', '0'],
+['0', '0', '0', '0', '1', '0', '0', '0', '0', '0']],
+'PerLayerQOFR': ['====================',
+"HLS4ML 'nnet' Layer Results",
+'',
+'Layer Unroll II A
+rea Latency Thruput TotalPwr DynPwr LeakPwr',
+'------------------------------------------------------- --------- ---- -------
+--- ------------ ------------ ------------ ------------ ------------',
+'nnet::zeropad2d_cl<input_t,layer8_t,config8> 1
+354 252 271 NaN NaN NaN',
+'nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2> 1 x 1 1 15
+795 32001 32004 NaN NaN NaN',
+'nnet::relu<conv2d1_result_t,layer3_t,relu_config3> 1 1
+090 16 18 NaN NaN NaN',
+'nnet::dense<layer7_t,dense1_result_t,config5> 1 x 2 1 17
+743 420 420 NaN NaN NaN',
+'nnet::softmax<dense1_result_t,result_t,softmax_config6> 1 14
+502 30 32 NaN NaN NaN',
+'',
+'',
+'FIFO Interconnect',
+'C++ Variable Instance Component
+Width Depth Area',
+'------------------------- ------------------------- -------------------------
+-------- -------- --------',
+'layer2_out layer2_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804',
+'layer3_out layer3_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804',
+'layer5_out layer5_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+160 1 1603',
+'layer7_out layer7_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+64 1 645',
+'layer8_out layer8_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+16 1 166',
+'',
+'',Out[11]:
+'Weight/Bias Value ROM Constants',
+'Layer Variable Size (bits)',
+'------ -------------------- --------------------',
+'2 b2 80',
+'2 w2 2000',
+'5 w5 12800',
+'5 b5 160']}
+Print reports from Catapult
+summary_file = 'my-' + model.__class__.__name__ + '-' + config_ccs['Backend'] + '-tes
+print('Layer summary report: '+summary_file)
+with open(summary_file,'r') as f:
+print(f.read())
+Layer summary report: my-MNISTModel-Catapult-test/firmware/layer_summary.txt
+Layer Name Layer Class Input Type Input Shape O
+utput Type Output Shape Weight Type Bias Type Filter Shap
+e Stride Reuse
+---------------------------- ------------- ------------------- ------------- -----
+-------------- -------------- ------------------- ------------------- ------------
+-- -------- -------
+zp2d_conv2d1 ZeroPadding2D ac_fixed<16,8,true> [14][14][1] ac_fi
+xed<16,8,true> [16][16][1]
+500
+conv2d1 Conv2D ac_fixed<16,8,true> [16][16][1] ac_fi
+xed<16,8,true> [4][4][5] ac_fixed<16,8,true> ac_fixed<16,8,true> [5][5]
+3 500
+relu1 relu ac_fixed<16,8,true> [4][4][5] ac_fi
+xed<16,8,true> [4][4][5]
+500
+transpose_input_for_flatten1 Transpose ac_fixed<16,8,true> [4][4][5] ac_fi
+xed<16,8,true> [5][4][4]
+500
+flatten1 Reshape ac_fixed<16,8,true> [5][4][4] ac_fi
+xed<16,8,true> [80]
+500
+dense1 Dense ac_fixed<16,8,true> [80] ac_fi
+xed<16,8,true> [10] ac_fixed<16,8,true> ac_fixed<16,8,true>
+500
+softmax1 Softmax ac_fixed<16,8,true> [10] ac_fi
+xed<16,8,true> [10]
+500
+import glob
+#Show the contents of the last report generated
+print('my-' + model.__class__.__name__ + '-' + config_ccs['Backend'] + '-test/Catapul
+rpt_files = glob.glob('my-' + model.__class__.__name__ + '-' + config_ccs['Backend']
+print('Latest report: '+rpt_files[-1])
+with open(rpt_files[-1],'r') as f:
+print(f.read())In [12]:In [13]:
+my-MNISTModel-Catapult-test/Catapult*/myproject.v1/nnet_layer_results.txt
+Latest report: my-MNISTModel-Catapult-test/Catapult/myproject.v1/nnet_layer_results.tx
+t
+====================
+HLS4ML 'nnet' Layer Results
+Layer Unroll II Area
+Latency Thruput TotalPwr DynPwr LeakPwr
+------------------------------------------------------- --------- ---- ----------
+------------ ------------ ------------ ------------ ------------
+nnet::zeropad2d_cl<input_t,layer8_t,config8> 1 354
+252 271 NaN NaN NaN
+nnet::conv_2d_cl<layer8_t,conv2d1_result_t,config2> 1 x 1 1 15795
+32001 32004 NaN NaN NaN
+nnet::relu<conv2d1_result_t,layer3_t,relu_config3> 1 1090
+16 18 NaN NaN NaN
+nnet::dense<layer7_t,dense1_result_t,config5> 1 x 2 1 17743
+420 420 NaN NaN NaN
+nnet::softmax<dense1_result_t,result_t,softmax_config6> 1 14502
+30 32 NaN NaN NaN
+FIFO Interconnect
+C++ Variable Instance Component Wi
+dth Depth Area
+------------------------- ------------------------- ------------------------- -----
+--- -------- --------
+layer2_out layer2_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804
+layer3_out layer3_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+80 1 804
+layer5_out layer5_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+160 1 1603
+layer7_out layer7_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+64 1 645
+layer8_out layer8_out_cns_pipe hls4ml_lib.mgc_pipe_mem
+16 1 166
+Weight/Bias Value ROM Constants
+Layer Variable Size (bits)
+------ -------------------- --------------------
+2 b2 80
+2 w2 2000
+5 w5 12800
+5 b5 160

@@ -1,0 +1,53 @@
+{
+  "name": "agentic-nn-generator-ui",
+  "version": "1.0.0",
+  "description": "Electron UI for Agentic Neural Network Generator",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:gpu": "electron . --gpu",
+    "dev": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "neural-network",
+    "ai",
+    "machine-learning",
+    "electron"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+  },
+  "build": {
+    "appId": "com.agentic.nngenerator",
+    "productName": "Agentic NN Generator",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/**/*",
+      "backend/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  }
+}

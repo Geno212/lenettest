@@ -1,0 +1,188 @@
+/* === Global Widget Style === */
+QWidget {
+    background-color: #2b2b2b; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    font-family: "Segoe UI", "Roboto", "Arial";
+    font-size: 11pt;
+    border: 1px solid #444444; /* Dark border */
+}
+
+/* === Tabs === */
+QTabWidget::pane {
+    border: 1px solid #444444;
+    border-radius: 6px;
+    background-color: #3a3a3a; /* Dark tab pane */
+}
+
+QTabBar::tab {
+    background: #505050; /* Darker background for tabs */
+    border: 1px solid #444444;
+    border-bottom: none;
+    padding: 8px 16px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background: #2b2b2b; /* Dark background for selected tab */
+    border-color: #009898; /* Accent color for selected tab */
+    color: #e0e0e0; /* Light text for selected tab */
+}
+
+/* === Buttons === */
+QPushButton {
+    background-color: #009898; /* Accent color */
+    color: white;
+    border: 1px solid #009898;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #007f7f; /* Darker shade for hover */
+    border-color: #007f7f;
+    outline: 1px solid #007f7f;
+}
+
+QPushButton:pressed {
+    background-color: #006666; /* Darkest shade for pressed */
+    border-color: #006666;
+    outline: 1px solid #006666;
+}
+
+/* === Combo Boxes === */
+QComboBox {
+    background-color: #3a3a3a; /* Dark background for combo box */
+    border: 1px solid #444444;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: #e0e0e0;
+}
+
+QComboBox:hover {
+    border: 1px solid #009898; /* Accent color on hover */
+    outline: 1px solid #009898;
+}
+
+/* === Checkboxes === */
+QCheckBox {
+    spacing: 5px;
+    font-size: 10.5pt;
+    color: #e0e0e0; /* Light text */
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #3a3a3a;
+    border: 1px solid #444444;
+    outline: 1px solid transparent;
+}
+
+QCheckBox:hover {
+    background-color: #505050; /* Darker gray on hover */
+    border-color: #009898; /* Accent color */
+    outline: 1px solid #009898;
+}
+
+QCheckBox:checked {
+    background-color: #009898; /* Accent color */
+    border-color: #009898;
+    color: white;
+}
+
+QCheckBox:checked:hover {
+    background-color: #007f7f; /* Darker shade for checked hover */
+    border-color: #007f7f;
+    outline: 1px solid #007f7f;
+}
+
+QCheckBox::indicator {
+    border: 1px solid #444444;
+    border-radius: 3px;
+    width: 16px;
+    height: 16px;
+    background-color: #3a3a3a;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #009898; /* Accent color for checked indicator */
+    border-color: #009898;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: #3a3a3a;
+    border-color: #444444;
+}
+
+/* === Text Edits / Browsers === */
+QTextEdit, QTextBrowser {
+    background-color: #3a3a3a;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    padding: 6px;
+    color: #e0e0e0;
+}
+
+QTextEdit[readOnly="true"] {
+    background-color: #2b2b2b; /* Even darker for read-only */
+}
+
+/* === Labels === */
+QLabel {
+    font-weight: 500;
+    color: #e0e0e0; /* Light text for labels */
+}
+
+/* === Tree Widget === */
+QTreeWidget {
+    background-color: #3a3a3a;
+    border: 1px solid #444444;
+    border-radius: 4px;
+}
+
+QTreeWidget::item:selected {
+    background-color: #505050;
+    color: #e0e0e0;
+}
+
+/* === LineEdit === */
+QLineEdit {
+    background-color: #3a3a3a;
+    border: 1px solid #444444;
+    border-radius: 4px;
+    padding: 6px;
+    color: #e0e0e0;
+}
+
+QLineEdit:focus {
+    border: 1px solid #009898; /* Accent color when focused */
+    outline: 1px solid #009898;
+}
+
+/* === Frame === */
+QFrame {
+    border: none;
+    outline: 1px solid transparent;
+}
+
+/* === Scrollbars === */
+QScrollBar:vertical, QScrollBar:horizontal {
+    background: transparent;
+    width: 12px;
+    margin: 0px;
+}
+
+QScrollBar::handle {
+    background: #444444; /* Dark handle */
+    border-radius: 6px;
+}
+
+QScrollBar::handle:hover {
+    background: #606060; /* Lighter handle on hover */
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    height: 0px;
+    width: 0px;
+}

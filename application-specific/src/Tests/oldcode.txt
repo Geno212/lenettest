@@ -1,0 +1,197 @@
+# Layer1 -> Layer2
+
+    def after_comes_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        if self.layers[layer_idx+1]['type'] == rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 ->x Layer2
+    def after_comes_not_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        if self.layers[layer_idx+1]['type'] != rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 --> Layer2
+    def after_comes(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return False
+
+    # Layer1 -->x Layer2
+    def after_comes_not(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return False
+        return True
+
+    # Layer1 <- Layer2
+    def before_comes_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        if self.layers[layer_idx-1]['type'] == rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 <-x Layer2
+    def before_comes_not_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        if self.layers[layer_idx-1]['type'] != rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 <-- Layer2
+    def before_comes(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        for i in range(0, layer_idx):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return False
+
+    # Layer1 <--x Layer2
+    def before_comes_not(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        for i in range(0, layer_idx):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return False
+        return True
+
+    # (Layer1,Layer2) <--> Layer3
+
+    def between_comes(self, layer_idx, rule_tokens):
+        layer_1, layer_2 = rule_tokens[0][1:-1].split(',')
+        if self.layers[layer_idx]['type'] != layer_1:
+            return True
+        if layer_idx >= len(self.layers):
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == layer_2:
+                return False
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return True# Layer1 -> Layer2
+
+    def after_comes_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        if self.layers[layer_idx+1]['type'] == rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 ->x Layer2
+    def after_comes_not_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        if self.layers[layer_idx+1]['type'] != rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 --> Layer2
+    def after_comes(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return False
+
+    # Layer1 -->x Layer2
+    def after_comes_not(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx >= len(self.layers)-1:
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return False
+        return True
+
+    # Layer1 <- Layer2
+    def before_comes_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        if self.layers[layer_idx-1]['type'] == rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 <-x Layer2
+    def before_comes_not_directly(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        if self.layers[layer_idx-1]['type'] != rule_tokens[2]:
+            return True
+        return False
+
+    # Layer1 <-- Layer2
+    def before_comes(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        for i in range(0, layer_idx):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return False
+
+    # Layer1 <--x Layer2
+    def before_comes_not(self, layer_idx, rule_tokens) -> bool:
+        if self.layers[layer_idx]['type'] != rule_tokens[0]:
+            return True
+        if layer_idx <= 0:
+            return True
+        for i in range(0, layer_idx):
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return False
+        return True
+
+    # (Layer1,Layer2) <--> Layer3
+
+    def between_comes(self, layer_idx, rule_tokens):
+        layer_1, layer_2 = rule_tokens[0][1:-1].split(',')
+        if self.layers[layer_idx]['type'] != layer_1:
+            return True
+        if layer_idx >= len(self.layers):
+            return True
+        for i in range(layer_idx+1, len(self.layers)):
+            if self.layers[i]['type'] == layer_2:
+                return False
+            if self.layers[i]['type'] == rule_tokens[2]:
+                return True
+        return True

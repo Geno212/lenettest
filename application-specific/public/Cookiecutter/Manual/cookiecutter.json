@@ -1,0 +1,115 @@
+{
+  "test_num": 5,
+  "project_name": "Manual_Output",
+  
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 28,
+        "height": 28,
+        "channels": 1,
+        "num_epochs": 10,
+        "batch_size": 32,
+        "dataset": {
+            "value": "MNIST",
+            "index": 46
+        },
+        "dataset_path": "C:\\Users\\Ahmed hosam\\Downloads\\mnist",
+        "target_accuracy": 0.97
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "reduction": "mean",
+            "label_smoothing": 0.0,
+            "ignore_index": -100
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "log_dir": "C:\\Users\\Ahmed hosam\\Desktop\\grad\\Application-Specific-Deep-Learning-Accelerator-Designer\\data\\tensorboardlogs",
+    "layers": {
+        "list": [
+            {
+                "type": "Conv2d",
+                "params": {
+                    "out_channels": 16,
+                    "stride": 1,
+                    "padding": 0,
+                    "kernel_size": 3,
+                    "in_channels": 1
+                },
+                "name": "conv2d_1"
+            },
+            {
+                "type": "MaxPool2d",
+                "params": {
+                    "kernel_size": 2,
+                    "stride": 2,
+                    "padding": 0
+                },
+                "name": "maxpool2d_2"
+            },
+            {
+                "type": "Conv2d",
+                "params": {
+                    "out_channels": 32,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 0,
+                    "in_channels": 16
+                },
+                "name": "conv2d_3"
+            },
+            {
+                "type": "MaxPool2d",
+                "params": {
+                    "kernel_size": 2,
+                    "stride": 2,
+                    "padding": 0
+                },
+                "name": "maxpool2d_4"
+            },
+            {
+                "type": "Flatten",
+                "params": {},
+                "name": "flatten_5"
+            },
+            {
+                "type": "Linear",
+                "params": {
+                    "out_features": 10,
+                    "in_features": 800
+                },
+                "name": "linear_6"
+            }
+        ]
+    },
+    "pretrained": {
+        "value": null,
+        "index": -1
+    },
+    "residual": {
+        "layers": {
+            "list": []
+        }
+    }
+
+}

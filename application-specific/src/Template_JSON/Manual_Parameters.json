@@ -1,0 +1,229 @@
+{
+    "layers": {
+        "list": [
+            {
+                "type": "Conv2d",
+                "params": {
+                    "out_channels": 32,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 0,
+                    "groups": 1,
+                    "bias": true,
+                    "padding_mode": "'zeros'",
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32",
+                    "in_channels": 3
+                },
+                "name": "conv2d_1"
+            },
+            {
+                "type": "MaxPool2d",
+                "params": {
+                    "kernel_size": 2,
+                    "stride": 1,
+                    "padding": 0,
+                    "return_indices": false,
+                    "ceil_mode": false
+                },
+                "name": "maxpool2d_1"
+            },
+            {
+                "type": "ReLU",
+                "params": {
+                    "inplace": false
+                },
+                "name": "relu_1"
+            },
+            {
+                "type": "Conv2d",
+                "params": {
+                    "out_channels": 64,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 0,
+                    "groups": 1,
+                    "bias": true,
+                    "padding_mode": "'zeros'",
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32",
+                    "in_channels": 32
+                },
+                "name": "conv2d_2"
+            },
+            {
+                "type": "ReLU",
+                "params": {
+                    "inplace": false
+                },
+                "name": "relu_2"
+            },
+            {
+                "type": "Conv2d",
+                "params": {
+                    "out_channels": 32,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 0,
+                    "groups": 1,
+                    "bias": true,
+                    "padding_mode": "'zeros'",
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32",
+                    "in_channels": 64
+                },
+                "name": "conv2d_3"
+            },
+            {
+                "type": "MaxPool2d",
+                "params": {
+                    "kernel_size": 2,
+                    "stride": 1,
+                    "padding": 0,
+                    "return_indices": false,
+                    "ceil_mode": false
+                },
+                "name": "maxpool2d_2"
+            },
+            {
+                "type": "ReLU",
+                "params": {
+                    "inplace": false
+                },
+                "name": "relu_3"
+            },
+            {
+                "type": "Dropout2d",
+                "params": {
+                    "p": 0.5,
+                    "inplace": false
+                },
+                "name": "dropout2d_1"
+            },
+            {
+                "type": "Flatten",
+                "params": {
+                    "start_dim": 1,
+                    "end_dim": -1
+                },
+                "name": "flatten_1"
+            },
+            {
+                "type": "Linear",
+                "params": {
+                    "out_features": 32,
+                    "bias": true,
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32",
+                    "in_features": 1758208
+                },
+                "name": "linear_1"
+            },
+            {
+                "type": "BatchNorm1d",
+                "params": {
+                    "num_features": 32,
+                    "eps": 1e-05,
+                    "momentum": 0.1,
+                    "affine": true,
+                    "track_running_stats": true,
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32"
+                },
+                "name": "batchnorm1d_1"
+            },
+            {
+                "type": "ReLU",
+                "params": {
+                    "inplace": false
+                },
+                "name": "relu_4"
+            },
+            {
+                "type": "Dropout1d",
+                "params": {
+                    "p": 0.5,
+                    "inplace": false
+                },
+                "name": "dropout1d_1"
+            },
+            {
+                "type": "Linear",
+                "params": {
+                    "out_features": 43,
+                    "bias": true,
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32",
+                    "in_features": 32
+                },
+                "name": "linear_2"
+            },
+            {
+                "type": "BatchNorm1d",
+                "params": {
+                    "num_features": 43,
+                    "eps": 1e-05,
+                    "momentum": 0.1,
+                    "affine": true,
+                    "track_running_stats": true,
+                    "device": "In miscelleneous params",
+                    "dtype": "torch.float32"
+                },
+                "name": "batchnorm1d_2"
+            },
+            {
+                "type": "Softmax",
+                "params": {
+                    "dim": 1
+                },
+                "name": "softmax_1"
+            }
+        ]
+    },
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 210,
+        "height": 280,
+        "channels": 3,
+        "num_epochs": 1,
+        "batch_size": 2,
+        "dataset": {
+            "value": "GTSRB",
+            "index": 28
+        },
+        "dataset_path": "D:/Graduation Project/Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project/src/manualout"
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "ignore_index": 1,
+            "reduction": "'mean'",
+            "label_smoothing": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "pretrained": {
+        "value": "alexnet",
+        "index": 0
+    },
+    "log_dir": "d:\\Graduation Project\\Siemens-System-Level-Modelling-of-ASDLA-Graduation-Project\\data\\tensorboardlogs"
+}

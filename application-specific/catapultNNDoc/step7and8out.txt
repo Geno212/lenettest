@@ -1,0 +1,470 @@
+Step 7: Compiling C++ Model
+============================================================
+Writing HLS project
+Warning - Catapult backend config was not created with create_initial_config
+... skipping copy of NNET headers from /data/tools/catapult/Mgc_home/shared/include/nnet_utils/
+... skipping copy of ac_types headers - assumed to located in Catapult install tree
+... skipping copy of ac_math headers - assumed to located in Catapult install tree
+... skipping copy of ac_simutils headers - assumed to located in Catapult install tree
+Done
+build_lib.sh: Creating shared library for execution from Python
+firmware/MyModel.cpp: In function ‘void MyModel(ac_channel<nnet::array<ac_fixed<16, 6, true>, 224> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 10> >&)’:
+firmware/MyModel.cpp:78:51: error: no matching function for call to ‘zeropad2d_cf<input_t, layer2_t, config2>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 224> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 228> >&)’
+   78 |     nnet::zeropad2d_cf<input_t, layer2_t, config2>(model_input, layer2_out); // LAYER_0_pad
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:17,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, data_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 224>; res_T = nnet::array<ac_fixed<16, 6, true>, 228>; CONFIG_T = config2]’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 224> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 224>*’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, ac_sync&, data_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 224>; res_T = nnet::array<ac_fixed<16, 6, true>, 228>; CONFIG_T = config2]’
+  122 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:83:50: error: no matching function for call to ‘conv_2d_cf<layer2_t, layer3_t, config3>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 228> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 55> >&, model_default_t [23232], model_default_t [64])’
+   83 |     nnet::conv_2d_cf<layer2_t, layer3_t, config3>(layer2_out, layer3_out, w3, b3); // LAYER_0
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:12,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:75:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 228>; res_T = nnet::array<ac_fixed<16, 6, true>, 55>; CONFIG_T = config3; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   75 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:76:12: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 228> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 228>*’
+   76 |     data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_chan],
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, ac_sync&, res_T*, ac_sync&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 228>; res_T = nnet::array<ac_fixed<16, 6, true>, 55>; CONFIG_T = config3; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   89 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note:   candidate expects 6 arguments, 4 provided
+firmware/MyModel.cpp:93:52: error: no matching function for call to ‘pooling2d_cf<layer5_t, layer6_t, config6>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 55> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >&)’
+   93 |     nnet::pooling2d_cf<layer5_t, layer6_t, config6>(layer5_out, layer6_out); // LAYER_2
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:19,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, res_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 55>; res_T = nnet::array<ac_fixed<16, 6, true>, 27>; CONFIG_T = config6]’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 55> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 55>*’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, ac_sync&, res_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 55>; res_T = nnet::array<ac_fixed<16, 6, true>, 27>; CONFIG_T = config6]’
+  330 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:98:52: error: no matching function for call to ‘zeropad2d_cf<layer6_t, layer7_t, config7>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 31> >&)’
+   98 |     nnet::zeropad2d_cf<layer6_t, layer7_t, config7>(layer6_out, layer7_out); // LAYER_3_pad
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:17,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, data_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 27>; res_T = nnet::array<ac_fixed<16, 6, true>, 31>; CONFIG_T = config7]’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 27>*’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, ac_sync&, data_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 27>; res_T = nnet::array<ac_fixed<16, 6, true>, 31>; CONFIG_T = config7]’
+  122 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:103:50: error: no matching function for call to ‘conv_2d_cf<layer7_t, layer8_t, config8>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 31> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >&, model_default_t [307200], model_default_t [192])’
+  103 |     nnet::conv_2d_cf<layer7_t, layer8_t, config8>(layer7_out, layer8_out, w8, b8); // LAYER_3
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:12,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:75:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 31>; res_T = nnet::array<ac_fixed<16, 6, true>, 27>; CONFIG_T = config8; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   75 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:76:12: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 31> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 31>*’
+   76 |     data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_chan],
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, ac_sync&, res_T*, ac_sync&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 31>; res_T = nnet::array<ac_fixed<16, 6, true>, 27>; CONFIG_T = config8; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   89 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note:   candidate expects 6 arguments, 4 provided
+firmware/MyModel.cpp:113:55: error: no matching function for call to ‘pooling2d_cf<layer10_t, layer11_t, config11>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&)’
+  113 |     nnet::pooling2d_cf<layer10_t, layer11_t, config11>(layer10_out, layer11_out); // LAYER_5
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:19,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, res_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 27>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config11]’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 27> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 27>*’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, ac_sync&, res_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 27>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config11]’
+  330 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:118:55: error: no matching function for call to ‘zeropad2d_cf<layer11_t, layer12_t, config12>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&)’
+  118 |     nnet::zeropad2d_cf<layer11_t, layer12_t, config12>(layer11_out, layer12_out); // LAYER_6_pad
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:17,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, data_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config12]’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 13>*’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, ac_sync&, data_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config12]’
+  122 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:123:53: error: no matching function for call to ‘conv_2d_cf<layer12_t, layer13_t, config13>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, model_default_t [663552], model_default_t [384])’
+  123 |     nnet::conv_2d_cf<layer12_t, layer13_t, config13>(layer12_out, layer13_out, w13, b13); // LAYER_6
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:12,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:75:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config13; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   75 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:76:12: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 15>*’
+   76 |     data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_chan],
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, ac_sync&, res_T*, ac_sync&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config13; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   89 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note:   candidate expects 6 arguments, 4 provided
+firmware/MyModel.cpp:133:55: error: no matching function for call to ‘zeropad2d_cf<layer15_t, layer16_t, config16>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&)’
+  133 |     nnet::zeropad2d_cf<layer15_t, layer16_t, config16>(layer15_out, layer16_out); // LAYER_8_pad
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:17,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, data_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config16]’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 13>*’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, ac_sync&, data_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config16]’
+  122 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:138:53: error: no matching function for call to ‘conv_2d_cf<layer16_t, layer17_t, config17>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, model_default_t [884736], model_default_t [256])’
+  138 |     nnet::conv_2d_cf<layer16_t, layer17_t, config17>(layer16_out, layer17_out, w17, b17); // LAYER_8
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:12,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:75:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config17; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   75 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:76:12: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 15>*’
+   76 |     data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_chan],
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, ac_sync&, res_T*, ac_sync&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config17; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   89 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note:   candidate expects 6 arguments, 4 provided
+firmware/MyModel.cpp:148:55: error: no matching function for call to ‘zeropad2d_cf<layer19_t, layer20_t, config20>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&)’
+  148 |     nnet::zeropad2d_cf<layer19_t, layer20_t, config20>(layer19_out, layer20_out); // LAYER_10_pad
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:17,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, data_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config20]’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:89:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 13>*’
+   89 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note: candidate: ‘void nnet::zeropad2d_cf(data_T*, ac_sync&, data_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 15>; CONFIG_T = config20]’
+  122 | void zeropad2d_cf(data_T data[CONFIG_T::n_chan * CONFIG_T::in_height * CONFIG_T::in_width], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_padding.h:122:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:153:53: error: no matching function for call to ‘conv_2d_cf<layer20_t, layer21_t, config21>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, model_default_t [589824], model_default_t [256])’
+  153 |     nnet::conv_2d_cf<layer20_t, layer21_t, config21>(layer20_out, layer21_out, w21, b21); // LAYER_10
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:12,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:75:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config21; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   75 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:76:12: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 15> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 15>*’
+   76 |     data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_chan],
+      |     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note: candidate: ‘void nnet::conv_2d_cf(data_T*, ac_sync&, res_T*, ac_sync&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 15>; res_T = nnet::array<ac_fixed<16, 6, true>, 13>; CONFIG_T = config21; typename CONFIG_T::weight_t = ac_fixed<16, 6, true>; typename CONFIG_T::bias_t = ac_fixed<16, 6, true>]’
+   89 | void conv_2d_cf(
+      |      ^~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_conv2d.h:89:6: note:   candidate expects 6 arguments, 4 provided
+firmware/MyModel.cpp:163:55: error: no matching function for call to ‘pooling2d_cf<layer23_t, layer24_t, config24>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 6> >&)’
+  163 |     nnet::pooling2d_cf<layer23_t, layer24_t, config24>(layer23_out, layer24_out); // LAYER_12
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:19,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, res_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 6>; CONFIG_T = config24]’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 13> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 13>*’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, ac_sync&, res_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 13>; res_T = nnet::array<ac_fixed<16, 6, true>, 6>; CONFIG_T = config24]’
+  330 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note:   candidate expects 4 arguments, 2 provided
+firmware/MyModel.cpp:168:55: error: no matching function for call to ‘pooling2d_cf<layer24_t, layer25_t, config25>(ac_channel<nnet::array<ac_fixed<16, 6, true>, 6> >&, ac_channel<nnet::array<ac_fixed<16, 6, true>, 6> >&)’
+  168 |     nnet::pooling2d_cf<layer24_t, layer25_t, config25>(layer24_out, layer25_out); // LAYER_13
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from firmware/parameters.h:19,
+                 from firmware/MyModel.cpp:9:
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, res_T*) [with data_T = nnet::array<ac_fixed<16, 6, true>, 6>; res_T = nnet::array<ac_fixed<16, 6, true>, 6>; CONFIG_T = config25]’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:268:26: note:   no known conversion for argument 1 from ‘ac_channel<nnet::array<ac_fixed<16, 6, true>, 6> >’ to ‘nnet::array<ac_fixed<16, 6, true>, 6>*’
+  268 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt],
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note: candidate: ‘void nnet::pooling2d_cf(data_T*, ac_sync&, res_T*, ac_sync&) [with data_T = nnet::array<ac_fixed<16, 6, true>, 6>; res_T = nnet::array<ac_fixed<16, 6, true>, 6>; CONFIG_T = config25]’
+  330 | void pooling2d_cf(data_T data[CONFIG_T::in_height * CONFIG_T::in_width * CONFIG_T::n_filt], ac_sync &sync_data,
+      |      ^~~~~~~~~~~~
+/data/tools/catapult/Mgc_home/shared/include/nnet_utils/nnet_pooling.h:330:6: note:   candidate expects 4 arguments, 2 provided
+
+  Compile warning: Failed to compile project "MyModel"
+
+============================================================
+Step 8: Running Catapult Synthesis
+============================================================
+  This may take several minutes...
+HLS4ML build() option 'synth' is being depricated. Use 'Synth'
+Catapult backend build() option overrides: "reset=False csim=False vhdl=True verilog=True Synth=True"
+/data/tools/catapult/Mgc_home/bin/catapult -product ultra -shell -f build_prj.tcl -eval 'set ::argv "reset=False csim=False vhdl=True verilog=True Synth=True"'
+//  Catapult Ultra Synthesis 2025.3/1218503 (Production Release) Mon Aug 18 11:22:04 PDT 2025
+//  
+//          Copyright (c) Siemens EDA, 1996-2025, All Rights Reserved.
+//                        UNPUBLISHED, LICENSED SOFTWARE.
+//             CONFIDENTIAL AND PROPRIETARY INFORMATION WHICH IS THE
+//                   PROPERTY OF SIEMENS EDA OR ITS LICENSORS.
+//  
+//  Running on Linux ubuntu@ip-10-10-8-216:8868 6.8.0-1043-aws x86_64 aol
+//  
+//  Package information: SIFLIBS v28.3_0.0, HLS_PKGS v28.3_0.0, 
+//                       SIF_TOOLKITS v28.3_0.0, SIF_XILINX v28.3_0.0, 
+//                       SIF_ALTERA v28.3_0.0, CCS_LIBS v28.3_0.0, 
+//                       CDS_PPRO v2025.2_1, CDS_DesignChecker v2025.2, 
+//                       CDS_OASYS v21.1_3.1, CDS_PSR v25.2_0.6, 
+//                       DesignPad v2.78_1.0, DesignAnalyzer 2025.3/1217829
+//  
+# Connected to license server 29000@10.9.8.8 (LIC-13)
+# Catapult product license successfully checked out, elapsed time 00:01 (LIC-14)
+dofile ./build_prj.tcl
+# > array set BuildOptions {
+# >   reset           0
+# >   csim 1
+# >   SCVerify 1
+# >   Synth 1
+# >   vhdl 1
+# >   verilog 1
+# >   RTLSynth 0
+# >   RandomTBFrames 2
+# >   PowerEst 0
+# >   PowerOpt 0
+# >   BuildBUP 0
+# >   BUPWorkers 0
+# >   LaunchDA 0
+# >   startup {}
+# > }
+# > set sfd [file dirname [info script]]
+# .
+# > if { [info exists ::argv] } {
+# >   foreach arg $::argv {
+# >     foreach {optname optval} [split $arg '='] {}
+# >     set mapping {"cosim" "SCVerify" "validation" "SCVerify" "synth" "Synth" "vsynth" "RTLSynth" "ran_frame" "RandomTBFrames" "sw_opt" "PowerEst" "power" "PowerOpt" "da" "LaunchDA" "bup" "BuildBUP"}
+# >     set pos [lsearch -exact $mapping $optname]
+# >     if { ($pos != -1) && ([expr $pos % 2] == 0) } {
+# >       set oldoptname $optname
+# >       set optname [lindex $mapping [expr $pos + 1]]
+# >       logfile message "HLS4ML build() option '$oldoptname' is being depricated. Use '$optname'\n" warning
+# >     }
+# >     if { [info exists BuildOptions($optname)] } {
+# >       if {[string is integer -strict $optval]} {
+# >         set BuildOptions($optname) $optval
+# >       } else {
+# >         set BuildOptions($optname) [string is true -strict $optval]
+# >       }
+# >     } else {
+# >       logfile message "Unknown argv switch '$optname'\n" error
+# >     }
+# >   }
+# > }
+# > puts "***** INVOKE OPTIONS *****"
+# ***** INVOKE OPTIONS *****
+# > foreach x [lsort [array names BuildOptions]] {
+# >   puts "[format {   %-20s %s} $x $BuildOptions($x)]"
+# > }
+#    BUPWorkers           0
+#    BuildBUP             0
+#    LaunchDA             0
+#    PowerEst             0
+#    PowerOpt             0
+#    RTLSynth             0
+#    RandomTBFrames       2
+#    SCVerify             1
+#    Synth                1
+#    csim                 0
+#    reset                0
+#    startup              
+#    verilog              1
+#    vhdl                 1
+# > puts ""
+# 
+# > proc report_time { op_name time_start time_end } {
+# >   set time_taken [expr $time_end - $time_start]
+# >   set time_s [expr ($time_taken / 1000) % 60]
+# >   set time_m [expr ($time_taken / (1000*60)) % 60]
+# >   set time_h [expr ($time_taken / (1000*60*60)) % 24]
+# >   puts "***** ${op_name} COMPLETED IN ${time_h}h${time_m}m${time_s}s *****"
+# > }
+# > proc setup_xilinx_part { part } {
+# >   global env
+# > 
+# >   set part_sav $part
+# >   set libname [lindex [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret v] 0]
+# >   puts "Library Name: $libname"
+# >   if { [llength $libname] == 1 } {
+# >     set libpath [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret p]
+# >     puts "Library Path: $libpath"
+# >     if { [regexp {/CONFIG/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/.*} $libpath dummy rtltool vendor family speed part] } {
+# >       solution library add $libname -- -rtlsyntool $rtltool -vendor $vendor -family $family -speed $speed -part $part_sav
+# >     } else {
+# >       solution library add $libname -- -rtlsyntool Vivado
+# >     }
+# >   } else {
+# >     logfile message "Could not find specific Xilinx base library for part '$part'. Using KINTEX-u\n" warning
+# >     solution library add mgc_Xilinx-KINTEX-u-2_beh -- -rtlsyntool Vivado -manufacturer Xilinx -family KINTEX-u -speed -2 -part xcku115-flvb2104-2-i
+# >   }
+# >   solution library add Xilinx_RAMS
+# >   solution library add Xilinx_ROMS
+# >   solution library add Xilinx_FIFO
+# >   if { [info exists env(XILINX_PCL_CACHE)] } {
+# >     options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# >     solution options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# >   }
+# > }
+# > proc setup_asic_libs { args } {
+# >   set do_saed 0
+# >   foreach lib $args {
+# >     solution library add $lib -- -rtlsyntool DesignCompiler
+# >     if { [lsearch -exact {saed32hvt_tt0p78v125c_beh saed32lvt_tt0p78v125c_beh saed32rvt_tt0p78v125c_beh} $lib] != -1 } {
+# >       set do_saed 1
+# >     }
+# >   }
+# >   solution library add ccs_sample_mem
+# >   solution library add ccs_sample_rom
+# >   solution library add hls4ml_lib
+# >   go libraries
+# > 
+# >   if { $do_saed } {
+# >     source [application get /SYSTEM/ENV_MGC_HOME]/pkgs/siflibs/saed/setup_saedlib.tcl
+# >   }
+# > }
+# > options set Input/CppStandard {c++17}
+# c++17
+# > options set Input/CompilerFlags -DRANDOM_FRAMES=$BuildOptions(RandomTBFrames)
+# -DRANDOM_FRAMES=2
+# > options set Input/SearchPath {$MGC_HOME/shared/include/nnet_utils} -append
+# {$MGC_HOME/shared/include/nnet_utils}
+# > options set ComponentLibs/SearchPath {$MGC_HOME/shared/pkgs/ccs_hls4ml} -append
+# {$MGC_HOME/pkgs/siflibs} {$MGC_HOME/shared/include/calypto_mem} {$MGC_HOME/pkgs/siflibs/nangate} {$MGC_HOME/pkgs/siflibs/saed} {$MGC_HOME/pkgs/siflibs/dware} {$MGC_HOME/pkgs/ccs_altera} {$MGC_HOME/pkgs/ccs_xilinx} {$MGC_HOME/pkgs/ccs_achronix} {$MGC_HOME/pkgs/siflibs/origami} {$MGC_HOME/pkgs/siflibs/microsemi} {$MGC_HOME/pkgs/ccs_lattice} {$MGC_HOME/pkgs/ccs_nx} {$MGC_HOME/pkgs/ccs_libs/interfaces/amba} {$MGC_HOME/pkgs/siflibs/ccs_fpga} {$MGC_HOME/shared/pkgs/ccs_hls4ml}
+# > if {$BuildOptions(reset)} {
+# >   project load MyModel_prj.ccs
+# >   go new
+# > } else {
+# >   project new -name MyModel_prj
+# > }
+# > options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > solution options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > options set Message/Hide HIER-10 -append
+# LIB-207 LIB-217 CRD-177 HIER-10
+# > if {$BuildOptions(vhdl)}    {
+# >   options set Output/OutputVHDL true
+# > } else {
+# >   options set Output/OutputVHDL false
+# > }
+# true
+# > if {$BuildOptions(verilog)} {
+# >   options set Output/OutputVerilog true
+# > } else {
+# >   options set Output/OutputVerilog false
+# > }
+# true
+# > if { [info exists ::env(XILINX_PCL_CACHE)] } {
+# > options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > solution options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > }
+# > if { [info exists BuildOptions(startup)] && ($BuildOptions(startup) != "") && [file exists $BuildOptions(startup)] } {
+# >   logfile message "Sourcing Catapult AI NN startup script '$BuildOptions(startup)'\n" info
+# >   catch {dofile $BuildOptions(startup)}
+# > }
+# > catch {flow package require /HLS4ML}
+# 0
+# > flow package require /SCVerify
+# 10.4
+# > flow package option set /SCVerify/INVOKE_ARGS "$sfd/firmware/weights $sfd/tb_data/tb_input_features.dat $sfd/tb_data/tb_output_predictions.dat 0.0"
+# ./firmware/weights ./tb_data/tb_input_features.dat ./tb_data/tb_output_predictions.dat 0.0
+# > set design_top MyModel
+# MyModel
+# > solution file add $sfd/firmware/MyModel.cpp
+# /INPUTFILES/1
+# > solution file add $sfd/MyModel_test.cpp -exclude true
+# /INPUTFILES/2
+# > set Strategy latency
+# latency
+# > set IOType io_stream
+# io_stream
+# > set ac_sync_workaround 0
+# 0
+# > if { ![file exists $sfd/hls4ml_config.yml] } {
+# >   logfile message "Could not locate HLS4ML configuration file '$sfd/hls4ml_config.yml'. Unable to determine network configuration.\n" warning
+# > } else {
+# >   set pf [open "$sfd/hls4ml_config.yml" "r"]
+# >   while {![eof $pf]} {
+# >     gets $pf line
+# >     if { [regexp {\s+Strategy: (\w+)} $line all value] }     { set Strategy [string tolower $value] }
+# >     if { [regexp {IOType: (\w+)} $line all value] }          { set IOType [string tolower $value] }
+# >     if { [regexp {ParamStore: merged} $line all value] }     { set ac_sync_workaround 1 }
+# >   }
+# >   close $pf
+# > }
+# > if { $ac_sync_workaround } {
+# >   directive set -STRICT_MIO_SCHEDULING false
+# >   directive set -STRICT_WAITSYNC_IO_SCHEDULING false
+# > }
+# > if { $IOType == "io_stream" } {
+# > solution options set Architectural/DefaultRegisterThreshold 2050
+# > }
+# 2050
+# > directive set -RESET_CLEARS_ALL_REGS no
+# /RESET_CLEARS_ALL_REGS no
+# > directive set -MEM_MAP_THRESHOLD [expr 2048 * 16 + 1]
+# /MEM_MAP_THRESHOLD 32769
+# > directive set -REDUNDANT_RTL_ELIMINATION false
+# /REDUNDANT_RTL_ELIMINATION false
+# > set hls_clock_period 5
+# 5
+# > go analyze
+# Info: Starting transformation 'analyze' on solution 'solution.v1' (SOL-8)
+# Creating project directory '/home/ubuntu/catapult_output/MyModel-Catapult-test/MyModel_prj/'. (PRJ-1)
+# Moving session transcript to file "/home/ubuntu/catapult_output/MyModel-Catapult-test/catapult.log"
+# Front End called with arguments: -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -- /home/ubuntu/catapult_output/MyModel-Catapult-test/firmware/MyModel.cpp (CIN-69)
+# Edison Design Group C++/C Front End - Version 6.6 (CIN-1)
+# Error: /usr/include/features-time64.h(20): cannot open source file "bits/wordsize.h" (CRD-1696)
+# Error: Compilation aborted (CIN-5)
+# Info: Completed transformation 'new' on solution 'solution.v1': elapsed time 0.02 seconds, memory usage 977040kB, peak memory usage 977040kB (SOL-9)
+# > end dofile ./build_prj.tcl
+# Error: go analyze: Failed analyze
+
+  Synthesis error: list index out of range
+
+  Run manually:
+    cd /home/ubuntu/catapult_output/MyModel-Catapult-test
+    catapult -shell -f build_prj.tcl
+
+============================================================
+Done!
+============================================================
+Output: /home/ubuntu/catapult_output
+ubuntu@ip-10-10-8-216:~/catapult_project$ 
+

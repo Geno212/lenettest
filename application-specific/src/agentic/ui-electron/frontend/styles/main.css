@@ -1,0 +1,685 @@
+/* Siemens Neural Network Generator - Advanced Design System */
+/* A modern, professional interface aligned with Siemens brand identity */
+
+/* ==================== CSS RESET & VARIABLES ==================== */
+:root {
+    /* --- Typography (Shared) --- */
+    --font-family: 'Siemens Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+:root[data-theme="light"] {
+    /* --- Siemens Brand Palette --- */
+    --siemens-petrol: #009999;
+    --siemens-petrol-hover: #007a7a;
+    --siemens-petrol-light: rgba(0, 153, 153, 0.08); /* More subtle */
+    --siemens-stone: #3c464b; /* Dark gray for text/secondary elements */
+    --siemens-stone-dark: #2d373c;
+    --siemens-sand: #eef1f2;  /* Light gray background */
+    --siemens-white: #ffffff;
+    
+    /* --- Functional Colors --- */
+    --color-bg-app: #f3f5f7; /* Very light gray/blue tone */
+    --color-bg-surface: #ffffff;
+    --color-bg-surface-secondary: #fbfcfd; /* Slightly lighter than before */
+    
+    --color-text-primary: #2d373c; /* Stone Dark */
+    --color-text-secondary: #58646b; /* Stone Light */
+    --color-text-inverse: #ffffff;
+    
+    --color-border: #ccd3d6; /* Slightly darker for better definition */
+    --color-border-hover: #b0b6bb;
+    
+    --color-accent: #eb780a; /* Siemens yellow/orange for highlights */
+    --color-success: #2d8a55;
+    --color-error: #c0392b;
+    
+    /* --- Shadows & Effects --- */
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05); /* Cleaner shadow */
+    --shadow-card: 0 4px 12px rgba(45, 55, 60, 0.08);
+    --shadow-float: 0 12px 32px rgba(45, 55, 60, 0.15);
+    
+    --glass-bg: rgba(255, 255, 255, 0.92); /* Less transparent */
+    --glass-border: rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="dark"] {
+    /* --- Dark Mode Palette --- */
+    --siemens-petrol: #00b8b8; /* Brighter teal for dark mode */
+    --siemens-petrol-hover: #00d4d4;
+    --siemens-petrol-light: rgba(0, 184, 184, 0.15);
+    
+    --color-bg-app: #181b1d; /* Deep dark gray */
+    --color-bg-surface: #242b2e; /* Dark Stone */
+    --color-bg-surface-secondary: #2d373c;
+    
+    --color-text-primary: #eef1f2;
+    --color-text-secondary: #9ea6ab;
+    --color-text-inverse: #1a1f22;
+    
+    --color-border: #3c464b;
+    --color-border-hover: #545e64;
+    
+    --color-accent: #ff9e45;
+    --color-success: #4cd964;
+    --color-error: #ff453a;
+    
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.5);
+    
+    --glass-bg: rgba(36, 43, 46, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-bg-app);
+    color: var(--color-text-primary);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==================== LAYOUT STRUCTURE ==================== */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ==================== HEADER ==================== */
+.app-header {
+    height: 60px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 100;
+    position: relative;
+    box-shadow: var(--shadow-subtle);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.siemens-logo {
+    height: 24px;
+    width: auto;
+    filter: brightness(0.9); /* Slight tone down */
+}
+
+:root[data-theme="dark"] .siemens-logo {
+    filter: brightness(0) invert(1); /* White logo in dark mode */
+}
+
+.header-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--color-border);
+}
+
+.app-header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* --- Status Badge --- */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--color-bg-surface-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.status-badge.connected {
+    background-color: rgba(45, 138, 85, 0.1);
+    border-color: rgba(45, 138, 85, 0.2);
+    color: var(--color-success);
+}
+
+.status-badge.error {
+    background-color: rgba(192, 57, 43, 0.1);
+    border-color: rgba(192, 57, 43, 0.2);
+    color: var(--color-error);
+}
+
+/* --- Theme Toggle --- */
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: var(--color-bg-surface-secondary);
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle:hover {
+    background: var(--color-bg-surface);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-subtle);
+    transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+/* ==================== MAIN CONTENT GRID ==================== */
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background-color: var(--color-bg-app);
+    gap: 1px; /* Gap for divider effect */
+}
+
+/* ==================== CHAT PANEL (LEFT) ==================== */
+.left-panel {
+    flex: 1;
+    min-width: 450px;
+    background: var(--color-bg-surface);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+    box-shadow: var(--shadow-card);
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    scroll-behavior: smooth;
+}
+
+/* --- Message Bubbles --- */
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.message-wrapper.user-message {
+    align-self: flex-end;
+}
+
+.message-wrapper.assistant-message {
+    align-self: flex-start;
+}
+
+.message-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+    padding: 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.message-text {
+    padding: 16px 20px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    box-shadow: var(--shadow-subtle);
+    position: relative;
+}
+
+.assistant-message .message-text {
+    background: var(--color-bg-surface-secondary);
+    border: 1px solid var(--color-border);
+    border-top-left-radius: 4px;
+    color: var(--color-text-primary);
+}
+
+.user-message .message-text {
+    background: linear-gradient(135deg, var(--siemens-petrol), var(--siemens-petrol-hover));
+    color: var(--siemens-white);
+    border-top-right-radius: 4px;
+    box-shadow: var(--shadow-card);
+}
+
+.message-text p { margin-bottom: 10px; }
+.message-text p:last-child { margin-bottom: 0; }
+
+/* Markdown Styles inside bubbles */
+.message-text code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.user-message .message-text code {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.message-text pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 12px 0;
+    border: 1px solid var(--color-border);
+}
+
+.message-text ul, .message-text ol {
+    margin: 8px 0 8px 20px;
+}
+
+/* --- Tool Calls --- */
+.tool-call {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--siemens-petrol-light);
+    border-left: 3px solid var(--siemens-petrol);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.tool-call strong {
+    color: var(--siemens-petrol);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* --- Chat Input --- */
+.chat-input-container {
+    padding: 20px 32px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+#message-input {
+    flex: 1;
+    background: var(--color-bg-surface-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 4px; /* Siemens style: boxier */
+    padding: 14px 16px;
+    font-family: var(--font-family);
+    font-size: 14px;
+    color: var(--color-text-primary);
+    resize: none;
+    min-height: 50px;
+    max-height: 150px;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+}
+
+#message-input:focus {
+    outline: none;
+    background: var(--color-bg-surface);
+    border-color: var(--siemens-petrol);
+    box-shadow: 0 0 0 2px var(--siemens-petrol-light);
+}
+
+.btn-upload {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    border: none;
+    background: var(--color-bg-surface-secondary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-right: 8px;
+}
+
+.btn-upload:hover {
+    background: var(--color-border-hover);
+    transform: translateY(-2px);
+}
+
+.btn-upload:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-upload:disabled:hover {
+    background: var(--color-bg-surface-secondary);
+    transform: none;
+}
+
+.btn-send {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px; /* Siemens style: boxier */
+    border: none;
+    background: var(--siemens-petrol);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-subtle);
+}
+
+.btn-send:hover:not(:disabled) {
+    background: var(--siemens-petrol-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-float);
+}
+
+.btn-send:disabled {
+    background: var(--color-border);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-send svg {
+    transform: rotate(90deg);
+}
+
+/* ==================== VISUALIZATION PANEL (RIGHT) ==================== */
+.right-panel {
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-surface-secondary);
+    border-left: 1px solid var(--color-border);
+}
+
+/* --- Tabs --- */
+.tabs {
+    display: flex;
+    background: var(--color-bg-surface);
+    padding: 0 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.tab-button {
+    flex: 1;
+    padding: 16px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-button:hover {
+    color: var(--color-text-primary);
+    background: var(--color-bg-surface-secondary);
+}
+
+.tab-button.active {
+    color: var(--siemens-petrol);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--siemens-petrol);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.tab-content {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* --- Graph Area --- */
+.graph-controls {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 20;
+    background: var(--glass-bg);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-card);
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--siemens-petrol-light);
+    color: var(--siemens-petrol);
+}
+
+.graph-container {
+    flex: 1;
+    position: relative;
+    background-color: var(--color-bg-surface-secondary);
+    /* Technical Grid Background */
+    background-image: 
+        linear-gradient(var(--color-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center center;
+    overflow: hidden;
+}
+
+/* Vignette overlay for depth */
+.graph-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.03) 100%);
+    pointer-events: none;
+}
+
+#graph-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* --- State Panel --- */
+.state-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg-surface);
+}
+
+.state-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.state-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.state-section {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-subtle);
+    transition: transform 0.2s ease;
+}
+
+.state-section:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--siemens-petrol);
+}
+
+.state-section h4 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--siemens-petrol);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.state-value {
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    word-break: break-all;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==================== SCROLLBARS ==================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-hover);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .left-panel {
+        min-width: auto;
+        height: 60%;
+    }
+    
+    .right-panel {
+        width: 100%;
+        height: 40%;
+        border-left: none;
+        border-top: 1px solid var(--color-border);
+    }
+}

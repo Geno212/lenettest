@@ -1,0 +1,1008 @@
+ubuntu@ip-10-10-8-216:~$ # After reconnecting:
+ls -la ~/catapult_output_simple/SimpleCNN-Catapult-test/
+cat ~/catapult_output_simple/SimpleCNN-Catapult-test/catapult.log | tail -1800
+total 1800
+drwxrwxr-x 7 ubuntu ubuntu    4096 Dec  4 21:25 .
+drwxrwxr-x 3 ubuntu ubuntu    4096 Dec  4 21:07 ..
+-rwxrwxr-x 1 ubuntu ubuntu 1381192 Dec  4 21:24 SimpleCNN.exe
+-rw-rw-r-- 1 ubuntu ubuntu    2995 Dec  4 21:24 SimpleCNN_bridge.cpp
+drwxrwxr-x 3 ubuntu ubuntu    4096 Dec  4 21:07 SimpleCNN_prj
+drwxrwxr-x 3 ubuntu ubuntu    4096 Dec  4 21:12 SimpleCNN_prj_1
+drwxrwxr-x 4 ubuntu ubuntu    4096 Dec  4 21:25 SimpleCNN_prj_2
+-rw-rw-r-- 1 ubuntu ubuntu    9077 Dec  4 21:24 SimpleCNN_test.cpp
+-rwxrw-r-- 1 ubuntu ubuntu    1577 Dec  4 21:24 build_lib.sh
+-rw-rw-r-- 1 ubuntu ubuntu   14544 Dec  4 21:24 build_prj.tcl
+-rw-rw-r-- 1 ubuntu ubuntu     157 Dec  4 21:24 build_prj_bup.tcl
+-rw-rw-r-- 1 ubuntu ubuntu   11302 Dec  4 21:24 build_prj_bup.yml
+-rwxrw-r-- 1 ubuntu ubuntu    1283 Dec  4 21:24 build_vra.sh
+-rw-rw-r-- 1 ubuntu ubuntu  121648 Dec  4 21:28 catapult.log
+-rw-rw-r-- 1 ubuntu ubuntu       0 Dec  4 21:33 catapult.pinfo
+drwxrwxr-x 4 ubuntu ubuntu    4096 Dec  4 21:24 firmware
+-rw-rw-r-- 1 ubuntu ubuntu    1079 Dec  4 21:24 hls4ml_config.yml
+-rw-rw-r-- 1 ubuntu ubuntu  244583 Dec  4 21:24 keras_model.keras
+drwxrwxr-x 2 ubuntu ubuntu    4096 Dec  4 21:07 tb_data
+//  Catapult Ultra Synthesis 2025.3/1218503 (Production Release) Mon Aug 18 11:22:04 PDT 2025
+//  
+//          Copyright (c) Siemens EDA, 1996-2025, All Rights Reserved.
+//                        UNPUBLISHED, LICENSED SOFTWARE.
+//             CONFIDENTIAL AND PROPRIETARY INFORMATION WHICH IS THE
+//                   PROPERTY OF SIEMENS EDA OR ITS LICENSORS.
+//  
+//  Running on Linux ubuntu@ip-10-10-8-216:3695 6.8.0-1043-aws x86_64 aol
+//  
+//  Package information: SIFLIBS v28.3_0.0, HLS_PKGS v28.3_0.0, 
+//                       SIF_TOOLKITS v28.3_0.0, SIF_XILINX v28.3_0.0, 
+//                       SIF_ALTERA v28.3_0.0, CCS_LIBS v28.3_0.0, 
+//                       CDS_PPRO v2025.2_1, CDS_DesignChecker v2025.2, 
+//                       CDS_OASYS v21.1_3.1, CDS_PSR v25.2_0.6, 
+//                       DesignPad v2.78_1.0, DesignAnalyzer 2025.3/1217829
+//  
+//  Start time Thu Dec  4 21:24:50 2025
+# -------------------------------------------------
+# Logging session transcript to file "/tmp/log3695c2e0a2f.0"
+dofile ./build_prj.tcl
+# > array set BuildOptions {
+# >   reset           0
+# >   csim 1
+# >   SCVerify 1
+# >   Synth 1
+# >   vhdl 1
+# >   verilog 1
+# >   RTLSynth 0
+# >   RandomTBFrames 2
+# >   PowerEst 0
+# >   PowerOpt 0
+# >   BuildBUP 0
+# >   BUPWorkers 0
+# >   LaunchDA 0
+# >   startup {}
+# > }
+# > set sfd [file dirname [info script]]
+# .
+# > if { [info exists ::argv] } {
+# >   foreach arg $::argv {
+# >     foreach {optname optval} [split $arg '='] {}
+# >     set mapping {"cosim" "SCVerify" "validation" "SCVerify" "synth" "Synth" "vsynth" "RTLSynth" "ran_frame" "RandomTBFrames" "sw_opt" "PowerEst" "power" "PowerOpt" "da" "LaunchDA" "bup" "BuildBUP"}
+# >     set pos [lsearch -exact $mapping $optname]
+# >     if { ($pos != -1) && ([expr $pos % 2] == 0) } {
+# >       set oldoptname $optname
+# >       set optname [lindex $mapping [expr $pos + 1]]
+# >       logfile message "HLS4ML build() option '$oldoptname' is being depricated. Use '$optname'\n" warning
+# >     }
+# >     if { [info exists BuildOptions($optname)] } {
+# >       if {[string is integer -strict $optval]} {
+# >         set BuildOptions($optname) $optval
+# >       } else {
+# >         set BuildOptions($optname) [string is true -strict $optval]
+# >       }
+# >     } else {
+# >       logfile message "Unknown argv switch '$optname'\n" error
+# >     }
+# >   }
+# > }
+# > puts "***** INVOKE OPTIONS *****"
+# ***** INVOKE OPTIONS *****
+# > foreach x [lsort [array names BuildOptions]] {
+# >   puts "[format {   %-20s %s} $x $BuildOptions($x)]"
+# > }
+#    BUPWorkers           0
+#    BuildBUP             0
+#    LaunchDA             0
+#    PowerEst             0
+#    PowerOpt             0
+#    RTLSynth             0
+#    RandomTBFrames       2
+#    SCVerify             1
+#    Synth                1
+#    csim                 0
+#    reset                0
+#    startup              
+#    verilog              1
+#    vhdl                 1
+# > puts ""
+# 
+# > proc report_time { op_name time_start time_end } {
+# >   set time_taken [expr $time_end - $time_start]
+# >   set time_s [expr ($time_taken / 1000) % 60]
+# >   set time_m [expr ($time_taken / (1000*60)) % 60]
+# >   set time_h [expr ($time_taken / (1000*60*60)) % 24]
+# >   puts "***** ${op_name} COMPLETED IN ${time_h}h${time_m}m${time_s}s *****"
+# > }
+# > proc setup_xilinx_part { part } {
+# >   global env
+# > 
+# >   set part_sav $part
+# >   set libname [lindex [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret v] 0]
+# >   puts "Library Name: $libname"
+# >   if { [llength $libname] == 1 } {
+# >     set libpath [library get /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/*/PARAMETERS/*/PARAMETERS/$part/LIBRARIES/*/NAME -match glob -ret p]
+# >     puts "Library Path: $libpath"
+# >     if { [regexp {/CONFIG/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/PARAMETERS/(\S+)/.*} $libpath dummy rtltool vendor family speed part] } {
+# >       solution library add $libname -- -rtlsyntool $rtltool -vendor $vendor -family $family -speed $speed -part $part_sav
+# >     } else {
+# >       solution library add $libname -- -rtlsyntool Vivado
+# >     }
+# >   } else {
+# >     logfile message "Could not find specific Xilinx base library for part '$part'. Using KINTEX-u\n" warning
+# >     solution library add mgc_Xilinx-KINTEX-u-2_beh -- -rtlsyntool Vivado -manufacturer Xilinx -family KINTEX-u -speed -2 -part xcku115-flvb2104-2-i
+# >   }
+# >   solution library add Xilinx_RAMS
+# >   solution library add Xilinx_ROMS
+# >   solution library add Xilinx_FIFO
+# >   if { [info exists env(XILINX_PCL_CACHE)] } {
+# >     options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# >     solution options set /Flows/Vivado/PCL_CACHE $env(XILINX_PCL_CACHE)
+# >   }
+# > }
+# > proc setup_asic_libs { args } {
+# >   set do_saed 0
+# >   foreach lib $args {
+# >     solution library add $lib -- -rtlsyntool DesignCompiler
+# >     if { [lsearch -exact {saed32hvt_tt0p78v125c_beh saed32lvt_tt0p78v125c_beh saed32rvt_tt0p78v125c_beh} $lib] != -1 } {
+# >       set do_saed 1
+# >     }
+# >   }
+# >   solution library add ccs_sample_mem
+# >   solution library add ccs_sample_rom
+# >   solution library add hls4ml_lib
+# >   go libraries
+# > 
+# >   if { $do_saed } {
+# >     source [application get /SYSTEM/ENV_MGC_HOME]/pkgs/siflibs/saed/setup_saedlib.tcl
+# >   }
+# > }
+# > options set Input/CppStandard {c++17}
+# c++17
+# > options set Input/CompilerFlags -DRANDOM_FRAMES=$BuildOptions(RandomTBFrames)
+# -DRANDOM_FRAMES=2
+# > options set Input/SearchPath {$MGC_HOME/shared/include/nnet_utils} -append
+# {$MGC_HOME/shared/include/nnet_utils}
+# > options set ComponentLibs/SearchPath {$MGC_HOME/shared/pkgs/ccs_hls4ml} -append
+# {$MGC_HOME/pkgs/siflibs} {$MGC_HOME/shared/include/calypto_mem} {$MGC_HOME/pkgs/siflibs/nangate} {$MGC_HOME/pkgs/siflibs/saed} {$MGC_HOME/pkgs/siflibs/dware} {$MGC_HOME/pkgs/ccs_altera} {$MGC_HOME/pkgs/ccs_xilinx} {$MGC_HOME/pkgs/ccs_achronix} {$MGC_HOME/pkgs/siflibs/origami} {$MGC_HOME/pkgs/siflibs/microsemi} {$MGC_HOME/pkgs/ccs_lattice} {$MGC_HOME/pkgs/ccs_nx} {$MGC_HOME/pkgs/ccs_libs/interfaces/amba} {$MGC_HOME/pkgs/siflibs/ccs_fpga} {$MGC_HOME/shared/pkgs/ccs_hls4ml}
+# > if {$BuildOptions(reset)} {
+# >   project load SimpleCNN_prj.ccs
+# >   go new
+# > } else {
+# >   project new -name SimpleCNN_prj
+# > }
+# > options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > solution options set Message/ErrorOverride HIER-10 -remove
+# ASM-11 ASM-48 ASM-63 ASM-69 ASSERT-1 CIN-8 CIN-17 CIN-46 CIN-48 CIN-49 CIN-50 CIN-54 CIN-84 CIN-87 CIN-109 CIN-110 CIN-111 CIN-112 CIN-188 CIN-214 CIN-243 CIN-244 CLUSTER-3 CNS-9 CRAAS-21 DIR-24 DIR-32 HIER-2 HIER-20 HIER-45 IFSYN-6 INCR-13 INCR-14 INCR-15 LIB-194 LIB-204 LIB-211 LIB-224 LOOP-21 MEM-65 MEM-78 MEM-82 MEM-83 MEM-88 MGEN-16 NL-21 NL-26 NL-30 NL-35 OPT-25 READ-8 READ-9 SCHD-37 SCHD-54 SCHD-55 SIF-6 SIF-17 SIF-20
+# > options set Message/Hide HIER-10 -append
+# LIB-207 LIB-217 CRD-177 HIER-10
+# > if {$BuildOptions(vhdl)}    {
+# >   options set Output/OutputVHDL true
+# > } else {
+# >   options set Output/OutputVHDL false
+# > }
+# true
+# > if {$BuildOptions(verilog)} {
+# >   options set Output/OutputVerilog true
+# > } else {
+# >   options set Output/OutputVerilog false
+# > }
+# true
+# > if { [info exists ::env(XILINX_PCL_CACHE)] } {
+# > options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > solution options set /Flows/Vivado/PCL_CACHE $::env(XILINX_PCL_CACHE)
+# > }
+# > if { [info exists BuildOptions(startup)] && ($BuildOptions(startup) != "") && [file exists $BuildOptions(startup)] } {
+# >   logfile message "Sourcing Catapult AI NN startup script '$BuildOptions(startup)'\n" info
+# >   catch {dofile $BuildOptions(startup)}
+# > }
+# > catch {flow package require /HLS4ML}
+# 0
+# > flow package require /SCVerify
+# 10.4
+# > flow package option set /SCVerify/INVOKE_ARGS "$sfd/firmware/weights $sfd/tb_data/tb_input_features.dat $sfd/tb_data/tb_output_predictions.dat 0.0"
+# ./firmware/weights ./tb_data/tb_input_features.dat ./tb_data/tb_output_predictions.dat 0.0
+# > set design_top SimpleCNN
+# SimpleCNN
+# > solution file add $sfd/firmware/SimpleCNN.cpp
+# /INPUTFILES/1
+# > solution file add $sfd/SimpleCNN_test.cpp -exclude true
+# /INPUTFILES/2
+# > set Strategy latency
+# latency
+# > set IOType io_stream
+# io_stream
+# > set ac_sync_workaround 0
+# 0
+# > if { ![file exists $sfd/hls4ml_config.yml] } {
+# >   logfile message "Could not locate HLS4ML configuration file '$sfd/hls4ml_config.yml'. Unable to determine network configuration.\n" warning
+# > } else {
+# >   set pf [open "$sfd/hls4ml_config.yml" "r"]
+# >   while {![eof $pf]} {
+# >     gets $pf line
+# >     if { [regexp {\s+Strategy: (\w+)} $line all value] }     { set Strategy [string tolower $value] }
+# >     if { [regexp {IOType: (\w+)} $line all value] }          { set IOType [string tolower $value] }
+# >     if { [regexp {ParamStore: merged} $line all value] }     { set ac_sync_workaround 1 }
+# >   }
+# >   close $pf
+# > }
+# > if { $ac_sync_workaround } {
+# >   directive set -STRICT_MIO_SCHEDULING false
+# >   directive set -STRICT_WAITSYNC_IO_SCHEDULING false
+# > }
+# > if { $IOType == "io_stream" } {
+# > solution options set Architectural/DefaultRegisterThreshold 2050
+# > }
+# 2050
+# > directive set -RESET_CLEARS_ALL_REGS no
+# /RESET_CLEARS_ALL_REGS no
+# > directive set -MEM_MAP_THRESHOLD [expr 2048 * 16 + 1]
+# /MEM_MAP_THRESHOLD 32769
+# > directive set -REDUNDANT_RTL_ELIMINATION false
+# /REDUNDANT_RTL_ELIMINATION false
+# > set hls_clock_period 5
+# 5
+# > go analyze
+# Info: Starting transformation 'analyze' on solution 'solution.v1' (SOL-8)
+# Creating project directory '/home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_2/'. (PRJ-1)
+# Moving session transcript to file "/home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/catapult.log"
+# Front End called with arguments: -I/data/tools/catapult/Mgc_home/shared/include/nnet_utils -- /home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/firmware/SimpleCNN.cpp (CIN-69)
+# Edison Design Group C++/C Front End - Version 6.6 (CIN-1)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(59): Pragma 'hls_design<>' detected on routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(199): Pragma 'hls_design<>' detected on routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(54): Pragma 'hls_design<>' detected on routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(234): Pragma 'hls_design<>' detected on routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(59): Pragma 'hls_design<>' detected on routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(199): Pragma 'hls_design<>' detected on routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(54): Pragma 'hls_design<>' detected on routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(234): Pragma 'hls_design<>' detected on routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(64): Pragma 'hls_design<>' detected on routine 'nnet::dense<layer11_t, layer13_t, config13>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(54): Pragma 'hls_design<>' detected on routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' (CIN-6)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(64): Pragma 'hls_design<>' detected on routine 'nnet::dense<layer15_t, result_t, config16>' (CIN-6)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(14): Pragma 'hls_design<top>' detected on routine 'SimpleCNN' (CIN-6)
+# $MGC_HOME/shared/include/ac_std_float.h(192): Pragma 'hls_design<>' detected on routine 'ac::fx_div<8>' (CIN-6)
+# Source file analysis completed (CIN-68)
+# Info: Completed transformation 'analyze' on solution 'solution.v1': elapsed time 17.50 seconds, memory usage 1632400kB, peak memory usage 1632400kB (SOL-9)
+# > if { $IOType == "io_parallel" } {
+# >   set inlines {}
+# >   set pooling2d_used 0
+# >   set pooling1d_used 0
+# >   foreach fn [solution get /SOURCEHIER/FUNC_HBS/* -match glob -ret l -checkpath 0] {
+# >     if { [string match {nnet::pooling2d_cl*} $fn] } { set pooling2d_used 1 }
+# >     if { [string match {nnet::pooling1d_cl*} $fn] } { set pooling1d_used 1 }
+# >     if { [string match {ac::fx_div*} $fn] }         { lappend inlines $fn }
+# >   }
+# >   foreach fn $inlines {
+# >     set old [solution design get $fn]
+# >     logfile message "solution design set $fn -inline\n" warning
+# >     solution design set $fn -inline
+# >   }
+# >   if { $pooling2d_used || $pooling1d_used} {
+# >     directive set -SCHED_USE_MULTICYCLE true
+# >   }
+# > }
+# > if { ! $BuildOptions(BuildBUP) } {
+# > 
+# > go compile
+# > 
+# > if {$BuildOptions(csim)} {
+# >   puts "***** C SIMULATION *****"
+# >   set time_start [clock clicks -milliseconds]
+# >   flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osci sim
+# >   set time_end [clock clicks -milliseconds]
+# >   report_time "C SIMULATION" $time_start $time_end
+# > }
+# > 
+# > puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# > 
+# > directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDGE rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NAME rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABLE_NAME {} -ENABLE_ACTIVE high]]
+# > 
+# > if {$BuildOptions(Synth)} {
+# >   puts "***** C/RTL SYNTHESIS *****"
+# >   set time_start [clock clicks -milliseconds]
+# > 
+# >   go assembly
+# > 
+# >   go architect
+# > 
+# >   go allocate
+# > 
+# >   go schedule
+# > 
+# >   go extract
+# >   set time_end [clock clicks -milliseconds]
+# >   report_time "C/RTL SYNTHESIS" $time_start $time_end
+# > }
+# > 
+# > } else {
+# >   go analyze
+# > 
+# >   directive set -CLOCKS [list clk [list -CLOCK_PERIOD $hls_clock_period -CLOCK_EDGE rising -CLOCK_OFFSET 0.000000 -CLOCK_UNCERTAINTY 0.0 -RESET_KIND sync -RESET_SYNC_NAME rst -RESET_SYNC_ACTIVE high -RESET_ASYNC_NAME arst_n -RESET_ASYNC_ACTIVE low -ENABLE_NAME {} -ENABLE_ACTIVE high]]
+# > 
+# >   set blocks [solution get /HIERCONFIG/USER_HBS/*/RESOLVED_NAME -match glob -rec 1 -ret v -state analyze]
+# >   set bu_mappings {}
+# >   set top [lindex $blocks 0]
+# >   foreach block [lreverse [lrange $blocks 1 end]] {
+# >     if { [string match {nnet::*} $block] == 0 } { continue }
+# >     go analyze
+# >     solution design set $block -top
+# >     go compile
+# >     solution library remove *
+# >     puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# >     go extract
+# >     set block_soln "[solution get /TOP/name -checkpath 0].[solution get /VERSION -checkpath 0]"
+# >     lappend bu_mappings [solution get /CAT_DIR] /$top/$block "\[Block\] $block_soln"
+# >   }
+# > 
+# >   go analyze
+# >   solution design set $top -top
+# >   go compile
+# > 
+# >   if {$BuildOptions(csim)} {
+# >     puts "***** C SIMULATION *****"
+# >     set time_start [clock clicks -milliseconds]
+# >     flow run /SCVerify/launch_make ./scverify/Verify_orig_cxx_osci.mk {} SIMTOOL=osci sim
+# >     set time_end [clock clicks -milliseconds]
+# >     report_time "C SIMULATION" $time_start $time_end
+# >   }
+# >   foreach {d i l} $bu_mappings {
+# >     logfile message "solution options set ComponentLibs/SearchPath $d -append\n" info
+# >     solution options set ComponentLibs/SearchPath $d -append
+# >   }
+# > 
+# >   puts "***** SETTING TECHNOLOGY LIBRARIES *****"
+# >   solution library remove *
+# > setup_xilinx_part {xcku115-flvb2104-2-i}
+# >   go compile
+# >   foreach {d i l} $bu_mappings {
+# >     logfile message "solution library add [list $l]\n" info
+# >     eval solution library add [list $l]
+# >   }
+# >   go libraries
+# > 
+# >   foreach {d i l} $bu_mappings {
+# >     set cnt [directive get $i/* -match glob -checkpath 0 -ret p]
+# >     if { $cnt != {} } {
+# >       logfile message "directive set $i -MAP_TO_MODULE [list $l]\n" info
+# >       eval directive set $i -MAP_TO_MODULE [list $l]
+# >     }
+# >   }
+# >   go assembly
+# >   set design [solution get -name]
+# >   logfile message "Adjusting FIFO_DEPTH for top-level interconnect channels\n" warning
+# >   foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_out:cns/MAP_TO_MODULE] {
+# >     set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# >     logfile message "directive set -match glob $ch_fifo 1\n" info
+# >     directive set -match glob "$ch_fifo" 1
+# >   }
+# >   foreach ch_fifo_m2m [directive get -match glob -checkpath 0 -ret p $design/*_cpy*:cns/MAP_TO_MODULE] {
+# >     set ch_fifo [join [lrange [split $ch_fifo_m2m '/'] 0 end-1] /]/FIFO_DEPTH
+# >     logfile message "Bypass FIFO '$ch_fifo' depth set to 1 - larger value may be required to prevent deadlock\n" warning
+# >     logfile message "directive set -match glob $ch_fifo 1\n" info
+# >     directive set -match glob "$ch_fifo" 1
+# >   }
+# >   go architect
+# >   go allocate
+# >   go schedule
+# >   go dpfsm
+# >   go extract
+# > }
+# Info: Starting transformation 'compile' on solution 'SimpleCNN.v1' (SOL-8)
+# Generating synthesis internal form... (CIN-3)
+# $MGC_HOME/shared/include/ac_std_float.h(196): Found design routine 'ac::fx_div<8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer11_t, layer13_t, config13>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer15_t, result_t, config16>' specified by directive (CIN-52)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(18): Found top design routine 'SimpleCNN' specified by directive (CIN-52)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(18): Synthesizing routine 'SimpleCNN' (CIN-13)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(18): Inlining routine 'SimpleCNN' (CIN-14)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(17): Pragma 'hls_resource<layer16_out:rsc>' detected, variable = 'layer16_out', module = 'ccs_ioport.ccs_out_wait' (CIN-341)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(17): Pragma 'hls_resource<layer16_out:rsc>' detected, variables = 'layer16_out', module = 'ccs_ioport.ccs_out_wait' (CIN-9)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(16): Pragma 'hls_resource<input1:rsc>' detected, variable = 'input1', module = 'ccs_ioport.ccs_in_wait' (CIN-341)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(16): Pragma 'hls_resource<input1:rsc>' detected, variables = 'input1', module = 'ccs_ioport.ccs_in_wait' (CIN-9)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Synthesizing routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Inlining routine 'nnet::zeropad2d_cl<input_t, layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#1:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(73): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/CopyMain' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(20): Inlining routine 'nnet::fill_data<input_t, layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(24): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_data<input_t,layer2_t,config2>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'data_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#2:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer2_t, config2>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#3:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Optimizing block '/nnet::zeropad2d_cl<input_t,layer2_t,config2>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>:for' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(64): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadTopWidth' iterated at most 30 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(63): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadTop' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#1:for' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(70): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadLeft' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(25): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_data<input_t,layer2_t,config2>:for' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(74): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/CopyMain' iterated at most 28 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#2:for' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(77): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadRight' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(69): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadMain' iterated at most 28 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/nnet::fill_zero<layer2_t,config2>#3:for' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(83): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadBottomWidth' iterated at most 30 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(82): Loop '/nnet::zeropad2d_cl<input_t,layer2_t,config2>/core/PadBottom' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Synthesizing routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Inlining routine 'nnet::conv_2d_cl<layer2_t, layer3_t, config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(61): Inlining routine 'nnet::conv_2d_buffer_cl<layer2_t, layer3_t, config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, 30U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(85): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,1U>::value_type,30U>::ap_shift_reg:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(73): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ReadInputHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(234): Inlining routine 'nnet::compute_output_buffer_2d<layer2_t, layer3_t, config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(204): Inlining routine 'nnet::shift_line_buffer<layer2_t, config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(213): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/UpdateBuffer' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(219): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/LineBufferDataIn' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(222): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/LineBufferShift' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(110): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, 30U>::shift' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(116): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,1U>::value_type,30U>::shift:if:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(173): Inlining routine 'nnet::kernel_shift_2d<layer2_t, config3>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftWidth' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(181): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(183): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(194): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelPushHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(196): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelPushChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(19): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, config3::mult_config, nnet::UF_RF, 0>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ResetAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(70): Pragma 'hls_unroll<9>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/Compute' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Pragma 'hls_unroll<8>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/MultAndAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(84): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/Result' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(113): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 1U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, config3::mult_config>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(275): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/CastLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Optimizing block '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(202): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(202): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(203): INOUT port 'weights' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(204): INOUT port 'biases' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(214): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/UpdateBuffer' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,1U>::value_type,30U>::shift:if:for' iterated at most 29 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(223): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/LineBufferShift' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(220): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/LineBufferDataIn' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(184): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftChannel' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(182): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftHeight' iterated at most 3 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(180): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelShiftWidth' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(197): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelPushChannel' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(195): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/KernelPushHeight' iterated at most 3 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ResetAccum' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/MultAndAccum' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/Compute' iterated at most 9 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/Result' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(276): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/CastLoop' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(75): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ReadInputWidth' iterated at most 30 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(74): Loop '/nnet::conv_2d_cl<layer2_t,layer3_t,config3>/core/ReadInputHeight' iterated at most 30 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Synthesizing routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<layer3_t, layer5_t, relu_config5>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(58): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::relu<layer3_t,layer5_t,relu_config5>/core/ReLUActLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::relu<layer3_t,layer5_t,relu_config5>/core/ReLUPackLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'in_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<16, 6, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Optimizing block '/nnet::relu<layer3_t,layer5_t,relu_config5>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(64): Loop '/nnet::relu<layer3_t,layer5_t,relu_config5>/core/ReLUPackLoop' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(59): Loop '/nnet::relu<layer3_t,layer5_t,relu_config5>/core/ReLUActLoop' iterated at most 784 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Synthesizing routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Inlining routine 'nnet::pooling2d_cl<layer5_t, layer6_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(215): Inlining routine 'nnet::pooling2d_buffer_cl<layer5_t, layer6_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, 28U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(85): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,28U>::ap_shift_reg:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(226): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ReadInputHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(153): Inlining routine 'nnet::compute_pool_buffer_2d<layer5_t, layer6_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(204): Inlining routine 'nnet::shift_line_buffer<layer5_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(213): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/UpdateBuffer' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(219): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/LineBufferDataIn' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(222): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/LineBufferShift' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(110): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, 28U>::shift' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(116): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,28U>::shift:if:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(173): Inlining routine 'nnet::kernel_shift_2d<layer5_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftWidth' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(181): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(183): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(194): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelPushHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(196): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelPushChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(174): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/FiltLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/PoolLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(18): Inlining routine 'nnet::reduce_pool<config6::accum_t, 4, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 4, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(121): Inlining routine 'nnet::pooling2d_encoded_cl<layer5_t, layer6_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(140): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ReadInputHeight#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(39): Inlining routine 'nnet::compute_pool_encoded_2d<layer5_t, layer6_t, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(31): Inlining routine 'nnet::init_pool_table<28U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(31): Inlining routine 'nnet::init_pool_table<28U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(74): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/PixelLoop' (CIN-203)
+# $MGC_HOME/shared/include/ac_int.h(3485): Inlining routine 'operator><4, false>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/ac_int.h(3486): Inlining routine 'operator==<4, false>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(89): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/FiltLoop#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(18): Inlining routine 'nnet::reduce_pool<config6::accum_t, 4, config6>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 4, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Optimizing block '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): INOUT port 'res' is only used as an output. (OPT-11)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(0)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(1)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(2)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(3)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(4)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(5)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(6)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(7)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(8)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(9)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(10)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(11)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(12)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(13)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(14)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(15)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(16)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(17)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(18)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(19)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(20)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(21)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(22)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(23)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(24)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(25)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(26)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(27)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(28)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(29)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(30)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer5_t,layer6_t,config6>:data_window(31)' is never driven. (OPT-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(214): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/UpdateBuffer' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,28U>::shift:if:for' iterated at most 27 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(223): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/LineBufferShift' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(220): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/LineBufferDataIn' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(184): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftChannel' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(182): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftHeight' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(180): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelShiftWidth' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(197): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelPushChannel' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(195): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/KernelPushHeight' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(181): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/PoolLoop' iterated at most 4 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(177): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/FiltLoop' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(228): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ReadInputWidth' iterated at most 28 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(227): Loop '/nnet::pooling2d_cl<layer5_t,layer6_t,config6>/core/ReadInputHeight' iterated at most 28 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Found design routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Synthesizing routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Inlining routine 'nnet::zeropad2d_cl<layer6_t, layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#1:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(73): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/CopyMain' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(20): Inlining routine 'nnet::fill_data<layer6_t, layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(24): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_data<layer6_t,layer7_t,config7>:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'data_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#2:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(9): Inlining routine 'nnet::fill_zero<layer7_t, config7>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::array' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(12): Pragma 'hls_unroll<yes>' detected on '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#3:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'res_part' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): Optimizing block '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(61): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>:for' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(64): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadTopWidth' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(63): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadTop' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#1:for' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(70): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadLeft' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(25): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_data<layer6_t,layer7_t,config7>:for' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(74): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/CopyMain' iterated at most 14 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#2:for' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(77): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadRight' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(69): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadMain' iterated at most 14 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(13): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/nnet::fill_zero<layer7_t,config7>#3:for' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(83): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadBottomWidth' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(82): Loop '/nnet::zeropad2d_cl<layer6_t,layer7_t,config7>/core/PadBottom' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(14): Detected constant initialization of array 'nnet::fill_zero<layer7_t,config7>:res_part.data', optimizing loop 'nnet::fill_zero<layer7_t,config7>:for' (LOOP-12)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(14): Detected constant initialization of array 'nnet::fill_zero<layer7_t,config7>#1:res_part.data', optimizing loop 'nnet::fill_zero<layer7_t,config7>#1:for' (LOOP-12)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(14): Detected constant initialization of array 'nnet::fill_zero<layer7_t,config7>#2:res_part.data', optimizing loop 'nnet::fill_zero<layer7_t,config7>#2:for' (LOOP-12)
+# $MGC_HOME/shared/include/nnet_utils/nnet_padding_stream.h(14): Detected constant initialization of array 'nnet::fill_zero<layer7_t,config7>#3:res_part.data', optimizing loop 'nnet::fill_zero<layer7_t,config7>#3:for' (LOOP-12)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Found design routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Synthesizing routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Inlining routine 'nnet::conv_2d_cl<layer7_t, layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(61): Inlining routine 'nnet::conv_2d_buffer_cl<layer7_t, layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, 16U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(85): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,16U>::ap_shift_reg:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(73): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ReadInputHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(234): Inlining routine 'nnet::compute_output_buffer_2d<layer7_t, layer8_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(204): Inlining routine 'nnet::shift_line_buffer<layer7_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(213): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/UpdateBuffer' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(219): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/LineBufferDataIn' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(222): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/LineBufferShift' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(110): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, 16U>::shift' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(116): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,16U>::shift:if:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(173): Inlining routine 'nnet::kernel_shift_2d<layer7_t, config8>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftWidth' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(181): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(183): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(194): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelPushHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(196): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelPushChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(19): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, config8::mult_config, nnet::UF_RF, 0>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ResetAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(70): Pragma 'hls_unroll<72>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/Compute' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Pragma 'hls_unroll<16>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/MultAndAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(84): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/Result' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(113): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 8U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, config8::mult_config>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(275): Pragma 'hls_unroll<yes>' detected on '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/CastLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(201): Optimizing block '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(202): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(202): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(203): INOUT port 'weights' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(204): INOUT port 'biases' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(214): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/UpdateBuffer' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,8U>::value_type,16U>::shift:if:for' iterated at most 15 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(223): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/LineBufferShift' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(220): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/LineBufferDataIn' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(184): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftChannel' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(182): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftHeight' iterated at most 3 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(180): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelShiftWidth' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(197): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelPushChannel' iterated at most 8 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(195): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/KernelPushHeight' iterated at most 3 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ResetAccum' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/MultAndAccum' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/Compute' iterated at most 72 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/Result' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(276): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/CastLoop' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(75): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ReadInputWidth' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv2d_stream.h(74): Loop '/nnet::conv_2d_cl<layer7_t,layer8_t,config8>/core/ReadInputHeight' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Synthesizing routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<layer8_t, layer10_t, relu_config10>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(58): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::relu<layer8_t,layer10_t,relu_config10>/core/ReLUActLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::array' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::relu<layer8_t,layer10_t,relu_config10>/core/ReLUPackLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'in_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<16, 6, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Optimizing block '/nnet::relu<layer8_t,layer10_t,relu_config10>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(64): Loop '/nnet::relu<layer8_t,layer10_t,relu_config10>/core/ReLUPackLoop' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(59): Loop '/nnet::relu<layer8_t,layer10_t,relu_config10>/core/ReLUActLoop' iterated at most 196 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Found design routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Synthesizing routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Inlining routine 'nnet::pooling2d_cl<layer10_t, layer11_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(215): Inlining routine 'nnet::pooling2d_buffer_cl<layer10_t, layer11_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(84): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, 14U>::ap_shift_reg' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(85): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,16U>::value_type,14U>::ap_shift_reg:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(226): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ReadInputHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(153): Inlining routine 'nnet::compute_pool_buffer_2d<layer10_t, layer11_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(204): Inlining routine 'nnet::shift_line_buffer<layer10_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(213): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/UpdateBuffer' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(219): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/LineBufferDataIn' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(222): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/LineBufferShift' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(110): Inlining member function 'ap_shift_reg<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, 14U>::shift' on object 'line_buffer' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(116): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,16U>::value_type,14U>::shift:if:for' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(173): Inlining routine 'nnet::kernel_shift_2d<layer10_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftWidth' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(181): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(183): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(194): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelPushHeight' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(196): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelPushChannel' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(174): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/FiltLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(179): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/PoolLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(18): Inlining routine 'nnet::reduce_pool<config11::accum_t, 4, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 4, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(121): Inlining routine 'nnet::pooling2d_encoded_cl<layer10_t, layer11_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(140): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ReadInputHeight#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(39): Inlining routine 'nnet::compute_pool_encoded_2d<layer10_t, layer11_t, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(31): Inlining routine 'nnet::init_pool_table<14U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(31): Inlining routine 'nnet::init_pool_table<14U, 2U>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(74): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/PixelLoop' (CIN-203)
+# $MGC_HOME/shared/include/ac_int.h(3485): Inlining routine 'operator><4, false>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(47): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'data' (CIN-64)
+# $MGC_HOME/shared/include/ac_int.h(3486): Inlining routine 'operator==<4, false>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(89): Pragma 'hls_unroll<yes>' detected on '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/FiltLoop#1' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(18): Inlining routine 'nnet::reduce_pool<config11::accum_t, 4, config11>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 4, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(27): Inlining routine 'nnet::reduce<config6::accum_t, 2, nnet::Op_max<config6::accum_t>>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_common.h(57): Inlining member function 'nnet::Op_max<config6::accum_t>::operator()' on object 'op' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): Optimizing block '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(236): INOUT port 'res' is only used as an output. (OPT-11)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(0)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(1)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(2)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(3)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(4)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(5)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(6)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(7)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(8)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(9)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(10)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(11)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(12)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(13)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(14)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(15)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(16)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(17)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(18)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(19)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(20)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(21)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(22)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(23)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(24)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(25)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(26)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(27)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(28)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(29)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(30)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(31)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(32)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(33)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(34)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(35)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(36)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(37)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(38)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(39)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(40)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(41)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(42)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(43)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(44)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(45)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(46)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(47)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(48)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(49)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(50)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(51)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(52)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(53)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(54)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(55)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(56)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(57)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(58)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(59)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(60)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(61)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(62)' is never driven. (OPT-3)
+# Warning: $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(133): Channel 'nnet::pooling2d_encoded_cl<layer10_t,layer11_t,config11>:data_window(63)' is never driven. (OPT-3)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(214): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/UpdateBuffer' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/ap_shift_reg.h(117): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ap_shift_reg<nnet::array<ac_fixed<16,6,true,AC_TRN,AC_WRAP>,16U>::value_type,14U>::shift:if:for' iterated at most 13 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(223): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/LineBufferShift' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(220): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/LineBufferDataIn' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(184): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftChannel' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(182): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftHeight' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(180): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelShiftWidth' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(197): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelPushChannel' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_conv_stream.h(195): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/KernelPushHeight' iterated at most 2 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(181): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/PoolLoop' iterated at most 4 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(177): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/FiltLoop' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(228): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ReadInputWidth' iterated at most 14 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(227): Loop '/nnet::pooling2d_cl<layer10_t,layer11_t,config11>/core/ReadInputHeight' iterated at most 14 times. (LOOP-2)
+# Info: Running transformation 'compile' on solution 'SimpleCNN.v1': elapsed time 29.98 seconds, memory usage 1894544kB, peak memory usage 1894544kB (SOL-15)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer11_t, layer13_t, config13>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer11_t, layer13_t, config13>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Synthesizing routine 'nnet::dense<layer11_t, layer13_t, config13>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(65): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/main' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Inlining routine 'nnet::dense<layer11_t, layer13_t, config13>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(65): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::dense<layer11_t, layer13_t, config13>' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Pragma 'hls_pipeline_init_interval<1>' detected on routine 'nnet::dense<layer11_t, layer13_t, config13>' (CIN-329)
+# $MGC_HOME/shared/include/nnet_utils/nnet_pooling_stream.h(89): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/DataPrepare' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(79): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/DataPack' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::operator[]' on object 'data_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(14): Inlining routine 'nnet::dense_wrapper<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, config13>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(19): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, config13, nnet::UF_RF, 0>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/ResetAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(70): Pragma 'hls_unroll<784>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/Compute' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Pragma 'hls_unroll<64>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/MultAndAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(84): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/Result' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(113): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 16U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, config13>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(92): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer11_t,layer13_t,config13>/core/ResPack' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Optimizing block '/nnet::dense<layer11_t,layer13_t,config13>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): INOUT port 'data_stream' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): INOUT port 'res_stream' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(68): INOUT port 'weights' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(69): INOUT port 'biases' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(80): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/DataPack' iterated at most 16 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(77): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/DataPrepare' iterated at most 49 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/ResetAccum' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/MultAndAccum' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/Compute' iterated at most 784 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/Result' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(93): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/ResPack' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(90): Loop '/nnet::dense<layer11_t,layer13_t,config13>/core/ResWrite' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Found design routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Synthesizing routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Inlining routine 'nnet::relu<layer13_t, layer15_t, relu_config15>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(58): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::relu<layer13_t,layer15_t,relu_config15>/core/ReLUActLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::array' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::relu<layer13_t,layer15_t,relu_config15>/core/ReLUPackLoop' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::operator[]' on object 'in_data' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::operator[]' on object 'out_data' (CIN-64)
+# $MGC_HOME/shared/include/ac_math/ac_relu.h(111): Inlining routine 'ac_math::ac_relu<16, 6, true, AC_TRN, AC_WRAP, 16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/ac_fixed.h(1699): Inlining routine 'operator><16, 6, true, AC_TRN, AC_WRAP>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Optimizing block '/nnet::relu<layer13_t,layer15_t,relu_config15>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'data' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): INOUT port 'res' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(64): Loop '/nnet::relu<layer13_t,layer15_t,relu_config15>/core/ReLUPackLoop' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(59): Loop '/nnet::relu<layer13_t,layer15_t,relu_config15>/core/ReLUActLoop' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer15_t, result_t, config16>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Found design routine 'nnet::dense<layer15_t, result_t, config16>' specified by directive (CIN-52)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Synthesizing routine 'nnet::dense<layer15_t, result_t, config16>' (CIN-13)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(65): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/main' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Inlining routine 'nnet::dense<layer15_t, result_t, config16>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(65): Pragma 'hls_pipeline_init_interval<1>' detected on '/nnet::dense<layer15_t, result_t, config16>' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Pragma 'hls_pipeline_init_interval<1>' detected on routine 'nnet::dense<layer15_t, result_t, config16>' (CIN-329)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(79): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/DataPack' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::operator[]' on object 'data_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(14): Inlining routine 'nnet::dense_wrapper<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 10U>::value_type, config16>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(19): Inlining routine 'nnet::dense_latency<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 10U>::value_type, config16, nnet::UF_RF, 0>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(63): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/ResetAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(70): Pragma 'hls_unroll<64>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/Compute' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(74): Pragma 'hls_unroll<10>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/MultAndAccum' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(84): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/Result' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_mult.h(113): Inlining routine 'nnet::cast<nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 64U>::value_type, nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 10U>::value_type, config16>' (CIN-14)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(19): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 10U>::array' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(92): Pragma 'hls_unroll<yes>' detected on '/nnet::dense<layer15_t,result_t,config16>/core/ResPack' (CIN-203)
+# $MGC_HOME/shared/include/nnet_utils/nnet_types.h(45): Inlining member function 'nnet::array<ac_fixed<16, 6, true, AC_TRN, AC_WRAP>, 10U>::operator[]' on object 'res_pack' (CIN-64)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Optimizing block '/nnet::dense<layer15_t,result_t,config16>' ... (CIN-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): INOUT port 'data_stream' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): INOUT port 'res_stream' is only used as an output. (OPT-11)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(68): INOUT port 'weights' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(69): INOUT port 'biases' is only used as an input. (OPT-10)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(80): Loop '/nnet::dense<layer15_t,result_t,config16>/core/DataPack' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(77): Loop '/nnet::dense<layer15_t,result_t,config16>/core/DataPrepare' iterated at most 1 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/nnet::dense<layer15_t,result_t,config16>/core/ResetAccum' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/nnet::dense<layer15_t,result_t,config16>/core/MultAndAccum' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/nnet::dense<layer15_t,result_t,config16>/core/Compute' iterated at most 64 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/nnet::dense<layer15_t,result_t,config16>/core/Result' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(93): Loop '/nnet::dense<layer15_t,result_t,config16>/core/ResPack' iterated at most 10 times. (LOOP-2)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(90): Loop '/nnet::dense<layer15_t,result_t,config16>/core/ResWrite' iterated at most 1 times. (LOOP-2)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(18): Optimizing block '/SimpleCNN' ... (CIN-4)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(19): INOUT port 'input1' is only used as an input. (OPT-10)
+# $PROJECT_HOME/firmware/SimpleCNN.cpp(20): INOUT port 'layer16_out' is only used as an output. (OPT-11)
+# Design 'SimpleCNN' was read (SOL-1)
+# Makefile for Original Design + Testbench written to file './scverify/Verify_orig_cxx_osci.mk'
+# Warning: Hierarchical design detected - Design analysis will be done at block level
+# Info: CDesignChecker Shell script written to '/home/ubuntu/catapult_output_simple/SimpleCNN-Catapult-test/SimpleCNN_prj_2/SimpleCNN.v1/CDesignChecker/design_checker.sh'
+# Info: Completed transformation 'compile' on solution 'SimpleCNN.v1': elapsed time 34.30 seconds, memory usage 1894544kB, peak memory usage 1894544kB (SOL-9)
+# Info: Design complexity at end of 'compile': Total ops = 1189, Real ops = 237, Vars = 249 (SOL-21)
+# ***** SETTING TECHNOLOGY LIBRARIES *****
+# Library Name: mgc_Xilinx-KINTEX-u-2_beh
+# Library Path: /CONFIG/PARAMETERS/Vivado/PARAMETERS/Xilinx/PARAMETERS/KINTEX-u/PARAMETERS/-2/PARAMETERS/xcku115-flvb2104-2-i/LIBRARIES/123/NAME
+# ***** C/RTL SYNTHESIS *****
+# Info: Starting transformation 'libraries' on solution 'SimpleCNN.v1' (SOL-8)
+# Info: Please set ComponentLibs/TechLibSearchPath to enable flows that use downstream synthesis tools (LIB-220)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_busdefs.lib' [mgc_busdefs]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/stdops.lib' [STDOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/fpops.lib' [FPOPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_dw_ops.lib' [CCS_DW_OPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_ioport.lib' [ccs_ioport]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/mgc_ioport.lib' [mgc_ioport]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_ops.lib' [ASSERT_OPS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/cds_assert/assert_mods.lib' [assert_mods]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/siflibs/ccs_connections.lib' [ccs_connections]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/mgc_Xilinx-KINTEX-u-2_beh.lib' [mgc_Xilinx-KINTEX-u-2_beh]... (LIB-49)
+# Warning: Detected an old component library 'mgc_Xilinx-KINTEX-u-2_beh' - it is recommended that the user update this component library to the latest version. It can be done by reading this old component library in Catapult Library Builder (2025.3/1218503 or later) and saving the library into the target file. (LIB-82)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_RAMS.lib' [Xilinx_RAMS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_ROMS.lib' [Xilinx_ROMS]... (LIB-49)
+# Reading component library '$MGC_HOME/pkgs/ccs_xilinx/Xilinx_FIFO.lib' [Xilinx_FIFO]... (LIB-49)
+# Info: Completed transformation 'libraries' on solution 'SimpleCNN.v1': elapsed time 1.07 seconds, memory usage 1894544kB, peak memory usage 1894544kB (SOL-9)
+# Info: Design complexity at end of 'libraries': Total ops = 1189, Real ops = 237, Vars = 249 (SOL-21)
+# Info: Starting transformation 'assembly' on solution 'SimpleCNN.v1' (SOL-8)
+# Info: $PROJECT_HOME/firmware/SimpleCNN.cpp(18): Partition '/SimpleCNN/core' is found empty and is optimized away. (OPT-12)
+# Info: Completed transformation 'assembly' on solution 'SimpleCNN.v1': elapsed time 10.17 seconds, memory usage 1894544kB, peak memory usage 1894544kB (SOL-9)
+# Info: Design complexity at end of 'assembly': Total ops = 1192, Real ops = 248, Vars = 262 (SOL-21)
+# Info: Starting transformation 'loops' on solution 'SimpleCNN.v1' (SOL-8)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(80): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/DataPack' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/ResetAccum' is being fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): N_UNROLL parameter 10 is equal to the total number of loop iterations; loop fully unrolled. (LOOP-5)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/MultAndAccum' is being fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/Result' is being fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(93): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/ResPack' is being fully unrolled (10 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): N_UNROLL parameter 64 is equal to the total number of loop iterations; loop fully unrolled. (LOOP-5)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/Compute' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(67): Loop '/SimpleCNN/nnet::dense<layer15_t,result_t,config16>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(64): Loop '/SimpleCNN/nnet::relu<layer13_t,layer15_t,relu_config15>/core/ReLUPackLoop' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_activation_stream.h(56): Loop '/SimpleCNN/nnet::relu<layer13_t,layer15_t,relu_config15>/core/main' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(80): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/DataPack' is being fully unrolled (16 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(65): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/ResetAccum' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): N_UNROLL parameter 64 is equal to the total number of loop iterations; loop fully unrolled. (LOOP-5)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(76): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/MultAndAccum' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(86): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/Result' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(93): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/ResPack' is being fully unrolled (64 times). (LOOP-7)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_stream.h(77): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/DataPrepare' is left rolled. (LOOP-4)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): N_UNROLL parameter 784 is equal to the total number of loop iterations; loop fully unrolled. (LOOP-5)
+# $MGC_HOME/shared/include/nnet_utils/nnet_dense_latency.h(72): Loop '/SimpleCNN/nnet::dense<layer11_t,layer13_t,config13>/core/Compute' is being fully unrolled (784 times). (LOOP-7)
+# Info: Running transformation 'loops' on solution 'SimpleCNN.v1': elapsed time 30.00 seconds, memory usage 4057232kB, peak memory usage 4057232kB (SOL-15)
+# Info: Running transformation 'loops' on solution 'SimpleCNN.v1': elapsed time 60.00 seconds, memory usage 9889936kB, peak memory usage 9889936kB (SOL-15)
+# Info: Running transformation 'loops' on solution 'SimpleCNN.v1': elapsed time 83.97 seconds, memory usage 14739600kB, peak memory usage 14739600kB (SOL-15)
+# Info: Running transformation 'loops' on solution 'SimpleCNN.v1': elapsed time 84.24 seconds, memory usage 14739600kB, peak memory usage 14739600kB (SOL-15)
+ubuntu@ip-10-10-8-216:~$ 

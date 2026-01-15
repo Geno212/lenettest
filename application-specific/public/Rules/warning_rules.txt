@@ -1,0 +1,4 @@
+(Conv2d,Conv2d) <--> ReLU
+Linear <-- Flatten
+MaxPool2d ->x AvgPool2d
+MaxPool2d <-x AvgPool2d

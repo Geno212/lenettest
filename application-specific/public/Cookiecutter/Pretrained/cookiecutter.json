@@ -1,0 +1,60 @@
+{
+  "test_num": 5,
+  "project_name": "Pretrained_Output",
+  
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 224,
+        "height": 224,
+        "channels": 1,
+        "num_epochs": 4,
+        "batch_size": 10,
+        "dataset": {
+            "value": "MNIST",
+            "index": 46
+        },
+        "dataset_path": "C:\\Users\\Ahmed hosam\\Downloads\\mnist"
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "reduction": "mean",
+            "label_smoothing": 0.0,
+            "ignore_index": -100
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "log_dir": "C:\\Users\\Ahmed hosam\\Desktop\\grad\\Application-Specific-Deep-Learning-Accelerator-Designer\\data\\tensorboardlogs",
+    "layers": {
+        "list": []
+    },
+    "pretrained": {
+        "value": "alexnet",
+        "index": 0
+    },
+    "residual": {
+        "layers": {
+            "list": []
+        }
+    }
+
+}

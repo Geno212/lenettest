@@ -1,0 +1,16 @@
+Flask==3.0.0
+flask-cors==4.0.0
+flask-socketio==5.3.5
+python-socketio==5.10.0
+gevent==24.2.1
+gevent-websocket==0.10.1
+httpx>=0.28.1
+python-dotenv>=1.1.0
+fastmcp>=2.12.4
+
+# Agentic dependencies (should already be installed)
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-openai>=0.0.5
+langgraph>=0.0.40
+langsmith>=0.0.70

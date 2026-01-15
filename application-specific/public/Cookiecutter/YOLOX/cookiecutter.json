@@ -1,0 +1,71 @@
+{
+  "test_num": 5,
+  "project_name": "YOLOX",
+  
+    "layers": {
+        "list": []
+    },
+    "misc_params": {
+        "device": {
+            "value": "cuda:0",
+            "index": 1
+        },
+        "width": 640,
+        "height": 480,
+        "channels": 3,
+        "num_epochs": 10,
+        "batch_size": 32,
+        "dataset": {
+            "value": "BCCD",
+            "index": 0
+        },
+        "dataset_path": "C:\\Users\\Ahmed hosam\\Desktop\\grad\\Application-Specific-Deep-Learning-Accelerator-Designer\\BCCD.v3-raw.coco_yolox",
+        "target_accuracy": 0.74
+    },
+    "optimizer": {
+        "type": "Adam",
+        "params": {
+            "lr": 0.001,
+            "betas": [
+                0.9,
+                0.999
+            ],
+            "eps": 1e-08,
+            "weight_decay": 0.0,
+            "amsgrad": false
+        }
+    },
+    "loss_func": {
+        "type": "CrossEntropyLoss",
+        "params": {
+            "reduction": "mean",
+            "label_smoothing": 0.0,
+            "ignore_index": -100
+        }
+    },
+    "scheduler": {
+        "type": "None",
+        "params": {}
+    },
+    "pretrained": {
+        "value": "yolox-small",
+        "index": 4,
+        "depth": 0.33,
+        "width": 0.5
+    },
+    "log_dir": "C:\\Users\\Ahmed hosam\\Desktop\\grad\\Application-Specific-Deep-Learning-Accelerator-Designer\\data\\tensorboardlogs",
+    "complex_misc_params": {
+        "data_num_workers": 1,
+        "eval_interval": 2,
+        "warmup_epochs": 2,
+        "scheduler": "cos",
+        "num_classes": 4
+    },
+    "pretrained_weights": "C:\\Users\\Ahmed hosam\\Downloads\\yolox_s.pth",
+    "residual": {
+        "layers": {
+            "list": []
+        }
+    }
+
+}

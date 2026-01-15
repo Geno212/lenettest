@@ -1,0 +1,715 @@
+#!/usr/bin/env python3
+"""Training Commands
+
+Commands for training neural network models.
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
+
+import typer
+from rich.console import Console
+from rich.panel import Panel
+
+# Add parent directory to path for imports
+sys.path.append(str(Path(__file__).parent.parent.parent))
+
+app = typer.Typer(help="Model training commands")
+console = Console()
+
+
+@app.command("start")
+def start_training(
+    architecture_file: Optional[Path] = typer.Option(
+        None,
+        "--arch",
+        "-a",
+        help="Path to architecture file",
+    ),
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs",
+        "--output",
+        "-o",
+        help="Output directory",
+    ),
+    epochs: Optional[int] = typer.Option(
+        None,
+        "--epochs",
+        "-e",
+        help="Number of epochs to train",
+    ),
+    batch_size: Optional[int] = typer.Option(
+        None,
+        "--batch-size",
+        "-b",
+        help="Batch size",
+    ),
+    device: Optional[str] = typer.Option(
+        None,
+        "--device",
+        "-d",
+        help="Device to use (cpu, cuda, cuda:0, etc.)",
+    ),
+    resume: bool = typer.Option(False, "--resume", "-r", help="Resume from checkpoint"),
+    checkpoint_path: Optional[Path] = typer.Option(
+        None,
+        "--checkpoint",
+        "-c",
+        help="Path to checkpoint file",
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+):
+    """Start training a neural network model."""
+    # Load architecture if specified
+    if architecture_file:
+        if not architecture_file.exists():
+            console.print(
+                f"[red]❌ Architecture file {architecture_file} not found[/red]",
+            )
+            return
+
+        with open(architecture_file) as f:
+            architecture = json.load(f)
+    else:
+        console.print("[red]❌ Architecture file is required[/red]")
+        return
+
+    # Update training parameters if specified
+    if epochs:
+        architecture.setdefault("misc_params", {})["num_epochs"] = epochs
+    if batch_size:
+        architecture.setdefault("misc_params", {})["batch_size"] = batch_size
+    if device:
+        architecture.setdefault("misc_params", {})["device"] = device
+
+    # Set up training environment
+    training_config = setup_training_environment(output_dir, architecture)
+
+    # Create progress tracker
+    progress = Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        TimeRemainingColumn(),
+    )
+
+    with progress:
+        task = progress.add_task(
+            "Training...",
+            total=100,
+            start=True,
+        )
+
+        def progress_callback(value: float, epoch: int, loss: float, acc: float):
+            progress.update(
+                task,
+                completed=value * 100,
+                description=f"Epoch {epoch} - Loss: {loss:.4f} - Acc: {acc:.4f}",
+            )
+
+        # Run training
+        success = run_training(
+            architecture_config=architecture,
+            training_config=training_config,
+            progress_callback=progress_callback,
+            verbose=verbose,
+            resume=resume,
+            checkpoint_path=str(checkpoint_path) if checkpoint_path else None,
+        )
+
+    if not success:
+        return
+
+    # Show results summary
+    results_text = Text.assemble(
+        ("Training Results", "bold green"),
+        (f"\n📁 Model saved to: {training_config['model_output']}", "cyan"),
+        (f"\n📉 Logs directory: {training_config['logs_dir']}", "white"),
+    )
+    console.print(
+        Panel(results_text, title="[bold]Results[/bold]", border_style="green"),
+    )
+    """Start training a neural network model."""
+
+    from .architecture import arch_manager
+
+    # Load architecture if specified
+    if architecture_file:
+        if not architecture_file.exists():
+            console.print(
+                f"[red]❌ Architecture file {architecture_file} not found[/red]",
+            )
+            return
+        arch_manager.load_architecture(architecture_file)
+
+    architecture = arch_manager.current_architecture
+
+    # Validate configuration
+    if not architecture["layers"]["list"]:
+        console.print("[red]❌ No layers defined in architecture[/red]")
+        return
+
+    if not architecture.get("optimizer"):
+        console.print("[red]❌ No optimizer configured[/red]")
+        return
+
+    if not architecture.get("loss_func"):
+        console.print("[red]❌ No loss function configured[/red]")
+        return
+
+    # Update training parameters if specified
+    if epochs:
+        architecture["misc_params"]["num_epochs"] = epochs
+    if batch_size:
+        architecture["misc_params"]["batch_size"] = batch_size
+    if device:
+        architecture["misc_params"]["device"] = device
+
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Training configuration
+    training_config = {
+        "architecture": architecture,
+        "output_dir": str(output_dir),
+        "resume": resume,
+        "checkpoint_path": str(checkpoint_path) if checkpoint_path else None,
+        "verbose": verbose,
+    }
+
+    # Save training configuration
+    config_file = output_dir / "training_config.json"
+    with open(config_file, "w") as f:
+        json.dump(training_config, f, indent=2)
+
+    console.print("[bold blue]🚀 Starting Training...[/bold blue]")
+
+    # Show training configuration
+    config_text = Text.assemble(
+        ("Training Configuration", "bold green"),
+        (f"\n📊 Architecture: {len(architecture['layers']['list'])} layers", "cyan"),
+        (f"\n⏱️  Epochs: {architecture['misc_params']['num_epochs']}", "yellow"),
+        (f"\n📦 Batch Size: {architecture['misc_params']['batch_size']}", "magenta"),
+        (f"\n🖥️  Device: {architecture['misc_params']['device']}", "blue"),
+        (f"\n📁 Output: {output_dir}", "white"),
+        (f"\n💾 Config: {config_file}", "white"),
+    )
+
+    console.print(
+        Panel(config_text, title="[bold]Training Setup[/bold]", border_style="blue"),
+    )
+
+    pid_file = output_dir / ".pid"
+    try:
+        # Write PID to file
+        pid_file.write_text(str(os.getpid()))
+
+        # Check device availability
+        device = architecture["misc_params"]["device"]
+        if device.startswith("cuda") and not torch.cuda.is_available():
+            console.print("[yellow]⚠️  CUDA not available, falling back to CPU[/yellow]")
+            architecture["misc_params"]["device"] = "cpu"
+        elif device.startswith("cuda") and torch.cuda.is_available():
+            gpu_count = torch.cuda.device_count()
+            console.print(f"[green]✅ CUDA available with {gpu_count} GPU(s)[/green]")
+
+        # Import training utilities
+        from src.cli.utils.tensorboard_manager import TensorBoardManager
+        from src.cli.utils.training import (
+            TrainingProgress,
+            create_progress_callback,
+            setup_training_environment,
+            validate_training_requirements,
+        )
+
+        # Validate training requirements
+        if not validate_training_requirements(architecture):
+            return
+
+        # Set up training environment
+        training_config = setup_training_environment(output_dir, architecture)
+
+        # Create progress tracker
+        progress_tracker = TrainingProgress()
+
+        # Create progress callback
+        progress_callback = create_progress_callback(progress_tracker)
+
+        # Set up TensorBoard integration
+        tensorboard_manager = TensorBoardManager(training_config["logs_dir"])
+        tensorboard_started = False
+
+        console.print("[bold blue]🚀 Starting Training ...[/bold blue]")
+
+        start_tensorboard = True
+        if start_tensorboard:
+            if tensorboard_manager.start_tensorboard():
+                tensorboard_started = True
+                console.print(
+                    f"[green]✅ TensorBoard started at {tensorboard_manager.url}[/green]",
+                )
+            else:
+                console.print(
+                    "[yellow]⚠️  Could not start TensorBoard, continuing with training...[/yellow]",
+                )
+
+        # Run training with a rich progress bar
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[bold blue]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeRemainingColumn(),
+            TextColumn("Epoch: {task.fields[epoch]}/{task.fields[total_epochs]}"),
+            TextColumn("Loss: {task.fields[loss]:.4f}"),
+            TextColumn("Acc: {task.fields[acc]:.2f}%"),
+            console=console,
+        ) as progress:
+            task = progress.add_task(
+                "Training...",
+                total=100,
+                epoch=0,
+                total_epochs=architecture["misc_params"]["num_epochs"],
+                loss=0.0,
+                acc=0.0,
+            )
+
+            def progress_update(value, epoch, loss, acc):
+                progress.update(task, completed=value, epoch=epoch, loss=loss, acc=acc)
+
+            def detailed_progress_callback(value, epoch=0, loss=0.0, acc=0.0):
+                progress_update(value, epoch, loss, acc)
+
+            success = run_training(
+                architecture,
+                training_config,
+                detailed_progress_callback,
+                verbose,
+                resume=resume,
+                checkpoint_path=checkpoint_path,
+            )
+
+        if not success:
+            if tensorboard_started:
+                tensorboard_manager.stop_tensorboard()
+            return
+
+        if tensorboard_started:
+            console.print(
+                "[blue]💡 TensorBoard is still running for log viewing[/blue]",
+            )
+            console.print(f"[dim]🌐 Access it at: {tensorboard_manager.url}[/dim]")
+            console.print(
+                "[dim]💡 Use 'python -m cli.commands.tensorboard stop' to stop it[/dim]",
+            )
+
+        # Show results
+        results_text = Text.assemble(
+            ("Training Results", "bold green"),
+            (f"\n📁 Output Directory: {output_dir}", "cyan"),
+            ("\n📊 Check logs and model files in the output directory", "white"),
+        )
+
+        console.print(
+            Panel(results_text, title="[bold]Results[/bold]", border_style="green"),
+        )
+
+    finally:
+        # Ensure PID file is removed on exit
+        if pid_file.exists():
+            pid_file.unlink()
+
+
+@app.command("status")
+def training_status(
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs",
+        "--output",
+        "-o",
+        help="Output directory",
+    ),
+):
+    """Check the status of training runs."""
+    if not output_dir.exists():
+        console.print(f"[red]❌ Output directory {output_dir} not found[/red]")
+        return
+
+    # Look for training configuration and logs
+    config_file = output_dir / "training_config.json"
+    logs_dir = output_dir / "logs"
+
+    if not config_file.exists():
+        console.print(
+            f"[yellow]⚠️  No training configuration found in {output_dir}[/yellow]",
+        )
+        return
+
+    try:
+        with open(config_file) as f:
+            training_config = json.load(f)
+
+        # Show training status
+        status_text = Text.assemble(
+            ("Training Status", "bold blue"),
+            (f"\n📁 Output Directory: {output_dir}", "cyan"),
+            (
+                f"\n📊 Architecture: {len(training_config['architecture']['layers']['list'])} layers",
+                "white",
+            ),
+            (
+                f"\n⏱️  Epochs: {training_config['architecture']['misc_params']['num_epochs']}",
+                "yellow",
+            ),
+            (
+                f"\n📦 Batch Size: {training_config['architecture']['misc_params']['batch_size']}",
+                "magenta",
+            ),
+            (
+                f"\n🖥️  Device: {training_config['architecture']['misc_params']['device']}",
+                "blue",
+            ),
+            (
+                f"\n🔄 Resume: {'Yes' if training_config['resume'] else 'No'}",
+                "green" if not training_config["resume"] else "yellow",
+            ),
+        )
+
+        console.print(
+            Panel(
+                status_text,
+                title="[bold]Training Status[/bold]",
+                border_style="blue",
+            ),
+        )
+
+        # Check for logs
+        if logs_dir.exists():
+            log_files = list(logs_dir.glob("*"))
+            if log_files:
+                console.print(f"\n[green]📋 Log files found: {len(log_files)}[/green]")
+                for log_file in log_files[:5]:  # Show first 5
+                    console.print(f"  • {log_file.name}")
+                if len(log_files) > 5:
+                    console.print(f"  ... and {len(log_files) - 5} more")
+            else:
+                console.print("[yellow]📁 Logs directory is empty[/yellow]")
+        else:
+            console.print("[yellow]📁 No logs directory found[/yellow]")
+
+        # Check for model files
+        model_files = list(output_dir.glob("*.pt")) + list(output_dir.glob("*.pth"))
+        if model_files:
+            console.print(f"\n[green]🤖 Model files found: {len(model_files)}[/green]")
+            for model_file in model_files:
+                size_mb = model_file.stat().st_size / (1024 * 1024)
+                console.print(f"  • {model_file.name} ({size_mb:.1f} MB)")
+        else:
+            console.print("[yellow]🤖 No model files found[/yellow]")
+
+    except Exception as e:
+        console.print(f"[red]❌ Error reading training status: {e}[/red]")
+
+
+@app.command("stop")
+def stop_training(
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs",
+        "--output",
+        "-o",
+        help="Output directory of the training process to stop",
+    ),
+):
+    """Stop a running training process."""
+    pid_file = output_dir / ".pid"
+    if not pid_file.exists():
+        console.print(
+            f"[yellow]⚠️  No running training process found in {output_dir}[/yellow]",
+        )
+        return
+
+    try:
+        pid = int(pid_file.read_text())
+        console.print(
+            f"[bold yellow]🛑 Stopping training process with PID {pid}...[/bold yellow]",
+        )
+        os.kill(pid, signal.SIGTERM)
+        console.print("[green]✅ Termination signal sent.[/green]")
+    except (ValueError, ProcessLookupError):
+        console.print(
+            "[red]❌ Invalid or stale PID file. Process may already be stopped.[/red]",
+        )
+    except Exception as e:
+        console.print(f"[red]❌ Failed to stop training process: {e}[/red]")
+    finally:
+        pid_file.unlink()
+
+
+@app.command("logs")
+def show_logs(
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs",
+        "--output",
+        "-o",
+        help="Output directory",
+    ),
+    follow: bool = typer.Option(
+        False,
+        "--follow",
+        "-f",
+        help="Follow logs in real-time",
+    ),
+    lines: int = typer.Option(20, "--lines", "-n", help="Number of lines to show"),
+):
+    """Show training logs."""
+    logs_dir = output_dir / "logs"
+
+    if not logs_dir.exists():
+        console.print(f"[red]❌ Logs directory {logs_dir} not found[/red]")
+        return
+
+    # Find log files
+    log_files = []
+    for file in logs_dir.iterdir():
+        if file.is_file() and file.suffix in [".log", ".txt", ".out"]:
+            log_files.append(file)
+
+    if not log_files:
+        console.print("[yellow]📁 No log files found[/yellow]")
+        return
+
+    # Show most recent log file
+    most_recent = max(log_files, key=lambda x: x.stat().st_mtime)
+    console.print(f"[blue]📄 Showing logs from: {most_recent.name}[/blue]")
+
+    try:
+        with open(most_recent, encoding="utf-8") as f:
+            if not follow:
+                lines_content = f.readlines()
+                # Show last N lines
+                start_line = max(0, len(lines_content) - lines)
+                for i, line in enumerate(lines_content[start_line:], start_line + 1):
+                    console.print(f"{i:4d}: {line.rstrip()}")
+            else:
+                console.print(
+                    "[bold blue]Follow mode enabled. Press Ctrl+C to exit.[/bold blue]",
+                )
+                f.seek(0, 2)  # Go to the end of the file
+                while True:
+                    line = f.readline()
+                    if not line:
+                        time.sleep(0.1)
+                        continue
+                    console.print(line.rstrip())
+
+    except Exception as e:
+        console.print(f"[red]❌ Error reading logs: {e}[/red]")
+
+
+@app.command("manual")
+def train_manual(
+    config_file: Path = typer.Argument(help="Path to manual training JSON configuration file"),
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs" / "manual",
+        "--output",
+        "-o",
+        help="Output directory for manual training",
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+):
+    """Train a manual (custom architecture) model using JSON configuration."""
+    console.print(Panel.fit("🔧 Manual Training", style="bold blue"))
+    
+    # Check if config file exists
+    if not config_file.exists():
+        console.print(f"[red]❌ Configuration file {config_file} not found[/red]")
+        return
+    
+    # Load configuration
+    try:
+        with open(config_file) as f:
+            config = json.load(f)
+        console.print(f"[green]✓ Loaded configuration from {config_file}[/green]")
+    except Exception as e:
+        console.print(f"[red]❌ Error loading configuration: {e}[/red]")
+        return
+    
+    # Validate that this is a manual training config (should have layers)
+    if not config.get("layers"):
+        console.print("[red]❌ Manual training requires 'layers' array in configuration[/red]")
+        return
+    
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    console.print(f"[green]✓ Starting manual training setup...[/green]")
+    console.print(f"[blue]📁 Output directory: {output_dir}[/blue]")
+    
+    # Create cookiecutter config for manual training
+    cookiecutter_config = {
+        "project_name": f"ManualTraining_{int(time.time())}",
+        "misc_params": config.get("misc_params", {}),
+        "layers": config.get("layers", {}),
+        "loss_func": config.get("loss_func", {}),
+        "optimizer": config.get("optimizer", {}),
+        "scheduler": config.get("scheduler", {})
+    }
+    
+    # Save cookiecutter config
+    config_output_file = output_dir / "cookiecutter.json"
+    with open(config_output_file, 'w') as f:
+        json.dump(cookiecutter_config, f, indent=4)
+    
+    console.print(f"[green]✓ Generated training configuration[/green]")
+    console.print(f"[blue]📄 Config saved to: {config_output_file}[/blue]")
+    
+    # Execute the actual training
+    console.print(f"[yellow]� Starting manual training execution...[/yellow]")
+    success = execute_manual_training(config_file, output_dir, verbose)
+    
+    if success:
+        console.print(f"[green]🎉 Manual training completed successfully![/green]")
+    else:
+        console.print(f"[red]❌ Manual training failed[/red]")
+        raise typer.Exit(1)
+
+
+@app.command("pretrained")
+def train_pretrained(
+    config_file: Path = typer.Argument(help="Path to pretrained training JSON configuration file"),
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs" / "pretrained",
+        "--output",
+        "-o",
+        help="Output directory for pretrained training",
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+):
+    """Train a pretrained model with transfer learning using JSON configuration."""
+    console.print(Panel.fit("🏗️ Pretrained Model Training", style="bold green"))
+    
+    # Check if config file exists
+    if not config_file.exists():
+        console.print(f"[red]❌ Configuration file {config_file} not found[/red]")
+        return
+    
+    # Load configuration
+    try:
+        with open(config_file) as f:
+            config = json.load(f)
+        console.print(f"[green]✓ Loaded configuration from {config_file}[/green]")
+    except Exception as e:
+        console.print(f"[red]❌ Error loading configuration: {e}[/red]")
+        return
+    
+    # Validate that this is a pretrained training config (should have pretrained model and empty layers)
+    if not config.get("pretrained", {}).get("value"):
+        console.print("[red]❌ Pretrained training requires 'pretrained.value' in configuration[/red]")
+        return
+    
+    if config.get("layers") and len(config["layers"]) > 0:
+        console.print("[yellow]⚠️  Warning: Pretrained training typically has empty layers array[/yellow]")
+    
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    console.print(f"[green]✓ Starting pretrained training setup...[/green]")
+    console.print(f"[blue]📁 Output directory: {output_dir}[/blue]")
+    console.print(f"[blue]🤖 Model: {config['pretrained']['value']}[/blue]")
+    
+    # Create cookiecutter config for pretrained training
+    cookiecutter_config = {
+        "project_name": f"PretrainedTraining_{int(time.time())}",
+        "pretrained": config.get("pretrained", {}),
+        "misc_params": config.get("misc_params", {}),
+        "loss_func": config.get("loss_func", {}),
+        "optimizer": config.get("optimizer", {}),
+        "scheduler": config.get("scheduler", {})
+    }
+    
+    # Save cookiecutter config
+    config_output_file = output_dir / "cookiecutter.json"
+    with open(config_output_file, 'w') as f:
+        json.dump(cookiecutter_config, f, indent=4)
+    
+    console.print(f"[green]✓ Generated training configuration[/green]")
+    console.print(f"[blue]📄 Config saved to: {config_output_file}[/blue]")
+    
+    # Execute the actual training
+    console.print(f"[yellow]� Starting pretrained training execution...[/yellow]")
+    success = execute_pretrained_training(config_file, output_dir, verbose)
+    
+    if success:
+        console.print(f"[green]🎉 Pretrained training completed successfully![/green]")
+    else:
+        console.print(f"[red]❌ Pretrained training failed[/red]")
+        raise typer.Exit(1)
+
+
+@app.command("yolox")
+def train_yolox(
+    config_file: Path = typer.Argument(help="Path to YOLOX training JSON configuration file"),
+    output_dir: Path = typer.Option(
+        Path.cwd() / "outputs" / "yolox",
+        "--output",
+        "-o",
+        help="Output directory for YOLOX training",
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
+):
+    """Train a YOLOX object detection model using JSON configuration."""
+    console.print(Panel.fit("🎯 YOLOX Training", style="bold yellow"))
+    
+    # Check if config file exists
+    if not config_file.exists():
+        console.print(f"[red]❌ Configuration file {config_file} not found[/red]")
+        return
+    
+    # Load configuration
+    try:
+        with open(config_file) as f:
+            config = json.load(f)
+        console.print(f"[green]✓ Loaded configuration from {config_file}[/green]")
+    except Exception as e:
+        console.print(f"[red]❌ Error loading configuration: {e}[/red]")
+        return
+    
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Extract model info if available
+    model_info = config.get("pretrained", {}).get("value", "yolox-s")
+    
+    console.print(f"[green]✓ Starting YOLOX training setup...[/green]")
+    console.print(f"[blue]📁 Output directory: {output_dir}[/blue]")
+    console.print(f"[blue]🎯 Model: {model_info}[/blue]")
+    
+    # Create cookiecutter config for YOLOX training
+    cookiecutter_config = {
+        "project_name": f"YOLOXTraining_{int(time.time())}",
+        "pretrained": config.get("pretrained", {}),
+        "misc_params": config.get("misc_params", {}),
+        "loss_func": config.get("loss_func", {}),
+        "optimizer": config.get("optimizer", {}),
+        "scheduler": config.get("scheduler", {})
+    }
+    
+    # Save cookiecutter config
+    config_output_file = output_dir / "cookiecutter.json"
+    with open(config_output_file, 'w') as f:
+        json.dump(cookiecutter_config, f, indent=4)
+    
+    console.print(f"[green]✓ Generated training configuration[/green]")
+    console.print(f"[blue]📄 Config saved to: {config_output_file}[/blue]")
+    
+    # Execute the actual training
+    console.print(f"[yellow]� Starting YOLOX training execution...[/yellow]")
+    success = execute_yolox_training(config_file, output_dir, verbose)
+    
+    if success:
+        console.print(f"[green]🎉 YOLOX training completed successfully![/green]")
+    else:
+        console.print(f"[red]❌ YOLOX training failed[/red]")
+        raise typer.Exit(1)

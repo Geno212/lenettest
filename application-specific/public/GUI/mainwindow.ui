@@ -1,0 +1,1457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1031</width>
+    <height>585</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_11">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>Siemens Sans</family>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="Dashboard">
+       <attribute name="title">
+        <string>Welcome Screen</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetFixedSize</enum>
+          </property>
+          <item row="0" column="0">
+           <spacer name="verticalSpacer_11">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <spacer name="verticalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0">
+           <spacer name="verticalSpacer_15">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer_14">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <family>Siemens Sans</family>
+              <pointsize>14</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Application Specific Deep Learning Accelerator&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="Logo_placeholder">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="Params">
+       <attribute name="title">
+        <string>Miscellaneous Parameters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <layout class="QVBoxLayout" name="Params_Layout">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="1" column="0">
+               <widget class="QLabel" name="datasetLabel">
+                <property name="text">
+                 <string>Dataset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="datasetComboBox">
+                <property name="toolTip">
+                 <string>All the predefined datasets in pytorch </string>
+                </property>
+                <property name="statusTip">
+                 <string>Pick a dataset to render the template with</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Dataset Path</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="device_label">
+                <property name="text">
+                 <string>Device</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QComboBox" name="deviceComboBox">
+                <property name="statusTip">
+                 <string>Pick a device in case of having a cuda device its automaticly </string>
+                </property>
+               </widget>
+              </item>
+              <item row="17" column="0">
+               <layout class="QGridLayout" name="gridLayout"/>
+              </item>
+              <item row="3" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLineEdit" name="dataset_path_QLineEdit">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="statusTip">
+                   <string>Select the location of the dataset</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="dataset_path_QPushButton">
+                  <property name="text">
+                   <string>.</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="inputWidth_label">
+                <property name="text">
+                 <string>Input Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QSpinBox" name="inputWidth_QSpinBox">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="inputHeight_label">
+                <property name="text">
+                 <string>Input Height</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QSpinBox" name="inputHeight_QSpinBox">
+                <property name="minimumSize">
+                 <size>
+                  <width>250</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
+               <widget class="QLabel" name="batchSize_label">
+                <property name="text">
+                 <string>Batch Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
+               <widget class="QSpinBox" name="batchSize_QSpinBox">
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="0">
+               <widget class="QLabel" name="numberEpochs_label">
+                <property name="text">
+                 <string>Number of Epochs</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="1">
+               <widget class="QSpinBox" name="numberEpochs_QSpinBox">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="0">
+               <widget class="QLabel" name="inputChannelsLabel">
+                <property name="text">
+                 <string>Input Channels</string>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="1">
+               <widget class="QSpinBox" name="inputChannelsSpinBox">
+                <property name="toolTip">
+                 <string>Input channels for the images 1: grayscale 3:RGB</string>
+                </property>
+                <property name="statusTip">
+                 <string>Input channels for the images 1: grayscale 3:RGB</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>3</number>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="12" column="0">
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="10" column="0">
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="8" column="0">
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="6" column="0">
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="4" column="0">
+               <spacer name="verticalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0">
+               <spacer name="verticalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <spacer name="verticalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="16" column="0">
+               <spacer name="verticalSpacer_12">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_14">
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_20">
+                  <property name="spacing">
+                   <number>7</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <item>
+                     <widget class="QLabel" name="optimizer_label_4">
+                      <property name="text">
+                       <string>Optimizer:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="selectedOptimizer_QLineEdit">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QLineEdit{
+	color: black;
+}</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_5">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollwidget_3">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>98</width>
+                       <height>28</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_21">
+                      <item>
+                       <layout class="QVBoxLayout" name="optimizersList_QVBoxLayout"/>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                    <item>
+                     <widget class="QLabel" name="lossFunction_label_3">
+                      <property name="text">
+                       <string>Loss Function:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="selectedLossFunc_QLineEdit">
+                      <property name="enabled">
+                       <bool>false</bool>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QLineEdit{
+	color: black;
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_6">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollwidget_5">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>98</width>
+                       <height>28</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_22">
+                      <item>
+                       <layout class="QVBoxLayout" name="lossFuncsList_QVBoxLayout"/>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_19">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_13">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QLabel" name="Scheduler_label">
+                        <property name="text">
+                         <string>Scheduler</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="selectedScheduler_QLineEdit">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLineEdit{
+	color: black;
+}</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <widget class="QScrollArea" name="scrollArea_3">
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <property name="widgetResizable">
+                       <bool>true</bool>
+                      </property>
+                      <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                       <property name="geometry">
+                        <rect>
+                         <x>0</x>
+                         <y>0</y>
+                         <width>98</width>
+                         <height>28</height>
+                        </rect>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_18">
+                        <item>
+                         <layout class="QVBoxLayout" name="schedulersList_QVBoxLayout"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="submitParams_QPushButton">
+              <property name="maximumSize">
+               <size>
+                <width>2000</width>
+                <height>1000</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Siemens Sans</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="statusTip">
+               <string>Submit the parameters written above</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string>Submit Parameters</string>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="Architecture">
+       <attribute name="title">
+        <string>Architecture</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QTabWidget" name="PretrainedArch">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="ManualArch">
+               <attribute name="title">
+                <string>Manual Arch</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_23">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_15">
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QScrollArea" name="scrollArea">
+                      <property name="widgetResizable">
+                       <bool>true</bool>
+                      </property>
+                      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                       <property name="geometry">
+                        <rect>
+                         <x>0</x>
+                         <y>0</y>
+                         <width>98</width>
+                         <height>28</height>
+                        </rect>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_5">
+                        <item>
+                         <layout class="QVBoxLayout" name="layersList_QVBoxLayout"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QScrollArea" name="scrollArea_2">
+                    <property name="widgetResizable">
+                     <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="scrollAreaWidgetContents">
+                     <property name="geometry">
+                      <rect>
+                       <x>0</x>
+                       <y>0</y>
+                       <width>98</width>
+                       <height>28</height>
+                      </rect>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_4">
+                      <item>
+                       <layout class="QVBoxLayout" name="addedLayers_QVBoxLayout"/>
+                      </item>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QTextEdit" name="Violation_QTextEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QPushButton" name="submitArch_QPushButton">
+                    <property name="font">
+                     <font>
+                      <family>Siemens Sans</family>
+                      <bold>true</bold>
+                     </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Create configuration file</string>
+                    </property>
+                    <property name="statusTip">
+                     <string>Create configuration file</string>
+                    </property>
+                    <property name="text">
+                     <string>Submit Architecture</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="Generate_manual_QPushButton">
+                    <property name="toolTip">
+                     <string>Render the Manual Model Template with a configuration file</string>
+                    </property>
+                    <property name="statusTip">
+                     <string>Render the Manual Model Template with a configuration file</string>
+                    </property>
+                    <property name="text">
+                     <string>Load Architecture and Generate Project</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_2">
+               <attribute name="title">
+                <string>Pretrained Simple Arch</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <item>
+                 <spacer name="verticalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <item>
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Pretrained Simple Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="Pretrained_model_ComboBox">
+                    <property name="statusTip">
+                     <string>Pick a pretrained model to render the template with</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QPushButton" name="Create_transfer_Model_QPushButton">
+                    <property name="toolTip">
+                     <string>Create json configuration file for a Transfer Learning model</string>
+                    </property>
+                    <property name="statusTip">
+                     <string>Create json configuration file for a Transfer Learning model</string>
+                    </property>
+                    <property name="text">
+                     <string>Create Transfer Learning Model Config file</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="Train_transfer_Model_QPushButton">
+                    <property name="toolTip">
+                     <string>Render the Transfer Learning Model Template with a configuration file</string>
+                    </property>
+                    <property name="statusTip">
+                     <string>Render the Transfer Learning Model Template with a configuration file</string>
+                    </property>
+                    <property name="text">
+                     <string>Generate Transfer Learning Model</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="ComplexArch">
+               <attribute name="title">
+                <string>Pretrained Complex Arch</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_ComplexArch">
+                <item>
+                    <spacer name="verticalSpacer_Top">
+                        <property name="orientation">
+                            <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                            <size>
+                                <width>20</width>
+                                <height>1000</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_Center">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_Models">
+                    <item>
+                     <widget class="QLabel" name="modelsLabel">
+                      <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Pretrained Complex Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="Complex_model_ComboBox">
+                      <property name="toolTip">
+                       <string>Select a model from the list</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               
+                <item alignment="Qt::AlignCenter">
+                <layout class="QHBoxLayout" name="horizontalLayout_WeightsPath">
+                <item>
+                <widget class="QLabel" name="weightsLabel">
+                    <property name="text">
+                    <string>Pretrained Weights Path:</string>
+                    </property>
+                </widget>
+                </item>
+                <item>
+                <widget class="QLineEdit" name="weightsPathLineEdit">
+                    <property name="placeholderText">
+                    <string>Select pretrained weights file...</string>
+                    </property>
+                </widget>
+                </item>
+                <item>
+                <widget class="QPushButton" name="browseWeightsButton">
+                    <property name="text">
+                    <string>Browse</string>
+                    </property>
+                </widget>
+                </item>
+                </layout>
+                </item>
+                 <item>
+                          <spacer name="verticalSpacer_Empty">
+                              <property name="orientation">
+                                  <enum>Qt::Vertical</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                                  <size>
+                                      <width>20</width>
+                                      <height>1000</height>
+                                  </size>
+                              </property>
+                          </spacer>
+                      </item>
+                      <item>
+ <layout class="QFormLayout" name="formLayout_ComplexMiscParams">
+  <property name="labelAlignment">
+   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+  </property>
+
+    <item row="4" column="0">
+   <widget class="QLabel" name="numclasseslabel">
+    <property name="text">
+     <string>Number of Classes: </string>
+    </property>
+   </widget>
+  </item>
+  <item row="4" column="1">
+   <widget class="QSpinBox" name="numclassesSpinBox">
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+   </widget>
+  </item>
+
+  <item row="5" column="0">
+   <widget class="QLabel" name="numWorkersLabel">
+    <property name="text">
+     <string>Data Num Workers:</string>
+    </property>
+   </widget>
+  </item>
+  <item row="5" column="1">
+   <widget class="QSpinBox" name="numWorkersSpinBox">
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>64</number>
+    </property>
+   </widget>
+  </item>
+
+  <item row="6" column="0">
+   <widget class="QLabel" name="evalIntervalLabel">
+    <property name="text">
+     <string>Evaluation Interval:</string>
+    </property>
+   </widget>
+  </item>
+  <item row="6" column="1">
+   <widget class="QSpinBox" name="evalIntervalSpinBox">
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+   </widget>
+  </item>
+
+  <item row="7" column="0">
+   <widget class="QLabel" name="warmupEpochsLabel">
+    <property name="text">
+     <string>Warmup Epochs:</string>
+    </property>
+   </widget>
+  </item>
+  <item row="7" column="1">
+   <widget class="QSpinBox" name="warmupEpochsSpinBox">
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+   </widget>
+  </item>
+
+  <item row="8" column="0">
+   <widget class="QLabel" name="schedulerLabel">
+    <property name="text">
+     <string>Scheduler:</string>
+    </property>
+   </widget>
+  </item>
+  <item row="8" column="1">
+   <widget class="QComboBox" name="schedulerComboBox">
+    <item>
+     <property name="text">
+      <string>cos</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>warmcos</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>yoloxwarmcos</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>yoloxsemiwarmcos</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>multistep</string>
+     </property>
+    </item>
+   </widget>
+  </item>
+ </layout>
+</item>
+
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_ComplexArchButtons">
+                  <item>
+                   <widget class="QPushButton" name="Create_complex_Model_QPushButton">
+                    <property name="toolTip">
+                     <string>Create json configuration file for a Complex Architecture model</string>
+                    </property>
+                    <property name="statusTip">
+                     <string>Create json configuration file for a Complex Architecture model</string>
+                    </property>
+                    <property name="text">
+                     <string>Create Complex Architecture Config File</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_Bottom">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                
+
+               </layout>
+              </widget>
+              <widget class="QWidget" name="TestingComplexArch">
+               <attribute name="title">
+                <string>Testing Complex Arch</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_TestingComplexArch">
+                <item>
+                 <widget class="QTextEdit" name="TestingComplexArch_TextBox">
+                  <property name="placeholderText">
+                   <string>
+                    Enter classes in this format:
+                    "person","bicycle","car","motorcycle","airplane",...
+                    </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_TestWeightsPath">
+                  <item>
+                   <widget class="QLabel" name="testWeightsPathLabel">
+                    <property name="text">
+                     <string>Weights Path:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="testWeightsPathLineEdit">
+                    <property name="placeholderText">
+                     <string>Select weights file...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="testBrowseWeightsButton">
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_ImagePath">
+                  <item>
+                   <widget class="QLabel" name="imagePathLabel">
+                    <property name="text">
+                     <string>Image Path:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="imagePathLineEdit">
+                    <property name="placeholderText">
+                     <string>Select image file...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="browseImageButton">
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_HGDCkptPath">
+                  <item>
+                   <widget class="QLabel" name="hgdCkptPathLabel">
+                    <property name="text">
+                     <string>HGD Checkpoint Path:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="hgdCkptPathLineEdit">
+                    <property name="placeholderText">
+                     <string>Select HGD checkpoint file...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="browseHGDCkptButton">
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_ClassNamesPath">
+                  <item>
+                   <widget class="QLabel" name="classNamesPathLabel">
+                    <property name="text">
+                     <string>Class Names File Path:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="classNamesPathLineEdit">
+                    <property name="placeholderText">
+                     <string>Enter class names file path...</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="browseClassNamesButton">
+                    <property name="text">
+                     <string>Browse</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_TestImageButton">
+                  <item>
+                   <spacer name="horizontalSpacer_Left">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="testImageButton">
+                    <property name="text">
+                     <string>Test Image</string>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_Right">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="OutputFiles">
+       <attribute name="title">
+        <string>Output Files</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="code_txt">
+              <property name="font">
+               <font>
+                <family>Siemens Sans</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Generated Files</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTreeWidget" name="files_tree">
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="headerHidden">
+               <bool>true</bool>
+              </property>
+              <column>
+               <property name="text">
+                <string notr="true">1</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="Lcode">
+              <property name="font">
+               <font>
+                <family>Siemens Sans</family>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Code Sample</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextBrowser" name="codeSample">
+              <property name="styleSheet">
+               <string notr="true">background-color: white;</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="Tensorboard">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tensorboard&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <attribute name="title">
+        <string>Tensorboard</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <layout class="QVBoxLayout" name="TensorView"/>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLineEdit" name="logdirlineedit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Log_Directory_btn">
+             <property name="text">
+              <string>Log Directory</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1031</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuProgram">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionReset"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad"/>
+   </widget>
+   <addaction name="menuProgram"/>
+  </widget>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="icon">
+    <iconset theme="media-flash">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Load</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../icons/resource.qrc"/>
+ </resources>
+ <connections/>
+</ui>
